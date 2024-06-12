@@ -10,6 +10,6 @@ export default function index() {
             <Text>Go to chat page</Text>
         </Link>
     </View>
-    
+
   )
 }
