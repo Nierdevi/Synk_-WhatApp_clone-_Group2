@@ -1,11 +1,17 @@
-import { View, Text,StyleSheet } from 'react-native'
+import { View, Text, StyleSheet, Image } from 'react-native'
 import React from 'react'
 import primaryColors from '../constants/colors'
 
 export default function WelcomeScreen() {
+ 
   return (
     <View style={styles.container}>
-    
+        <Image 
+          source={require('./assets/Synk_Group2.png')}
+          style={styles.logo}
+          resizeMode="contain"
+        />
+        <View></View>
     </View>
   )
 }
