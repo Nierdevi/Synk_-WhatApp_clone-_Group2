@@ -7,7 +7,7 @@ import { PopupMenu } from '../components/PopupMenu';
 import { useTheme } from '../constants/themeContext'
 
 
-export default function WelcomeScreen() {
+export default function WelcomeScreen({navigation}) {
 
   const [menuVisible, setMenuVisible] = useState(false);
   const { theme, toggleTheme } = useTheme();
@@ -38,7 +38,7 @@ export default function WelcomeScreen() {
             <Text style={[styles.textWelcome,{color:theme ==='dark' ? primaryColors.white: primaryColors.black}]}>
                 Welcome To Synk Chat App, Connect To Millions Worldwide!</Text>
           </View>
-          <Pressable style={styles.btn} onPress={() => {}}>
+          <Pressable style={styles.btn} onPress={() => navigation.navigate('Signup')}>
             <Text style={[styles.btnText, { color: theme === 'dark' ? primaryColors.white : primaryColors.black }]}>
               Get Started
             </Text>
