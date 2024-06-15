@@ -41,7 +41,7 @@ export default function WelcomeScreen({navigation}) {
           </View>
           <TouchableOpacity >
             <Pressable style={styles.btn} onPress={() => navigation.navigate('Sign')}>
-              <Text style={[styles.btnText, { color: theme === 'dark' ? primaryColors.white : primaryColors.black }]}>
+              <Text style={[styles.btnText, { color: primaryColors.white }]}>
                 Tap to Continue
               </Text>
             </Pressable>
