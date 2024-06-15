@@ -1,10 +1,11 @@
-import { View, Text, StyleSheet, Image,StatusBar,Pressable,Modal } from 'react-native'
+import { View, Text, StyleSheet, Image,StatusBar,Pressable } from 'react-native'
 import React,{useState} from 'react'
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import primaryColors from '../constants/colors'
 import { Entypo } from '@expo/vector-icons';
 import { PopupMenu } from '../components/PopupMenu';
 import { useTheme } from '../constants/themeContext'
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 
 export default function WelcomeScreen({navigation}) {
@@ -38,11 +39,13 @@ export default function WelcomeScreen({navigation}) {
             <Text style={[styles.textWelcome,{color:theme ==='dark' ? primaryColors.white: primaryColors.black}]}>
                 Welcome To Synk Chat App, Connect To Millions Worldwide!</Text>
           </View>
-          <Pressable style={styles.btn} onPress={() => navigation.navigate('Signup')}>
-            <Text style={[styles.btnText, { color: theme === 'dark' ? primaryColors.white : primaryColors.black }]}>
-              Get Started
-            </Text>
-          </Pressable>
+          <TouchableOpacity >
+            <Pressable style={styles.btn} onPress={() => navigation.navigate('Sign')}>
+              <Text style={[styles.btnText, { color: theme === 'dark' ? primaryColors.white : primaryColors.black }]}>
+                Tap to Continue
+              </Text>
+            </Pressable>
+          </TouchableOpacity>
         </View>
     </View>
   )
