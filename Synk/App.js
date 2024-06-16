@@ -6,7 +6,7 @@ import WelcomeScreen from './Screens/WelcomeScreen'
 import Sign from './Screens/Sign';
 import { MenuProvider } from 'react-native-popup-menu';
 import { ThemeProvider } from './constants/themeContext';
-import SettingsScreen from './SettingsScreen'; 
+import SettingsScreen from './Screens/SettingsScreen'; 
 
 const Stack = createStackNavigator();
 
