@@ -1,7 +1,8 @@
 import { Entypo } from '@expo/vector-icons';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React,{useState} from 'react';
+import { StyleSheet, Text, View,Image, Pressable } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import { PopupMenu } from '../components/PopupMenu';
 import primaryColors from '../constants/colors';
 import { useTheme } from '../constants/themeContext';
@@ -22,7 +23,7 @@ export default function WelcomeScreen({navigation}) {
 
   return (
     <View style={[styles.container, { backgroundColor: theme === 'dark' ?  primaryColors.black : primaryColors.white }]}>
-        <StatusBar backgroundColor={theme=='dark'? primaryColors.black:primaryColors.white} barStyle={theme=='dark'? 'light-content':'dark-content'} />
+        {/* <StatusBar backgroundColor={theme=='dark'? primaryColors.black:primaryColors.white} barStyle={theme=='dark'? 'light-content':'dark-content'} /> */}
         <Image
           source={Applogo}
           style={styles.logo}
@@ -36,12 +37,12 @@ export default function WelcomeScreen({navigation}) {
           <View>
             <Text style={[styles.text,{color:theme ==='dark' ? primaryColors.white: primaryColors.black}]}>Synk</Text>
             <Text style={[styles.textWelcome,{color:theme ==='dark' ? primaryColors.white: primaryColors.black}]}>
-                Welcome To Synk Chat App, Connect To Millions Worldwide!</Text>
+                Welcome To Synk, Connect To Millions Worldwide!</Text>
           </View>
           <TouchableOpacity >
-            <Pressable style={styles.btn} onPress={() => navigation.navigate('Sign')}>
+            <Pressable style={styles.btn} onPress={() => navigation.navigate('PhoneNumber')}>
               <Text style={[styles.btnText, { color: primaryColors.white }]}>
-                Tap to Continue
+                Get Started
               </Text>
             </Pressable>
           </TouchableOpacity>
