@@ -37,12 +37,12 @@ export default function WelcomeScreen({navigation}) {
           <View>
             <Text style={[styles.text,{color:theme ==='dark' ? primaryColors.white: primaryColors.black}]}>Synk</Text>
             <Text style={[styles.textWelcome,{color:theme ==='dark' ? primaryColors.white: primaryColors.black}]}>
-                Welcome To Synk Chat App, Connect To Millions Worldwide!</Text>
+                Welcome To Synk, Connect To Millions Worldwide!</Text>
           </View>
           <TouchableOpacity >
             <Pressable style={styles.btn} onPress={() => navigation.navigate('Sign')}>
               <Text style={[styles.btnText, { color: primaryColors.white }]}>
-                Tap to Continue
+                Get Started
               </Text>
             </Pressable>
           </TouchableOpacity>

@@ -84,7 +84,7 @@ const PhoneNumScreen = ({route}) => {
 
           {isSignUp && <Separator name='or' />}
 
-          {isSignUp && 
+          {isSignUp &&
             <TouchableOpacity>
             <Pressable style={styles.btn} onPress={() => {}}>
               <FontAwesome name="google" size={20} color="white" style={styles.googleIcon} />
@@ -106,9 +106,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 20,
     backgroundColor:primaryColors.white,
+    backgroundColor:primaryColors.white,
   },
   card:{
-    width:wp('80%'),
+    width:wp('85%'),
     justifyContent: 'center',
     alignItems: 'center',
     padding:20,
@@ -117,10 +118,10 @@ const styles = StyleSheet.create({
     elevation:6
   },
   header: {
-    fontSize: 24,
+    fontSize: 50,
     textAlign:'center',
     marginBottom: 20,
-    width:wp('50%')
+    width:wp('60%')
   },
   activityIndicator:{
     position:'absolute',
