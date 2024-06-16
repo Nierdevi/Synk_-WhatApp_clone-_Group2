@@ -1,7 +1,7 @@
 import { Entypo } from '@expo/vector-icons';
-import React from 'react';
+import React,{useState} from 'react';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View,Image,Pressable } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { PopupMenu } from '../components/PopupMenu';
 import primaryColors from '../constants/colors';
@@ -23,7 +23,7 @@ export default function WelcomeScreen({navigation}) {
 
   return (
     <View style={[styles.container, { backgroundColor: theme === 'dark' ?  primaryColors.black : primaryColors.white }]}>
-        <StatusBar backgroundColor={theme=='dark'? primaryColors.black:primaryColors.white} barStyle={theme=='dark'? 'light-content':'dark-content'} />
+        {/* <StatusBar backgroundColor={theme=='dark'? primaryColors.black:primaryColors.white} barStyle={theme=='dark'? 'light-content':'dark-content'} /> */}
         <Image
           source={Applogo}
           style={styles.logo}
