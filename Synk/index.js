@@ -1,7 +1,7 @@
 import { registerRootComponent } from 'expo';
 
 import App from './App';
-import { supabase } from './supabase';
+
 
 
 // registerRootComponent calls AppRegistry.registerComponent('main', () => App);
