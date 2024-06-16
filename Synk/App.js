@@ -6,6 +6,8 @@ import WelcomeScreen from './Screens/WelcomeScreen'
 import PhoneNumScreen from './Screens/PhoneNumScreen';
 import { MenuProvider } from 'react-native-popup-menu';
 import { ThemeProvider } from './constants/themeContext';
+import SettingsScreen from './SettingsScreen';
+import Verification from './Screens/Verification';
 
 const Stack = createStackNavigator();
 
