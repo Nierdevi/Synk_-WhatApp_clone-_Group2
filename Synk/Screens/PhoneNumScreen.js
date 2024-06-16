@@ -1,56 +1,69 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet,ActivityIndicator, TouchableOpacity,Pressable } from 'react-native';
+import { View, Text, TextInput,StyleSheet, TouchableOpacity,Image,SafeAreaView  } from 'react-native';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import primaryColors from '../constants/colors';
-import { FontAwesome } from '@expo/vector-icons';
+import CountryCode from '../components/CountryCode';
 import { useTheme } from '../constants/themeContext';
-import { Separator  } from '../components/Sepator';
 
-const PhoneNumScreen = ({route}) => {
-  const { theme } = useTheme();
-  const [isSignUp, setIsSignUp] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [passwordVisible, setPasswordVisible] = useState(false);
-  const [form, setForm] = useState({
-    username: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-  });
+const PhoneNumScreen = ({ navigation }) => {
+    const [countryCode, setCountryCode] = useState('+1');
+    const [phoneNumber, setPhoneNumber] = useState('');
+
+    // const handleNext = () => {
+    // // Alert.alert('Phone Number is' `${phoneNumber}`);
+    //     // Navigate to the verification page and pass the phone number as a parameter
+    //     // navigation.navigate('SignIn', { phoneNumber });
+    //     console.log(phoneNumber)
+    // };
+
+    const Number=`${countryCode} ${phoneNumber}`
+    const handleCountrySelect = (code) => {
+        setCountryCode(code);
+    };
+
+    const handleSubmit = () => {
+        // Handle phone number submission
+        // console.log(`Phone Number: ${countryCode} ${phoneNumber}`);
+        console.log(Number)
+        navigation.navigate('Verification',{countryCode,phoneNumber})
+    };
 
 
-  const toggleSignUp = () => {
-    setLoading(true);
-    setTimeout(() => {
-      setIsSignUp(!isSignUp);
-      setLoading(false);
-    }, 2000); // 2 second delay
-  };
+    return (
+        <SafeAreaView style={{flex:1,paddingTop:55,backgroundColor:'red'}}>
+            <View style={styles.container}>
 
-  const togglePasswordVisibility = () => {
-    setPasswordVisible(!passwordVisible);
-  };
+                <Image 
+                    source={require('../assets/login-animate.png')}
+                    resizeMode="contain"
+                    style={styles.image}
+                />
 
-  return (
-    <View style={[styles.container, { backgroundColor: theme === 'dark' ?  primaryColors.black : primaryColors.white }]}>
+                <Text style={styles.title}>Verify Phone Number </Text>
+                <View style={{flexDirection:'row',gap:20,alignItems:'flex-end',width:'60%',paddingBottom:2}}>
+                    <Text style={{fontSize:15,fontWeight:'500',paddingLeft:5.4}}>Country </Text>
+                    <Text style={{fontSize:15,fontWeight:'500',paddingLeft:6.5}}>Phone </Text>
+                </View>
 
-      {loading && <ActivityIndicator size={[wp('15%'),hp('15%')]} color={primaryColors.purple} style={styles.activityIndicator} />}
+                <View style={styles.inputComponent}>
+                    <CountryCode onSelectCountry={handleCountrySelect} />
 
-      <View style={[styles.card,{ backgroundColor: theme === 'dark' ?  '#E5E7EB' : primaryColors.white }]}>
-          <TextInput style={styles.input} 
-              placeholder="Email" 
-              clearButtonMode="while-editing"
-              onChangeText={email => setForm({ ...form, email })}
-              />
+                    <TextInput
+                        style={styles.input}
+                        keyboardType="phone-pad"
+                        value={phoneNumber}
+                        onChangeText={setPhoneNumber}
+                        caretHidden={true}
+                        textAlign='left'
+                    />
+                </View>
 
-          <Pressable style={styles.btn} onPress={() => {}} >
-              <Text style={styles.btnText}> {isSignUp ? "Sign Up" : 'Sign In'}</Text>
-          </Pressable>
-
-      </View>
-
-    </View>
-  );
+                <TouchableOpacity style={styles.nextButton} onPress={handleSubmit}>
+                        <Text style={styles.nextButtonText}>Next</Text>
+                </TouchableOpacity>
+            </View>
+        </SafeAreaView>
+    );
 };
 
 const styles = StyleSheet.create({
@@ -58,78 +71,53 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
-    backgroundColor:primaryColors.white,
-    backgroundColor:primaryColors.white,
-  },
-  card:{
-    width:wp('85%'),
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding:20,
-    backgroundColor:primaryColors.white,
-    borderRadius:10,
-    elevation:6
-  },
-  header: {
-    fontSize: 50,
-    textAlign:'center',
-    marginBottom: 20,
-    width:wp('60%')
-  },
-  activityIndicator:{
-    position:'absolute',
-    top:30
-  },
-  input: {
-    width: '100%',
-    padding: 10,
-    marginBottom: 10,
-    borderWidth: 1,
-    borderColor: '#D4D4D8',
-    borderRadius: 5,
-    paddingRight: 40,
-    paddingRight: 40,
-  },
-  PassWordcontainer:{
-    position:'relative',
+    backgroundColor: '#f0f0f0',
+    paddingBottom:200,
+    // height:hp('50%')
+    
+},
+image:{
+    width:wp('60%'),
+    height:hp("60%")
+},
+title: {
+    fontSize: 30,
+    marginBottom: 30,
+    // paddingBottom:40
+},
+inputComponent:{
+    width:wp("80%"),
     flexDirection:'row',
-  },
-  PassWordcontainerIcon:{
-    position:'absolute',
-    right:10,
-    top:13,
-  },
-  btn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 5,
-    paddingVertical: 10,
-    paddingHorizontal: 23,
-    borderWidth: 1,
-    backgroundColor: primaryColors.purple,
+    // backgroundColor:'yellow',
+    alignItems:'center',
+    justifyContent:'center'
+},
+input: {
+    width: wp('40%'),
+    height: 45,
+    backgroundColor: '#e9e9e9', 
     borderColor: primaryColors.purple,
-    width:200,
-    marginTop:5
-  },
-  btnText: {
+    textAlign: 'center',
     fontSize: 18,
-    lineHeight: 26,
-    fontWeight: '600',
+    marginBottom: 10,
+    marginLeft:5,
+    borderBottomWidth:2,
+    borderTopWidth:2,
+    paddingVertical:2,
+},
+nextButton: {
+    width: wp('50%'),
+    backgroundColor: primaryColors.purple,
+    paddingVertical: 15,
+    paddingHorizontal: 25,
+    borderRadius: 50,
+    marginTop:25,
+},
+nextButtonText: {
     color: '#fff',
-  },
-  toggleButton:{
-    width:wp('50%'),
-    marginLeft:80,
-    marginVertical:6,
-  },
-  toggleButtonText:{
-    fontSize:16.6,
-  },
-  googleIcon: {
-    marginRight: 10,
-  },
+    fontSize: 17,
+    textAlign: 'center',
+},
 });
 
 export default PhoneNumScreen;

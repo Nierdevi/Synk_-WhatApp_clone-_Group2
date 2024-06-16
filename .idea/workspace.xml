@@ -5,8 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0e154f7d-0774-4dec-9b76-982ec452d9d0" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Synk/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/Synk/App.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Synk/Screens/WelcomeScreen.js" beforeDir="false" afterPath="$PROJECT_DIR$/Synk/Screens/WelcomeScreen.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Synk/Screens/PhoneNumScreen.js" beforeDir="false" afterPath="$PROJECT_DIR$/Synk/Screens/PhoneNumScreen.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Synk/Screens/Verification.js" beforeDir="false" afterPath="$PROJECT_DIR$/Synk/Screens/Verification.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Synk/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/Synk/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Synk/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/Synk/package.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,7 +41,7 @@
     "cidr.known.project.marker": "true",
     "git-widget-placeholder": "RexScreens",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/genis/OneDrive/Documents/GitHub/Synk_-WhatApp_clone-_Group2/Synk_-WhatApp_clone-_Group2",
+    "last_opened_file_path": "C:/Users/genis/OneDrive/Documents/GitHub/WhatsApp",
     "settings.editor.selected.configurable": "AndroidSdkUpdater"
   }
 }]]></component>
