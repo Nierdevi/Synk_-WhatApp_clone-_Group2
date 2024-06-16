@@ -1,6 +1,6 @@
 import { Entypo } from '@expo/vector-icons';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React,{useState} from 'react';
+import { StyleSheet, Text, View,Image, Pressable } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import { PopupMenu } from '../components/PopupMenu';
@@ -40,7 +40,7 @@ export default function WelcomeScreen({navigation}) {
                 Welcome To Synk, Connect To Millions Worldwide!</Text>
           </View>
           <TouchableOpacity >
-            <Pressable style={styles.btn} onPress={() => navigation.navigate('Sign')}>
+            <Pressable style={styles.btn} onPress={() => navigation.navigate('PhoneNumber')}>
               <Text style={[styles.btnText, { color: primaryColors.white }]}>
                 Get Started
               </Text>
