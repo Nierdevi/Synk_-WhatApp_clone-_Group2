@@ -7,7 +7,7 @@ import Countdown from '../components/Timer';
 
 
 
- const SignIn = () => {
+ const Verification = () => {
   const [otp, setOtp] = useState(new Array(6).fill(''));
   const [isResendDisabled, setIsResendDisabled] = useState(true);
   const [countdownKey, setCountdownKey] = useState(0);
@@ -157,4 +157,4 @@ const styles = StyleSheet.create({
 });
 
 
-export default SignIn;
+export default Verification;

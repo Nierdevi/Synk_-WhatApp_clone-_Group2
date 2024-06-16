@@ -6,7 +6,7 @@ import WelcomeScreen from './Screens/WelcomeScreen'
 import PhoneNumScreen from './Screens/PhoneNumScreen';
 import { MenuProvider } from 'react-native-popup-menu';
 import { ThemeProvider } from './constants/themeContext';
-import SettingsScreen from './SettingsScreen';
+import SettingsScreen from './Screens/SettingsScreen';
 import Verification from './Screens/Verification';
 
 const Stack = createStackNavigator();
@@ -19,7 +19,7 @@ const MainLayout = () => {
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Welcome">
         <Stack.Screen name="Welcome" component={WelcomeScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="Sign" component={Sign} options={{ headerShown: false }} />
+        <Stack.Screen name="Verification" component={Verification} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );
