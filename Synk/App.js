@@ -1,10 +1,10 @@
-import React from 'react';
-import { StyleSheet, Text, View ,Appearance} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import WelcomeScreen from './Screens/WelcomeScreen'
-import Sign from './Screens/Sign';
+import React from 'react';
+import { StyleSheet, View } from 'react-native';
 import { MenuProvider } from 'react-native-popup-menu';
+import Sign from './Screens/UpdatesScreen';
+import WelcomeScreen from './Screens/WelcomeScreen';
 import { ThemeProvider } from './constants/themeContext';
 
 const Stack = createStackNavigator();
