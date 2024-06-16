@@ -1,11 +1,10 @@
-import { View, Text, StyleSheet, Image,StatusBar,Pressable } from 'react-native'
-import React,{useState} from 'react'
-import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
-import primaryColors from '../constants/colors'
 import { Entypo } from '@expo/vector-icons';
-import { PopupMenu } from '../components/PopupMenu';
-import { useTheme } from '../constants/themeContext'
+import React from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { PopupMenu } from '../components/PopupMenu';
+import primaryColors from '../constants/colors';
+import { useTheme } from '../constants/themeContext';
 
 
 export default function WelcomeScreen({navigation}) {
