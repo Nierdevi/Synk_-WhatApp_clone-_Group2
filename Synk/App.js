@@ -19,7 +19,6 @@ const MainLayout = () => {
       <Stack.Navigator initialRouteName="Welcome">
         <Stack.Screen name="Welcome" component={WelcomeScreen} options={{ headerShown: false }} />
         <Stack.Screen name="PhoneNumScreen" component={PhoneNumScreen} options={{ headerShown: false }} />
-        {/* <Stack.Screen name="Settings" component={SettingsScreen} /> */}
       </Stack.Navigator>
     </NavigationContainer>
   );

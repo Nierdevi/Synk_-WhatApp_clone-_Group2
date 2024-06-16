@@ -1,5 +1,6 @@
 import { Entypo } from '@expo/vector-icons';
 import React from 'react';
+import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import { StyleSheet, Text, View } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { PopupMenu } from '../components/PopupMenu';
