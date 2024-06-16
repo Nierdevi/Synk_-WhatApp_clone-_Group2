@@ -1,11 +1,11 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { StyleSheet, View } from 'react-native';
 import { MenuProvider } from 'react-native-popup-menu';
 import WelcomeScreen from './Screens/WelcomeScreen';
 import { ThemeProvider } from './constants/themeContext';
 
 // import Verification from './Screens/Verification';
+import SettingsScreen from './Screens/SettingsScreen';
 
 const Stack = createStackNavigator();
 
@@ -17,6 +17,7 @@ const MainLayout = () => {
     <NavigationContainer>
       <Stack.Navigator initialRouteName="welcome">
         <Stack.Screen name='welcome' component={WelcomeScreen} options={{headerShown:false}}/>
+        <Stack.Screen name='settings' component={SettingsScreen} options={{headerShown:false}}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

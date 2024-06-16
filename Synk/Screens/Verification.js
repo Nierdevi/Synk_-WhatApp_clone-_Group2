@@ -73,7 +73,7 @@ import Countdown from '../components/Timer';
             value={digit}
             ref={(ref) => inputs.current[index] = ref}
             selectionColor={primaryColors.purple}
-            caretHidden={true}
+
           />
         ))}
       </View>
