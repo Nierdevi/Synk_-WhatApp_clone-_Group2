@@ -6,7 +6,7 @@ import { FontAwesome } from '@expo/vector-icons';
 import { useTheme } from '../constants/themeContext';
 import { Separator  } from '../components/Sepator';
 
-const Sign = ({route}) => {
+const PhoneNumScreen = ({route}) => {
   const { theme } = useTheme();
   const [isSignUp, setIsSignUp] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -177,4 +177,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Sign;
+export default PhoneNumScreen;
