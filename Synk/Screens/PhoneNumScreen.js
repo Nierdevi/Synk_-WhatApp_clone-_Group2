@@ -6,7 +6,7 @@ import { FontAwesome } from '@expo/vector-icons';
 import { useTheme } from '../constants/themeContext';
 import { Separator  } from '../components/Sepator';
 
-const Sign = ({route}) => {
+const PhoneNumScreen = ({route}) => {
   const { theme } = useTheme();
   const [isSignUp, setIsSignUp] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -84,7 +84,7 @@ const Sign = ({route}) => {
 
           {isSignUp && <Separator name='or' />}
 
-          {isSignUp && 
+          {isSignUp &&
             <TouchableOpacity>
             <Pressable style={styles.btn} onPress={() => {}}>
               <FontAwesome name="google" size={20} color="white" style={styles.googleIcon} />
@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
     backgroundColor:primaryColors.white,
   },
   card:{
-    width:wp('80%'),
+    width:wp('85%'),
     justifyContent: 'center',
     alignItems: 'center',
     padding:20,
@@ -117,10 +117,10 @@ const styles = StyleSheet.create({
     elevation:6
   },
   header: {
-    fontSize: 24,
+    fontSize: 50,
     textAlign:'center',
     marginBottom: 20,
-    width:wp('50%')
+    width:wp('60%')
   },
   activityIndicator:{
     position:'absolute',
@@ -177,4 +177,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Sign;
+export default PhoneNumScreen;
