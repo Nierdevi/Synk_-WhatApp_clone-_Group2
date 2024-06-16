@@ -1,12 +1,11 @@
-import React from 'react';
-import { StyleSheet, Text, View ,Appearance} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import WelcomeScreen from './Screens/WelcomeScreen'
-import Sign from './Screens/Sign';
 import { MenuProvider } from 'react-native-popup-menu';
+import WelcomeScreen from './Screens/WelcomeScreen';
 import { ThemeProvider } from './constants/themeContext';
-// import SettingsScreen from './Screens/SettingsScreen'; 
+
+// import Verification from './Screens/Verification';
+import SettingsScreen from './Screens/SettingsScreen';
 
 const Stack = createStackNavigator();
 
@@ -16,10 +15,9 @@ const MainLayout = () => {
   // const { isAuthenticated } = useAuth();
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Welcome">
-        <Stack.Screen name="Welcome" component={WelcomeScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="Sign" component={Sign} options={{ headerShown: false }} />
-        {/* <Stack.Screen name="Settings" component={SettingsScreen} /> */}
+      <Stack.Navigator initialRouteName="welcome">
+        <Stack.Screen name='welcome' component={WelcomeScreen} options={{headerShown:false}}/>
+        <Stack.Screen name='settings' component={SettingsScreen} options={{headerShown:false}}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
