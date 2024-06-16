@@ -5,7 +5,7 @@ import WelcomeScreen from './Screens/WelcomeScreen';
 import { ThemeProvider } from './constants/themeContext';
 import { StyleSheet, View, Text } from 'react-native';
 import PhoneNumScreen from './Screens/PhoneNumScreen';
-import { supabase } from './supabase';
+import { supabase } from '../utils/supabase';
 
 
 // import Verification from './Screens/Verification';
