@@ -106,6 +106,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 20,
     backgroundColor:primaryColors.white,
+    backgroundColor:primaryColors.white,
   },
   card:{
     width:wp('85%'),
