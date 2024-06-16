@@ -37,61 +37,15 @@ const PhoneNumScreen = ({route}) => {
       {loading && <ActivityIndicator size={[wp('15%'),hp('15%')]} color={primaryColors.purple} style={styles.activityIndicator} />}
 
       <View style={[styles.card,{ backgroundColor: theme === 'dark' ?  '#E5E7EB' : primaryColors.white }]}>
-        <Text style={styles.header}>{isSignUp ? 'Sign Up' : 'Sign In'}</Text>
-
-          {isSignUp && <TextInput style={styles.input}
-              placeholder="Username"  
-              clearButtonMode="while-editing"
-              onChangeText={username => setForm({ ...form, username })}
-              />}
-  
           <TextInput style={styles.input} 
               placeholder="Email" 
               clearButtonMode="while-editing"
               onChangeText={email => setForm({ ...form, email })}
               />
 
-          <View style={styles.PassWordcontainer}>
-            <TextInput
-              style={styles.input}
-              placeholder="Password"
-              secureTextEntry={!passwordVisible}
-              clearButtonMode="while-editing"
-              onChangeText={password => setForm({ ...form, password })}
-            />
-            <TouchableOpacity onPress={togglePasswordVisibility} style={styles.PassWordcontainerIcon}>
-              <FontAwesome name={passwordVisible ? "eye" : "eye-slash"} size={24} color="black" />
-            </TouchableOpacity>
-          </View>
-
-          {isSignUp && <TextInput style={styles.input}
-            placeholder="Confirm Password" 
-            secureTextEntry={!passwordVisible}
-            clearButtonMode="while-editing"
-            onChangeText={confirmPassword => setForm({ ...form, confirmPassword })}
-            />}
-
-          <Pressable onPress={toggleSignUp} style={styles.toggleButton}>
-            <Text style={styles.toggleButtonText}>
-              {isSignUp ? 'Already have an account? Sign In' : "Don't have an account? Sign Up"}
-            </Text>
-          </Pressable>
-
           <Pressable style={styles.btn} onPress={() => {}} >
               <Text style={styles.btnText}> {isSignUp ? "Sign Up" : 'Sign In'}</Text>
           </Pressable>
-          {/* <Button title={isSignUp ? 'Sign Up' : 'Sign In'} color={primaryColors.purple}  onPress={() => {}} /> */}
-
-          {isSignUp && <Separator name='or' />}
-
-          {isSignUp &&
-            <TouchableOpacity>
-            <Pressable style={styles.btn} onPress={() => {}}>
-              <FontAwesome name="google" size={20} color="white" style={styles.googleIcon} />
-              <Text style={styles.btnText}>Continue with Google</Text>
-            </Pressable>
-            </TouchableOpacity>
-          }
 
       </View>
 

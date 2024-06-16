@@ -5,6 +5,7 @@ import WelcomeScreen from './Screens/WelcomeScreen';
 import { ThemeProvider } from './constants/themeContext';
 import { StyleSheet, View, Text } from 'react-native';
 import PhoneNumScreen from './Screens/PhoneNumScreen';
+import Verification from './Screens/Verification';
 
 // import Verification from './Screens/Verification';
 import SettingsScreen from './Screens/SettingsScreen';
