@@ -42,7 +42,7 @@ import Countdown from '../components/Timer';
 
   const handleSubmit = () => {
     Alert.alert('OTP Submitted', `Your OTP is: ${otp.join('')}`);
-    navigation.replace('Tabs');
+    navigate.replace("Tabs")
   };
 
   const handleResendComplete = () => {
