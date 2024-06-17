@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "@supabase/supabase-js": "^2.43.5"
+    "firebase": "^10.12.2",
+    "react-native-webview": "^13.10.3"
   }
 }
