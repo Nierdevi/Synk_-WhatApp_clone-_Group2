@@ -5,8 +5,6 @@ import { useTheme } from '../constants/themeContext'
 import primaryColors from '../constants/colors';
 import Countdown from '../components/Timer';
 
-
-
  const Verification = ({Navigation,route}) => {
   const [otp, setOtp] = useState(new Array(6).fill(''));
   const [isResendDisabled, setIsResendDisabled] = useState(true);
