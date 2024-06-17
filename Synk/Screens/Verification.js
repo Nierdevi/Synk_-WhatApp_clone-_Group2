@@ -7,12 +7,14 @@ import Countdown from '../components/Timer';
 
 
 
- const Verification = () => {
+ const Verification = ({Navigation,route}) => {
   const [otp, setOtp] = useState(new Array(6).fill(''));
   const [isResendDisabled, setIsResendDisabled] = useState(true);
   const [countdownKey, setCountdownKey] = useState(0);
   const inputs = useRef([]);
   const { theme, toggleTheme } = useTheme();
+
+  const { countryCode, phoneNumber } = route.params;
 
   const handleChangeText = (text, index) => {
     const newOtp = [...otp];
@@ -54,12 +56,18 @@ import Countdown from '../components/Timer';
     // Logic to resend the OTP goes here
 };
 
+  // Function to censor the phone number
+  const censorPhoneNumber = (number) => {
+    const length = number.length;
+    return length > 4 ? `${'*'.repeat(length - 4)}${number.slice(length - 4)}` : number;
+  };
+
   return (
-    <View style={[styles.container,{paddingTop:120}]}>
+    <View style={[styles.container,{paddingBottom:200}]}>
 
       <Text style={styles.title}> OTP Verification</Text>
       <Text style={styles.title2}> Enter the 6 digit that has been sent to </Text>
-      <Text style={styles.title3}>+233487584544</Text>
+      <Text style={styles.title3}>{countryCode} {censorPhoneNumber(phoneNumber)}</Text>
 
       <View style={styles.otpContainer}>
         {otp.map((digit, index) => (
@@ -103,7 +111,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#f0f0f0',
-    justifyContent:'flex-start',
+    // justifyContent:'flex-start',
     width:wp('100%'),
   },
   title: {
@@ -141,16 +149,16 @@ const styles = StyleSheet.create({
     borderRadius:10,
   },
   submitButton: {
-    width:wp('65%'),
+    width:wp('50%'),
     backgroundColor: primaryColors.purple,
-    paddingVertical: 15,
-    paddingHorizontal: 25,
+    paddingVertical: 14,
+    // paddingHorizontal: 20,
     borderRadius: 50,
     marginTop:20,
   },
   submitButtonText: {
     color: '#fff',
-    fontSize: 17,
+    fontSize: 19,
     textAlign:'center',
     fontWeight:'bold',
   },
