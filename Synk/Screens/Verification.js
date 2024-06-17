@@ -5,7 +5,7 @@ import { useTheme } from '../constants/themeContext'
 import primaryColors from '../constants/colors';
 import Countdown from '../components/Timer';
 
- const Verification = ({Navigation,route}) => {
+ const Verification = ({navigation,route}) => {
   const [otp, setOtp] = useState(new Array(6).fill(''));
   const [isResendDisabled, setIsResendDisabled] = useState(true);
   const [countdownKey, setCountdownKey] = useState(0);
@@ -42,6 +42,7 @@ import Countdown from '../components/Timer';
 
   const handleSubmit = () => {
     Alert.alert('OTP Submitted', `Your OTP is: ${otp.join('')}`);
+    navigation.replace('Tabs');
   };
 
   const handleResendComplete = () => {

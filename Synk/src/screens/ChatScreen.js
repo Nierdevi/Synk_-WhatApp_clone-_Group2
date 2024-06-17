@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { View, Text, ImageBackground, StyleSheet, FlatList, KeyboardAvoidingView, Platform } from 'react-native';
 import { useRoute,useNavigation } from '@react-navigation/native';
-const bg = require( '../../assets/images/')
+// const bg = require( '../../assets/images/Bg.png')
 import InputBox from '../components/InputBox';
 
 import Message from '../components/Message'; 
@@ -20,15 +20,15 @@ const ChatScreen = () => {
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.bg}>
-      <ImageBackground source={bg} style={styles.bg}>
-        <FlatList 
+      {/* <ImageBackground source={bg} style={styles.bg}>
+      </ImageBackground> */}
+      <FlatList 
         data={messages}
         renderItem={({ item }) => <Message message={item} />}
         style={styles.list}
         inverted
         />
         <InputBox/>
-      </ImageBackground>
     </KeyboardAvoidingView>
   );
 };

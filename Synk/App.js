@@ -7,6 +7,8 @@ import { StyleSheet, View, Text } from 'react-native';
 import PhoneNumScreen from './Screens/PhoneNumScreen';
 import Verification from './Screens/Verification';
 import SettingsScreen from './Screens/SettingsScreen';
+import Tabs from './src/navigation/Tabs';
+
 
 const Stack = createStackNavigator();
 
@@ -18,9 +20,9 @@ const MainLayout = () => {
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Welcome">
         <Stack.Screen name='welcome' component={WelcomeScreen} options={{headerShown:false}}/>
-        <Stack.Screen name='settings' component={SettingsScreen} options={{headerShown:false}}/>
+        <Stack.Screen name='Verification' component={Verification} options={{headerShown:false}}/>
         <Stack.Screen name='PhoneNumber' component={PhoneNumScreen} options={{headerShown:false}} />
-        <Stack.Screen name='Verification' component={Verification} options={{headerShown:false}} />
+        <Stack.Screen name='Tabs' component={Tabs} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );

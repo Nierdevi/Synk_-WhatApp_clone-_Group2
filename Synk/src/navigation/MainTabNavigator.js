@@ -3,6 +3,8 @@ import NotImplementedScreen from "../screens/NotImplementedScreen";
 import ChatsHomeScreen from "../screens/ChatsHomeScreen";
 import{Ionicons}from '@expo/vector-icons';
 
+import ChatScreen from '../screens/ChatScreen';
+
 const Tab  = createBottomTabNavigator();
 
 const MainTabNavigator = () => {
@@ -43,15 +45,18 @@ const MainTabNavigator = () => {
                         // add 'ios-' if you want the ios version of the chat bubble
                         <Ionicons name="chatbubbles-sharp" size={size} color={color} />
                     ),
+                    headerShown:false
                 }}
             />
             <Tab.Screen
                 name="Settings"
                 component={NotImplementedScreen }
+
                 options={{
                     tabBarIcon: ({color, size}) => (
                         <Ionicons name="settings-outline" size={size} color={color} />
                     ),
+                    headerShown:false
                 }}
             />
         </Tab.Navigator>

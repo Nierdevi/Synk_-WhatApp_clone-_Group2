@@ -30,7 +30,7 @@ const PhoneNumScreen = ({ navigation }) => {
 
 
     return (
-        <SafeAreaView style={{flex:1,paddingTop:55,backgroundColor:'red'}}>
+        <SafeAreaView style={{flex:1,paddingTop:55,}}>
             <View style={styles.container}>
 
                 <Image 
