@@ -2,6 +2,7 @@
   "expo": {
     "name": "Synk",
     "slug": "Synk",
-    "version": "1.0.0"
+    "version": "1.0.0",
+    "plugins": ["@react-native-firebase/app", "@react-native-firebase/auth"]
   }
 }

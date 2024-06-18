@@ -5,10 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0e154f7d-0774-4dec-9b76-982ec452d9d0" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Synk/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/Synk/App.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Synk/Screens/PhoneNumScreen.js" beforeDir="false" afterPath="$PROJECT_DIR$/Synk/Screens/PhoneNumScreen.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Synk/Screens/Verification.js" beforeDir="false" afterPath="$PROJECT_DIR$/Synk/Screens/Verification.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Synk/android/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/Synk/android/app/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Synk/android/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Synk/android/app/src/main/AndroidManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Synk/android/app/src/main/java/com/synk/MainApplication.kt" beforeDir="false" afterPath="$PROJECT_DIR$/Synk/android/app/src/main/java/com/synk/MainApplication.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Synk/android/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/Synk/android/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Synk/android/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" afterPath="$PROJECT_DIR$/Synk/android/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Synk/android/settings.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/Synk/android/settings.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Synk/app.json" beforeDir="false" afterPath="$PROJECT_DIR$/Synk/app.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Synk/firebaseConfig.js" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Synk/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/Synk/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Synk/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/Synk/package.json" afterDir="false" />
     </list>
@@ -39,7 +47,7 @@
     "RunOnceActivity.readMode.enableVisualFormatting": "true",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
-    "git-widget-placeholder": "RexScreens",
+    "git-widget-placeholder": "main",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/genis/OneDrive/Documents/GitHub/WhatsApp",
     "settings.editor.selected.configurable": "AndroidSdkUpdater"

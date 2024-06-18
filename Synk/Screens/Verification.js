@@ -1,18 +1,23 @@
 import React, { useState, useRef } from 'react';
-import { View, TextInput, StyleSheet, TouchableOpacity, Text, Alert } from 'react-native';
+import { View, TextInput, StyleSheet, TouchableOpacity, Text, Alert,Modal } from 'react-native';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import { useTheme } from '../constants/themeContext'
 import primaryColors from '../constants/colors';
 import Countdown from '../components/Timer';
+import uuid from 'uuid';
+
 
  const Verification = ({navigation,route}) => {
   const [otp, setOtp] = useState(new Array(6).fill(''));
   const [isResendDisabled, setIsResendDisabled] = useState(true);
   const [countdownKey, setCountdownKey] = useState(0);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [VerificationId, setVerificationId] = useState(false);
   const inputs = useRef([]);
   const { theme, toggleTheme } = useTheme();
 
-  const { countryCode, phoneNumber } = route.params;
+  const { confirmation ,countryCode, phoneNumber } = route.params;
+
 
   const handleChangeText = (text, index) => {
     const newOtp = [...otp];
@@ -40,10 +45,45 @@ import Countdown from '../components/Timer';
     }
   };
 
-  const handleSubmit = () => {
-    Alert.alert('OTP Submitted', `Your OTP is: ${otp.join('')}`);
-    navigation.replace('Tabs');
-  };
+  // const handleSubmit = () => {
+  //   Alert.alert('OTP Submitted', `Your OTP is: ${otp.join('')}`);
+  //   navigation.replace('Tabs');
+  // };
+  // const handleSubmit = async () => {
+  //   const otpString = otp.join('');
+  //   try {
+  //     const credential = auth.PhoneAuthProvider.credential(confirmation.verificationId, otpString);
+  //     await auth().signInWithCredential(credential);
+  //     // navigation.replace('MainScreen'); // Replace with your main screen name
+  //   } catch (error) {
+  //     console.error('Error verifying OTP:', error);
+  //     Alert.alert('Verification Failed', 'The OTP entered is incorrect. Please try again.');
+  //   }
+  // };
+
+  // const hey =()=>{
+  //   const phoneProvider = new firebase.auth.PhoneAuthProvider;
+  //   phoneProvider
+  //   .verifyPhoneNumber(confirmation)
+  //   .then(setVerificationId);
+
+  // }
+  // const confirmCode=()=>{
+  //   const credential=firebase.auth.PhoneAuthProvider.credential(
+  //     VerificationId,
+  //     code
+  //   )
+  //   firebase.auth().signInWithCredential(Credential)
+  //   .then(()=>{
+  //     setCode('');
+  //   })
+  //   .catch((error)=>{
+  //     Alert.alert(
+  //       "login good"
+  //     )
+  //   }) 
+  // };
+  
 
   const handleResendComplete = () => {
     setIsResendDisabled(false);
@@ -97,6 +137,17 @@ import Countdown from '../components/Timer';
       <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
         <Text style={styles.submitButtonText}>Verify</Text>
       </TouchableOpacity>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(!modalVisible)}
+      >
+        <View style={styles.modalView}>
+          <Text style={styles.modalText}>Verification Successful!</Text>
+        </View>
+      </Modal>
 
     </View>
   );

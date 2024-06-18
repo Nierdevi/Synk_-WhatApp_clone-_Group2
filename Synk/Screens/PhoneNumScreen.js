@@ -1,13 +1,19 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput,StyleSheet, TouchableOpacity,Image,SafeAreaView  } from 'react-native';
+import { View, Text, TextInput,StyleSheet, TouchableOpacity,Image,SafeAreaView,Alert  } from 'react-native';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import primaryColors from '../constants/colors';
 import CountryCode from '../components/CountryCode';
 import { useTheme } from '../constants/themeContext';
+import auth from '@react-native-firebase/auth';
+// import {firestore}
+
 
 const PhoneNumScreen = ({ navigation }) => {
     const [countryCode, setCountryCode] = useState('+1');
     const [phoneNumber, setPhoneNumber] = useState('');
+    const [code, setCode] = useState('');
+    const [confirm, setConfirm] = useState(null);
+
 
     // const handleNext = () => {
     // // Alert.alert('Phone Number is' `${phoneNumber}`);
@@ -16,17 +22,44 @@ const PhoneNumScreen = ({ navigation }) => {
     //     console.log(phoneNumber)
     // };
 
-    const Number=`${countryCode} ${phoneNumber}`
+    // const Number=countryCode + phoneNumber
+    Number="+233201364739"
     const handleCountrySelect = (code) => {
         setCountryCode(code);
+    // const Number=countryCode + phoneNumber
     };
 
-    const handleSubmit = () => {
-        // Handle phone number submission
-        // console.log(`Phone Number: ${countryCode} ${phoneNumber}`);
-        console.log(Number)
-        navigation.navigate('Verification',{countryCode,phoneNumber})
-    };
+    // const handleSubmit = () => {
+    //     // Handle phone number submission
+    //     // console.log(`Phone Number: ${countryCode} ${phoneNumber}`);
+    //     console.log(Number)
+    //     navigation.navigate('Verification',{countryCode,phoneNumber})
+    // };
+
+    // const handleSubmit = async () => {
+        // try {
+        //   const confirmation = await auth().signInWithPhoneNumber(`+${Number}`);
+        //   navigation.navigate('Verification', { confirmation,countryCode,phoneNumber });
+        // } catch (error) {
+        //   console.error('Error sending OTP:', error);
+        //   Alert.alert('Error', 'Failed to send OTP. Please try again.');
+        // }
+        // Handle the button press
+            //     async function handleSubmit(phoneNumber) {
+            //     const confirmation = await auth().signInWithPhoneNumber(phoneNumber);
+            //     setConfirm(confirmation);
+            // }
+
+
+        const signInWithPhoneNumber = async ()=>{
+            try{
+            const confirmation= await auth().signInWithPhoneNumber(Number);
+            setConfirm(confirmation)
+            } catch (error){
+                console.log('Error sending otp',error);
+
+            }
+        }
 
 
     return (
@@ -58,9 +91,10 @@ const PhoneNumScreen = ({ navigation }) => {
                     />
                 </View>
 
-                <TouchableOpacity style={styles.nextButton} onPress={handleSubmit}>
+                <TouchableOpacity style={styles.nextButton} onPress={signInWithPhoneNumber}>
                         <Text style={styles.nextButtonText}>Next</Text>
                 </TouchableOpacity>
+                
             </View>
         </SafeAreaView>
     );
