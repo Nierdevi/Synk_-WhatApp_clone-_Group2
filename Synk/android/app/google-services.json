@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "1052257530301",
-    "project_id": "synk-c8d73",
-    "storage_bucket": "synk-c8d73.appspot.com"
+    "project_number": "470911757577",
+    "project_id": "synk-bee88",
+    "storage_bucket": "synk-bee88.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1052257530301:android:0470bdf5511e605c4962d4",
+        "mobilesdk_app_id": "1:470911757577:android:18f59ccc713a2c9501f7d8",
         "android_client_info": {
           "package_name": "com.synk"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDgA3WfLW2LSaAYYvGdCTgJeelzSQz39nU"
+          "current_key": "AIzaSyDDGVNodZOZYX4FgV5HuLQ9dpDko2zk6wA"
         }
       ],
       "services": {
