@@ -5,7 +5,6 @@ import primaryColors from '../constants/colors';
 import CountryCode from '../components/CountryCode';
 import { useTheme } from '../constants/themeContext';
 import auth from '@react-native-firebase/auth';
-// import {firestore}
 
 
 const PhoneNumScreen = ({ navigation }) => {
@@ -15,40 +14,10 @@ const PhoneNumScreen = ({ navigation }) => {
     const [confirm, setConfirm] = useState(null);
 
 
-    // const handleNext = () => {
-    // // Alert.alert('Phone Number is' `${phoneNumber}`);
-    //     // Navigate to the verification page and pass the phone number as a parameter
-    //     // navigation.navigate('SignIn', { phoneNumber });
-    //     console.log(phoneNumber)
-    // };
-
-    // const Number=countryCode + phoneNumber
     Number="+233201364739"
     const handleCountrySelect = (code) => {
         setCountryCode(code);
-    // const Number=countryCode + phoneNumber
     };
-
-    // const handleSubmit = () => {
-    //     // Handle phone number submission
-    //     // console.log(`Phone Number: ${countryCode} ${phoneNumber}`);
-    //     console.log(Number)
-    //     navigation.navigate('Verification',{countryCode,phoneNumber})
-    // };
-
-    // const handleSubmit = async () => {
-        // try {
-        //   const confirmation = await auth().signInWithPhoneNumber(`+${Number}`);
-        //   navigation.navigate('Verification', { confirmation,countryCode,phoneNumber });
-        // } catch (error) {
-        //   console.error('Error sending OTP:', error);
-        //   Alert.alert('Error', 'Failed to send OTP. Please try again.');
-        // }
-        // Handle the button press
-            //     async function handleSubmit(phoneNumber) {
-            //     const confirmation = await auth().signInWithPhoneNumber(phoneNumber);
-            //     setConfirm(confirmation);
-            // }
 
 
         const signInWithPhoneNumber = async ()=>{

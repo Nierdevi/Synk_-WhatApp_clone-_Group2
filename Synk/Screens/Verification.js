@@ -45,45 +45,7 @@ import uuid from 'uuid';
     }
   };
 
-  // const handleSubmit = () => {
-  //   Alert.alert('OTP Submitted', `Your OTP is: ${otp.join('')}`);
-  //   navigation.replace('Tabs');
-  // };
-  // const handleSubmit = async () => {
-  //   const otpString = otp.join('');
-  //   try {
-  //     const credential = auth.PhoneAuthProvider.credential(confirmation.verificationId, otpString);
-  //     await auth().signInWithCredential(credential);
-  //     // navigation.replace('MainScreen'); // Replace with your main screen name
-  //   } catch (error) {
-  //     console.error('Error verifying OTP:', error);
-  //     Alert.alert('Verification Failed', 'The OTP entered is incorrect. Please try again.');
-  //   }
-  // };
 
-  // const hey =()=>{
-  //   const phoneProvider = new firebase.auth.PhoneAuthProvider;
-  //   phoneProvider
-  //   .verifyPhoneNumber(confirmation)
-  //   .then(setVerificationId);
-
-  // }
-  // const confirmCode=()=>{
-  //   const credential=firebase.auth.PhoneAuthProvider.credential(
-  //     VerificationId,
-  //     code
-  //   )
-  //   firebase.auth().signInWithCredential(Credential)
-  //   .then(()=>{
-  //     setCode('');
-  //   })
-  //   .catch((error)=>{
-  //     Alert.alert(
-  //       "login good"
-  //     )
-  //   }) 
-  // };
-  
 
   const handleResendComplete = () => {
     setIsResendDisabled(false);
