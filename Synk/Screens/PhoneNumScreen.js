@@ -1,70 +1,109 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput,StyleSheet, TouchableOpacity,Image,SafeAreaView,Alert  } from 'react-native';
+import { View, Text,StyleSheet, TouchableOpacity,Image,SafeAreaView,Alert  } from 'react-native';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
+import PhoneInput  from 'react-native-international-phone-number'
 import primaryColors from '../constants/colors';
-import CountryCode from '../components/CountryCode';
 import { useTheme } from '../constants/themeContext';
-import auth from '@react-native-firebase/auth';
+import { createUser } from '../appwrite';
 
 
 const PhoneNumScreen = ({ navigation }) => {
-    const [countryCode, setCountryCode] = useState('+1');
-    const [phoneNumber, setPhoneNumber] = useState('');
-    const [code, setCode] = useState('');
-    const [confirm, setConfirm] = useState(null);
+    const [selectedCountry, setSelectedCountry] = useState(null);
+    const [inputValue, setInputValue] = useState('');
+    const [sentToken, setSentToken] = useState(null)
 
 
-    Number="+233201364739"
-    const handleCountrySelect = (code) => {
-        setCountryCode(code);
+    const Number=`${selectedCountry?.callingCode}${inputValue.replaceAll(" ","")}`;
+    const countryCode=selectedCountry?.callingCode
+    const phoneNumber=inputValue.replaceAll(" ","")
+    function handleInputValue(phoneNumber) {
+        setInputValue(phoneNumber);
+    }
+
+    function handleSelectedCountry(country) {
+        setSelectedCountry(country);
+    }
+
+    const handleSubmit =async ()=>{
+
+        try {
+            Alert.alert(
+                "Request sent","You will recieve a token ",
+                [{
+                    text: "OK",
+                    onPress: () => navigation.navigate('Verification', { token: sentToken,countryCode,phoneNumber })
+                }],
+                { cancelable: false }
+            )
+            const u=  await createUser(Number);
+                setSentToken(u)
+        } catch (error) {
+            console.log(error)
+        }
+        
+    // console.log(Number)
     };
 
-
-        const signInWithPhoneNumber = async ()=>{
-            try{
-            const confirmation= await auth().signInWithPhoneNumber(Number);
-            setConfirm(confirmation)
-            } catch (error){
-                console.log('Error sending otp',error);
-
-            }
-        }
 
 
     return (
         <SafeAreaView style={{flex:1,paddingTop:55,}}>
             <View style={styles.container}>
 
-                <Image 
+                <Image
                     source={require('../assets/login-animate.png')}
                     resizeMode="contain"
                     style={styles.image}
                 />
 
                 <Text style={styles.title}>Verify Phone Number </Text>
-                <View style={{flexDirection:'row',gap:20,alignItems:'flex-end',width:'60%',paddingBottom:2}}>
-                    <Text style={{fontSize:15,fontWeight:'500',paddingLeft:5.4}}>Country </Text>
-                    <Text style={{fontSize:15,fontWeight:'500',paddingLeft:6.5}}>Phone </Text>
-                </View>
+                <View style={{ width: wp("85%"), flex: 1, padding: 24 }}>
+                <PhoneInput
+                    value={inputValue}
+                    onChangePhoneNumber={handleInputValue}
+                    selectedCountry={selectedCountry}
+                    onChangeSelectedCountry={handleSelectedCountry}
+                    defaultCountry='US'
+                    phoneInputStyles={{
+                        container:{
+                            borderColor:primaryColors.purple,
+                            paddingLeft:0,
+                            // marginBottom:-200,
+                            marginTop: -6,
+                        },
+                        flagContainer:{
+                            width:105,
+                        },
+                        flag:{
+                            marginLeft:4,
 
-                <View style={styles.inputComponent}>
-                    <CountryCode onSelectCountry={handleCountrySelect} />
+                        },
+                        divider:{
+                            marginRight:5,
+                        },
+                        caret:{
+                            marginRight:-8,
+                        },
+                    }}
+                />
+                {/* <View style={{ marginTop: 10 }}>
+                    <Text>
+                    Country:{' '}
+                    {`${selectedCountry?.name?.en} (${selectedCountry?.cca2})`}
+                    </Text>
+                    <Text>
+                    Phone Number:{' '}
+                    {`${selectedCountry?.callingCode} ${inputValue}`}
+                    </Text>
+                </View> */}
+            </View>
 
-                    <TextInput
-                        style={styles.input}
-                        keyboardType="phone-pad"
-                        value={phoneNumber}
-                        onChangeText={setPhoneNumber}
-                        caretHidden={true}
-                        textAlign='left'
-                    />
-                </View>
-
-                <TouchableOpacity style={styles.nextButton} onPress={signInWithPhoneNumber}>
+                <TouchableOpacity style={styles.nextButton} onPress={handleSubmit} >
                         <Text style={styles.nextButtonText}>Next</Text>
                 </TouchableOpacity>
-                
+
             </View>
+
         </SafeAreaView>
     );
 };
@@ -77,36 +116,18 @@ const styles = StyleSheet.create({
     backgroundColor: '#f0f0f0',
     paddingBottom:200,
     // height:hp('50%')
-    
+
 },
 image:{
-    width:wp('60%'),
-    height:hp("60%")
+    width:wp('50%'),
+    height:hp("50%"),
+    marginBottom:-100,
 },
 title: {
     fontSize: 30,
-    marginBottom: 30,
+    marginBottom: 0,
+    textAlign:'left'
     // paddingBottom:40
-},
-inputComponent:{
-    width:wp("80%"),
-    flexDirection:'row',
-    // backgroundColor:'yellow',
-    alignItems:'center',
-    justifyContent:'center'
-},
-input: {
-    width: wp('40%'),
-    height: 45,
-    backgroundColor: '#e9e9e9', 
-    borderColor: primaryColors.purple,
-    textAlign: 'center',
-    fontSize: 18,
-    marginBottom: 10,
-    marginLeft:5,
-    borderBottomWidth:2,
-    borderTopWidth:2,
-    paddingVertical:2,
 },
 nextButton: {
     width: wp('50%'),
@@ -114,7 +135,8 @@ nextButton: {
     paddingVertical: 15,
     paddingHorizontal: 25,
     borderRadius: 50,
-    marginTop:25,
+    marginTop:50,
+    marginBottom:110,
 },
 nextButtonText: {
     color: '#fff',

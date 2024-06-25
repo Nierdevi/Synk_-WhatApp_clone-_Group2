@@ -1,10 +1,11 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { View, TextInput, StyleSheet, TouchableOpacity, Text, Alert,Modal } from 'react-native';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
+// import {} from ''
 import { useTheme } from '../constants/themeContext'
 import primaryColors from '../constants/colors';
 import Countdown from '../components/Timer';
-import uuid from 'uuid';
+import { verifyUser } from '../appwrite';
 
 
  const Verification = ({navigation,route}) => {
@@ -12,11 +13,11 @@ import uuid from 'uuid';
   const [isResendDisabled, setIsResendDisabled] = useState(true);
   const [countdownKey, setCountdownKey] = useState(0);
   const [modalVisible, setModalVisible] = useState(false);
-  const [VerificationId, setVerificationId] = useState(false);
+  const [verifiedUser, setVerifiedUser] = useState(null);
   const inputs = useRef([]);
   const { theme, toggleTheme } = useTheme();
 
-  const { confirmation ,countryCode, phoneNumber } = route.params;
+  const { countryCode, phoneNumber, token } = route.params;
 
 
   const handleChangeText = (text, index) => {
@@ -63,6 +64,26 @@ import uuid from 'uuid';
     return length > 4 ? `${'*'.repeat(length - 4)}${number.slice(length - 4)}` : number;
   };
 
+  const verifyNumber =()=>{
+    const otpCode = otp.join('');
+    // console.log(otpCode);
+    if (otpCode.length !== 6) {
+      Alert.alert('Incomplete OTP', 'Please enter all 6 digits of the OTP.');
+      return;
+    }else{
+          // console.log(otpCode);
+
+    const user =verifyUser(token,otpCode)
+    setVerifiedUser(user)
+    // console.log(otp.toString().replaceAll(",",""))
+    }
+ }
+
+  useEffect(()=>{
+    {if (verifiedUser){Alert.alert("verified")}}
+  },[verifiedUser])
+
+
   return (
     <View style={[styles.container,{paddingBottom:200}]}>
 
@@ -82,7 +103,6 @@ import uuid from 'uuid';
             value={digit}
             ref={(ref) => inputs.current[index] = ref}
             selectionColor={primaryColors.purple}
-
           />
         ))}
       </View>
@@ -96,7 +116,7 @@ import uuid from 'uuid';
         <Text> seconds</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
+      <TouchableOpacity style={styles.submitButton} onPress={verifyNumber}>
         <Text style={styles.submitButtonText}>Verify</Text>
       </TouchableOpacity>
 
