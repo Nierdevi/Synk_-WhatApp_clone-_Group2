@@ -3,7 +3,7 @@ import { View, TextInput, StyleSheet, TouchableOpacity, Text, Alert,Modal } from
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 // import {} from ''
 import { useTheme } from '../constants/themeContext'
-import primaryColors from '../constants/colors';
+import {primaryColors} from '../constants/colors';
 import Countdown from '../components/Timer';
 import { verifyUser } from '../appwrite';
 

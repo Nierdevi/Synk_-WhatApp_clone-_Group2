@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text,StyleSheet, TouchableOpacity,Image,SafeAreaView,Alert  } from 'react-native';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import PhoneInput  from 'react-native-international-phone-number'
-import primaryColors from '../constants/colors';
+import {primaryColors} from '../constants/colors';
 import { useTheme } from '../constants/themeContext';
 import { createUser } from '../appwrite';
 

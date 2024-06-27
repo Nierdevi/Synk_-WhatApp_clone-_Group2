@@ -6,4 +6,7 @@ const primaryColors = {
     white: "#f9fafb"
   };
 
-export default primaryColors;
+const SecondaryColors={
+    secPurple:'#C084FC'
+}
+export  {primaryColors,SecondaryColors};

@@ -4,7 +4,7 @@ import { StyleSheet, Text, View,Image, Pressable } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import { PopupMenu } from '../components/PopupMenu';
-import primaryColors from '../constants/colors';
+import {primaryColors} from '../constants/colors';
 import { useTheme } from '../constants/themeContext';
 
 
