@@ -10,25 +10,20 @@ import {primaryColors,SecondaryColors} from '../../constants/colors';
 import ChatsStackNavigator from './chats/ChatsStackNavigator ';
 import GroupStackNavigator from './groups/GroupStackNavigator ';
 import UpdatesStackNavigator from './updates/UpdatesStackNavigation';
-import ChatsScreen from './calls/CallsScreen';
+import CallsScreen from './calls/CallsScreen';
 // import UpdatesScreen from './updates/updatesScreen';
 import { StatusBar } from 'react-native';
-import Channels from './updates/Channels';
-
 
 const Tab = createBottomTabNavigator();
-  
-
 
 const MainTabs = () => {
   return (
-    <SafeAreaView style={styles.container}>
     <Tab.Navigator
       initialRouteName="Chats"
       screenOptions={({ route }) => ({
-        tabBarStyle:{
-          height:80
-        },
+        tabBarStyle: { height: 80,paddingHorizontal:10 },
+        tabBarLabelStyle: { fontSize: 12,  },
+        tabBarItemStyle:{height:70,marginVertical: 5,marginHorizontal:-20,  }, 
         tabBarIcon: ({ color, size, focused }) => {
           let iconName;
 
@@ -68,10 +63,7 @@ const MainTabs = () => {
             width: 14,
             height: 14,
             backgroundColor: primaryColors.purple,
-            // borderRadius: 50, // Ensure the badge is circular
           },
-          // tabBarIcon: true,
-          // tabBarLabel: '',
         }}
       />
       <Tab.Screen
@@ -87,21 +79,14 @@ const MainTabs = () => {
         options={{ headerShown: false }} 
       />
       <Tab.Screen 
-        name="Calls" 
-        component={ChatsScreen} 
-        options={{ headerShown: false }} 
+        name="Calls"
+        component={CallsScreen}
       />
     </Tab.Navigator>
-    </SafeAreaView>
   );
 };
 
-const styles=StyleSheet.create({
-  container:{
-    flex:1,
-    paddingBottom:1,
-  }
-})
+
 
 
 export default MainTabs;

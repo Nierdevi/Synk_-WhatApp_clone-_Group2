@@ -12,7 +12,7 @@ const UpdatesStackNavigator = ({navigation,route}) => {
   React.useLayoutEffect(() => {
     const routeName = getFocusedRouteNameFromRoute(route) ?? 'UpdatesScreen';
     if (routeName === 'UpdatesScreen') {
-      navigation.setOptions({ tabBarStyle: { display: 'flex' } });
+      navigation.setOptions({ tabBarStyle: { display: 'flex',height:80  } });
     } else {
       navigation.setOptions({ tabBarStyle: { display: 'none' } });
     }
