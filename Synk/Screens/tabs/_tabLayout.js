@@ -1,16 +1,13 @@
 import React,{useState} from 'react';
-import {View} from 'react-native'
+import {View, Image} from 'react-native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import {primaryColors,SecondaryColors} from '../../constants/colors';
 import { useTheme } from '../../constants/themeContext';
-// const { theme, toggleTheme } = useTheme();
 
-
-
-import UpdateIcon from '../../components/UpdateIcon';
-import ChatIcon from '../../components/ChatIcon';
-import GroupIcon from '../../components/GroupIcon';
-import CallIcon from '../../components/CallIcon';
+const chatIcon=require('../../assets/tabIcons/chatIcon.png');
+const groupIcon=require('../../assets/tabIcons/groupIcon.png');
+const updateIcon=require('../../assets/tabIcons/updateIcon.png');
+const callIcon=require('../../assets/tabIcons/callIcon.png');
 
 import ChatsStackNavigator from './chats/ChatsStackNavigator ';
 import GroupStackNavigator from './groups/GroupStackNavigator ';
@@ -25,15 +22,14 @@ import CallHeader from '../../components/CusTabsHeaders/CallHeader'
 const Tab = createBottomTabNavigator();
 
 const MainTabs = () => {
-  // const { theme, toggleTheme } = useTheme();
-  // const [iconColor,setIconColor]=useState(theme === 'dark' ?  primaryColors.white : null)
+  const { theme, toggleTheme } = useTheme();
 
 
   return (
     <Tab.Navigator
       initialRouteName="Chats"
       screenOptions={({ route }) => ({
-        tabBarStyle: { height: 80,backgroundColor:primaryColors.black },
+        tabBarStyle: { height: 80, },
         tabBarItemStyle:{height:60,marginVertical: 6,marginHorizontal:-20,  }, 
         tabBarIcon: ({ color, size, focused }) => {
 
@@ -42,10 +38,14 @@ const MainTabs = () => {
               <View style={{
                   backgroundColor: focused ? SecondaryColors.secPurple : 'transparent',
                   borderRadius: 20,
-                  paddingHorizontal: 10,
-                  paddingVertical: 3,
+                  paddingHorizontal: 15,
+                  paddingVertical: 5,
                 }}>
-                  <ChatIcon width={size*1.3} height={size*1.4} fill={color} />
+                  <Image
+                      source={chatIcon} // Adjust the path as needed
+                      style={{ width: size * 1.1, height: size * 1.1, tintColor:theme === 'dark' ?  primaryColors.white : primaryColors.black }}
+                      resizeMode="contain"
+                    />
                 </View>
             )
           } else if (route.name === 'Groups') {
@@ -53,10 +53,14 @@ const MainTabs = () => {
               <View style={{
                   backgroundColor: focused ? SecondaryColors.secPurple : 'transparent',
                   borderRadius: 20,
-                  paddingHorizontal: 6,
-                  paddingVertical: 0,
+                  paddingHorizontal: 15,
+                  paddingVertical: 5,
                 }}>
-                  <GroupIcon width={size*1.7} height={size*1.7} fill={color} />
+                  <Image
+                      source={groupIcon} // Adjust the path as needed
+                      style={{ width: size * 1.1, height: size * 1.1, tintColor:theme === 'dark' ?  primaryColors.white : primaryColors.black }}
+                      resizeMode="contain"
+                    />
                 </View>
             )
           } else if (route.name === 'Updates') {
@@ -64,10 +68,14 @@ const MainTabs = () => {
               <View style={{
                   backgroundColor: focused ? SecondaryColors.secPurple : 'transparent',
                   borderRadius: 20,
-                  paddingHorizontal: 13,
+                  paddingHorizontal: 15,
                   paddingVertical: 5,
                 }}>
-                  <UpdateIcon width={size*1.2} height={size*1.2} fill={color} />
+                  <Image
+                      source={updateIcon} // Adjust the path as needed
+                      style={{ width: size * 1.1, height: size * 1.1, tintColor:theme === 'dark' ?  primaryColors.white : primaryColors.black }}
+                      resizeMode="contain"
+                    />
                 </View>
             )
           }else if (route.name === 'Calls') {
@@ -75,18 +83,22 @@ const MainTabs = () => {
               <View style={{
                   backgroundColor: focused ? SecondaryColors.secPurple : 'transparent',
                   borderRadius: 20,
-                  paddingHorizontal: 11,
+                  paddingHorizontal: 15,
                   paddingVertical: 5,
                 }}>
-                  <CallIcon width={size*1.2} height={size*1.15} fill={color} />
+                  <Image
+                      source={callIcon} // Adjust the path as needed
+                      style={{ width: size * 1.1, height: size * 1.1, tintColor:theme === 'dark' ?  primaryColors.white : primaryColors.black }}
+                      resizeMode="contain"
+                    />
                 </View>
             )
           }
 
 
         },
-        tabBarActiveTintColor: '#57534E',
-        tabBarInactiveTintColor: '#D6D3D1',
+        tabBarActiveTintColor: '#292524',
+        tabBarInactiveTintColor: '#71717A',
         tabBarLabelStyle: {
           fontSize: 15,
           fontWeight:'700'

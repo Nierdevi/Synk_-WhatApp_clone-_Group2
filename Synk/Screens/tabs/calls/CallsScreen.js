@@ -1,13 +1,19 @@
 import { View, Text,StyleSheet,Button } from 'react-native'
 import React from 'react'
 import{getFocusedRouteNameFromRoute} from '@react-navigation/native';
+import {primaryColors,SecondaryColors} from '../../../constants/colors';
+import { useTheme } from '../../../constants/themeContext';
+
 
 export default function CallsScreen({navigation,route}) {
+
+  const {theme,toggleTheme}=useTheme();
+
 
   React.useLayoutEffect(() => {
     const routeName = getFocusedRouteNameFromRoute(route) ?? 'CallsScreen';
     if (routeName === 'CallsScreen') {
-      navigation.setOptions({ tabBarStyle: { display: 'flex',height:80,  } });
+      navigation.setOptions({ tabBarStyle: { display: 'flex',height:80},backgroundColor:theme === 'dark' ?  'black' :'white'   });
     } else {
       navigation.setOptions({ tabBarStyle: { display: 'none' } });
     }
