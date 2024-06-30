@@ -12,7 +12,7 @@ const UpdatesStackNavigator = ({navigation,route}) => {
   React.useLayoutEffect(() => {
     const routeName = getFocusedRouteNameFromRoute(route) ?? 'UpdatesScreen';
     if (routeName === 'UpdatesScreen') {
-      navigation.setOptions({ tabBarStyle: { display: 'flex',height:80  } });
+      navigation.setOptions({ tabBarStyle: { display: 'flex',height:80,  } });
     } else {
       navigation.setOptions({ tabBarStyle: { display: 'none' } });
     }
@@ -21,7 +21,7 @@ const UpdatesStackNavigator = ({navigation,route}) => {
 
   return (
     <ChatsStack.Navigator >
-        <ChatsStack.Screen name="UpdatesScreen" component={UpdatesScreen} options={{ headerShown: true}} />
+        <ChatsStack.Screen name="UpdatesScreen" component={UpdatesScreen} options={{ headerShown: false}} />
         <ChatsStack.Screen name="Status" component={StatusView} 
         options={()=>({ 
             headerShown: true,

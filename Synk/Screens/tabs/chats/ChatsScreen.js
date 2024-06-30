@@ -1,6 +1,8 @@
 import { View, Text,StyleSheet,Button } from 'react-native'
 import React from 'react'
 
+
+
 export default function ChatsScreen({navigation}) {
     return (
         <View style={styles.container}>

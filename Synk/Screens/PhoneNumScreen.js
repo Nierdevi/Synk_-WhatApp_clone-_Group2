@@ -10,7 +10,8 @@ import { createUser } from '../appwrite';
 const PhoneNumScreen = ({ navigation }) => {
     const [selectedCountry, setSelectedCountry] = useState(null);
     const [inputValue, setInputValue] = useState('');
-    const [sentToken, setSentToken] = useState(null)
+    const { theme, toggleTheme } = useTheme();
+    const [sentToken, setSentToken] = useState(null);
 
 
     const Number=`${selectedCountry?.callingCode}${inputValue.replaceAll(" ","")}`;
@@ -35,8 +36,8 @@ const PhoneNumScreen = ({ navigation }) => {
                 }],
                 { cancelable: false }
             )
-            const u=  await createUser(Number);
-                setSentToken(u)
+            // const u=  await createUser(Number);
+            //     setSentToken(u)
         } catch (error) {
             console.log(error)
         }
@@ -47,7 +48,7 @@ const PhoneNumScreen = ({ navigation }) => {
 
 
     return (
-        <SafeAreaView style={{flex:1,paddingTop:55,}}>
+        <SafeAreaView style={[styles.safeCon,{backgroundColor:theme === 'dark' ?  primaryColors.black : primaryColors.white}]}>
             <View style={styles.container}>
 
                 <Image
@@ -56,7 +57,7 @@ const PhoneNumScreen = ({ navigation }) => {
                     style={styles.image}
                 />
 
-                <Text style={styles.title}>Verify Phone Number </Text>
+                <Text style={[styles.title,{color:theme === 'dark' ?  primaryColors.white : primaryColors.black}]}>Verify Phone Number </Text>
                 <View style={{ width: wp("85%"), flex: 1, padding: 24 }}>
                 <PhoneInput
                     value={inputValue}
@@ -70,6 +71,7 @@ const PhoneNumScreen = ({ navigation }) => {
                             paddingLeft:0,
                             // marginBottom:-200,
                             marginTop: -6,
+                            elevation:5
                         },
                         flagContainer:{
                             width:105,
@@ -109,11 +111,15 @@ const PhoneNumScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
+    safeCon:{
+        flex:1,
+        paddingTop:55
+    },
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f0f0f0',
+    // backgroundColor: '#f0f0f0',
     paddingBottom:200,
     // height:hp('50%')
 

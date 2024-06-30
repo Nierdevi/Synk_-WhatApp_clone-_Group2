@@ -12,7 +12,7 @@ const GroupStackNavigator=({navigation,route})=>{
   React.useLayoutEffect(() => {
     const routeName = getFocusedRouteNameFromRoute(route) ?? 'GroupsScreen';
     if (routeName === 'GroupsScreen') {
-      navigation.setOptions({ tabBarStyle: { display: 'flex',height:80  } });
+      navigation.setOptions({ tabBarStyle: { display: 'flex',height:80,  } });
     } else {
       navigation.setOptions({ tabBarStyle: { display: 'none' } });
     }
@@ -20,7 +20,7 @@ const GroupStackNavigator=({navigation,route})=>{
 
   return (
   <GroupStack.Navigator initialRouteName="GroupsScreen">
-      <GroupStack.Screen name="GroupsScreen" component={GroupsScreen} options={{ headerShown: true}} />
+      <GroupStack.Screen name="GroupsScreen" component={GroupsScreen} options={{ headerShown: false}} />
       <GroupStack.Screen name="GroupRoom" component={GroupRoom} 
       options={()=>({ 
           headerShown: true,

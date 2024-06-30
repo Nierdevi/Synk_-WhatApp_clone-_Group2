@@ -1,55 +1,95 @@
 import React,{useState} from 'react';
+import {View} from 'react-native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { StyleSheet } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
-import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import {primaryColors,SecondaryColors} from '../../constants/colors';
+import { useTheme } from '../../constants/themeContext';
+// const { theme, toggleTheme } = useTheme();
 
+
+
+import UpdateIcon from '../../components/UpdateIcon';
+import ChatIcon from '../../components/ChatIcon';
+import GroupIcon from '../../components/GroupIcon';
+import CallIcon from '../../components/CallIcon';
 
 import ChatsStackNavigator from './chats/ChatsStackNavigator ';
 import GroupStackNavigator from './groups/GroupStackNavigator ';
 import UpdatesStackNavigator from './updates/UpdatesStackNavigation';
 import CallsScreen from './calls/CallsScreen';
-// import UpdatesScreen from './updates/updatesScreen';
-import { StatusBar } from 'react-native';
+
+import ChatsHeader from '../../components/CusTabsHeaders/ChatsHeader';
+import GroupHeader from '../../components/CusTabsHeaders/GroupHeader'
+import UpdatesHeader from '../../components/CusTabsHeaders/UpdatesHeader'
+import CallHeader from '../../components/CusTabsHeaders/CallHeader'
 
 const Tab = createBottomTabNavigator();
 
 const MainTabs = () => {
+  // const { theme, toggleTheme } = useTheme();
+  // const [iconColor,setIconColor]=useState(theme === 'dark' ?  primaryColors.white : null)
+
+
   return (
     <Tab.Navigator
       initialRouteName="Chats"
       screenOptions={({ route }) => ({
-        tabBarStyle: { height: 80,paddingHorizontal:10 },
-        tabBarLabelStyle: { fontSize: 12,  },
-        tabBarItemStyle:{height:70,marginVertical: 5,marginHorizontal:-20,  }, 
+        tabBarStyle: { height: 80,backgroundColor:primaryColors.black },
+        tabBarItemStyle:{height:60,marginVertical: 6,marginHorizontal:-20,  }, 
         tabBarIcon: ({ color, size, focused }) => {
-          let iconName;
 
           if (route.name === 'Chats') {
-            iconName = 'chatbubbles';
+            return(
+              <View style={{
+                  backgroundColor: focused ? SecondaryColors.secPurple : 'transparent',
+                  borderRadius: 20,
+                  paddingHorizontal: 10,
+                  paddingVertical: 3,
+                }}>
+                  <ChatIcon width={size*1.3} height={size*1.4} fill={color} />
+                </View>
+            )
           } else if (route.name === 'Groups') {
-            iconName = 'people';
+            return(
+              <View style={{
+                  backgroundColor: focused ? SecondaryColors.secPurple : 'transparent',
+                  borderRadius: 20,
+                  paddingHorizontal: 6,
+                  paddingVertical: 0,
+                }}>
+                  <GroupIcon width={size*1.7} height={size*1.7} fill={color} />
+                </View>
+            )
           } else if (route.name === 'Updates') {
-            iconName = 'time';
-          } else if (route.name === 'Calls') {
-            iconName = 'call';
+            return(
+              <View style={{
+                  backgroundColor: focused ? SecondaryColors.secPurple : 'transparent',
+                  borderRadius: 20,
+                  paddingHorizontal: 13,
+                  paddingVertical: 5,
+                }}>
+                  <UpdateIcon width={size*1.2} height={size*1.2} fill={color} />
+                </View>
+            )
+          }else if (route.name === 'Calls') {
+            return(
+              <View style={{
+                  backgroundColor: focused ? SecondaryColors.secPurple : 'transparent',
+                  borderRadius: 20,
+                  paddingHorizontal: 11,
+                  paddingVertical: 5,
+                }}>
+                  <CallIcon width={size*1.2} height={size*1.15} fill={color} />
+                </View>
+            )
           }
 
-          return (
-            <Icon
-              name={iconName}
-              size={size}
-              color={color}
-              style={{ backgroundColor: focused ? SecondaryColors.secPurple : 'transparent', borderRadius: 20, paddingHorizontal: 10, paddingVertical: 3 }}
-            />
-          );
+
         },
         tabBarActiveTintColor: '#57534E',
         tabBarInactiveTintColor: '#D6D3D1',
         tabBarLabelStyle: {
           fontSize: 15,
+          fontWeight:'700'
         },
       })}
     >
@@ -57,30 +97,33 @@ const MainTabs = () => {
         name="Chats"
         component={ChatsStackNavigator}
         options={{
-          headerShown: false,
-          tabBarBadge: '',
-          tabBarBadgeStyle: {
-            width: 14,
-            height: 14,
-            backgroundColor: primaryColors.purple,
-          },
+          header:()=> <ChatsHeader />,
+          // headerShown: false,
+
         }}
       />
       <Tab.Screen
         name="Groups"
         component={GroupStackNavigator}
         options={{
-          headerShown: false,
+          // headerShown: false,
+          header:()=> <GroupHeader />
         }}
       />
       <Tab.Screen 
         name="Updates" 
         component={UpdatesStackNavigator} 
-        options={{ headerShown: false }} 
+        options={{ 
+          header:() => <UpdatesHeader />
+          }} 
       />
       <Tab.Screen 
         name="Calls"
         component={CallsScreen}
+        options={{
+          tabBarLabel:"Calls ",
+          header:()=> <CallHeader />
+        }}
       />
     </Tab.Navigator>
   );

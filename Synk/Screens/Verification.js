@@ -73,8 +73,9 @@ import { verifyUser } from '../appwrite';
     }else{
           // console.log(otpCode);
 
-    const user =verifyUser(token,otpCode)
-    setVerifiedUser(user)
+    // const user =verifyUser(token,otpCode)
+    // setVerifiedUser(user)
+    navigation.navigate('Tabs')
     // console.log(otp.toString().replaceAll(",",""))
     }
  }
@@ -85,11 +86,11 @@ import { verifyUser } from '../appwrite';
 
 
   return (
-    <View style={[styles.container,{paddingBottom:200}]}>
+    <View style={[styles.container,{paddingBottom:200},{backgroundColor:theme === 'dark' ?  primaryColors.black : primaryColors.white}]}>
 
-      <Text style={styles.title}> OTP Verification</Text>
-      <Text style={styles.title2}> Enter the 6 digit that has been sent to </Text>
-      <Text style={styles.title3}>{countryCode} {censorPhoneNumber(phoneNumber)}</Text>
+      <Text style={[styles.title,{color:theme=='dark' ? primaryColors.white : primaryColors.black}]}> OTP Verification</Text>
+      <Text style={[styles.title2,{color:theme=='dark' ? primaryColors.white : primaryColors.black}]}> Enter the 6 digit that has been sent to </Text>
+      <Text style={[styles.title3,{color:theme=='dark' ? primaryColors.white : primaryColors.black}]}>{countryCode} {censorPhoneNumber(phoneNumber)}</Text>
 
       <View style={styles.otpContainer}>
         {otp.map((digit, index) => (

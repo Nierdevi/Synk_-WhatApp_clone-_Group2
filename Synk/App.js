@@ -1,5 +1,7 @@
+import 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { MenuProvider } from 'react-native-popup-menu';
 import { ThemeProvider } from './constants/themeContext';
 import { StyleSheet, SafeAreaView, Text } from 'react-native';
@@ -32,13 +34,13 @@ const MainLayout = () => {
 
 export default function App() {
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaProvider style={styles.container}>
       <ThemeProvider>
         <MenuProvider>
           <MainLayout />
         </MenuProvider>
       </ThemeProvider>
-    </SafeAreaView>
+    </SafeAreaProvider>
   );
 }
 

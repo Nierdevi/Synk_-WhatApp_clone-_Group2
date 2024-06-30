@@ -1,6 +1,6 @@
 import { Entypo } from '@expo/vector-icons';
 import React,{useState} from 'react';
-import { StyleSheet, Text, View,Image, Pressable } from 'react-native';
+import { StyleSheet, Text, View,Image, Pressable, Button } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import { PopupMenu } from '../components/PopupMenu';
@@ -11,7 +11,7 @@ import { useTheme } from '../constants/themeContext';
 export default function WelcomeScreen({navigation}) {
 
   const [menuVisible, setMenuVisible] = useState(false);
-  const { theme, toggleTheme } = useTheme();
+  const { theme, toggleTheme,setTheme } = useTheme();
   const toggleButtonLabel = theme === 'dark' ? 'Light Theme' : 'Dark Theme';
   const Applogo =theme==='dark'? require('../assets/AppLogo.png'):require('../assets/applogo_white.png')
 
@@ -46,6 +46,7 @@ export default function WelcomeScreen({navigation}) {
               </Text>
             </Pressable>
           </TouchableOpacity>
+          {/* <Button title='go' onPress={()=>navigation.navigate("Tabs")}/> */}
         </View>
     </View>
   )

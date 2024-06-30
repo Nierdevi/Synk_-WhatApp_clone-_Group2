@@ -4,10 +4,15 @@ import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import ChatsScreen from './ChatsScreen';
 import ChatRoom from './ChatRoom';
 import ChatInfo from './ChatInfo';
+import { useTheme } from '../../../constants/themeContext';
+
 
 const ChatsStack = createStackNavigator();
 
 const ChatsStackNavigator = ({navigation,route}) => {
+
+  const { theme, toggleTheme } = useTheme();
+
 
   React.useLayoutEffect(() => {
     const routeName = getFocusedRouteNameFromRoute(route) ?? 'ChatsScreen';
@@ -21,7 +26,7 @@ const ChatsStackNavigator = ({navigation,route}) => {
 
   return (
     <ChatsStack.Navigator initialRouteName="ChatsScreen">
-        <ChatsStack.Screen name="ChatsScreen" component={ChatsScreen} options={{ headerShown: true}} />
+        <ChatsStack.Screen name="ChatsScreen" component={ChatsScreen} options={{ headerShown: false}} />
         <ChatsStack.Screen name="ChatRoom" component={ChatRoom} 
         options={()=>({ 
             headerShown: true,
