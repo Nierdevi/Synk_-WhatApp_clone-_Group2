@@ -5,7 +5,9 @@ import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-nativ
 import { useTheme } from '../constants/themeContext'
 import {primaryColors} from '../constants/colors';
 import Countdown from '../components/Timer';
-import { verifyUser } from '../appwrite';
+
+import {verifyUser} from '../backend/verificationService';
+import {addUserToDatabase} from '../backend/userService'
 
 
  const Verification = ({navigation,route}) => {
@@ -20,6 +22,7 @@ import { verifyUser } from '../appwrite';
   const { countryCode, phoneNumber, token } = route.params;
 
 
+  
   const handleChangeText = (text, index) => {
     const newOtp = [...otp];
     newOtp[index] = text;
@@ -64,25 +67,35 @@ import { verifyUser } from '../appwrite';
     return length > 4 ? `${'*'.repeat(length - 4)}${number.slice(length - 4)}` : number;
   };
 
-  const verifyNumber =()=>{
+  const verifyNumber = async()=>{
     const otpCode = otp.join('');
-    // console.log(otpCode);
+    console.log(otpCode);
     if (otpCode.length !== 6) {
       Alert.alert('Incomplete OTP', 'Please enter all 6 digits of the OTP.');
       return;
-    }else{
-          // console.log(otpCode);
-
-    // const user =verifyUser(token,otpCode)
-    // setVerifiedUser(user)
-    navigation.navigate('Tabs')
-    // console.log(otp.toString().replaceAll(",",""))
     }
+
+    try {
+      const session = await verifyUser(token.userId, otpCode);
+      if (session) {
+          const userId = session.userId;
+          await addUserToDatabase(userId, '', countryCode + phoneNumber, '');
+          Alert.alert('Verification Successful', 'You have been successfully verified.', [
+              { text: 'OK', 
+                // onPress: () => navigation.navigate('Home') 
+              },
+          ]);
+      }
+  } catch (error) {
+      console.log(error);
+      Alert.alert('Verification Failed', 'The OTP you entered is incorrect or expired. Please try again.');
+  }
+
  }
 
-  useEffect(()=>{
-    {if (verifiedUser){Alert.alert("verified")}}
-  },[verifiedUser])
+  useEffect(() => {
+    inputs.current[0].focus();
+  }, []);
 
 
   return (
