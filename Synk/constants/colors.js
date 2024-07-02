@@ -7,6 +7,7 @@ const primaryColors = {
   };
 
 const SecondaryColors={
-    secPurple:'#C084FC'
+    secPurple:'#D8B4FE',
+
 }
 export  {primaryColors,SecondaryColors};

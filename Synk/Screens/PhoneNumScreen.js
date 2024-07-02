@@ -4,7 +4,7 @@ import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-nativ
 import PhoneInput  from 'react-native-international-phone-number'
 import {primaryColors} from '../constants/colors';
 import { useTheme } from '../constants/themeContext';
-import { createUser } from '../appwrite';
+import {createUser} from '../backend/verificationService'
 
 
 const PhoneNumScreen = ({ navigation }) => {
@@ -36,7 +36,7 @@ const PhoneNumScreen = ({ navigation }) => {
                 }],
                 { cancelable: false }
             )
-            // const u=  await createUser(Number);
+            // const u= await createUser(Number);
             //     setSentToken(u)
         } catch (error) {
             console.log(error)

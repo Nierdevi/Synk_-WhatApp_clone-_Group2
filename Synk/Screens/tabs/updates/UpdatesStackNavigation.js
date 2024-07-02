@@ -4,17 +4,25 @@ import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import UpdatesScreen from './UpdatesScreen'; 
 import StatusView from './StatusView';
 import ChannelsScreen from './Channels';
+import { useTheme } from '../../../constants/themeContext';
 
 const ChatsStack = createStackNavigator();
 
+  
 const UpdatesStackNavigator = ({navigation,route}) => {
+
+  const {theme}=useTheme();
 
   React.useLayoutEffect(() => {
     const routeName = getFocusedRouteNameFromRoute(route) ?? 'UpdatesScreen';
     if (routeName === 'UpdatesScreen') {
+<<<<<<< HEAD
       navigation.setOptions({ tabBarStyle: { display: 'flex',height:70,  } });
+=======
+      navigation.setOptions({ tabBarStyle: { display: 'flex',height:80,  },headerShown:true,color:theme ==='dark'? "black" : "white" });
+>>>>>>> 8035e89c037c9ef55245fc9444d0074e5a722d25
     } else {
-      navigation.setOptions({ tabBarStyle: { display: 'none' } });
+      navigation.setOptions({ tabBarStyle: { display: 'none' },headerShown:false });
     }
   }, [navigation, route]);
 

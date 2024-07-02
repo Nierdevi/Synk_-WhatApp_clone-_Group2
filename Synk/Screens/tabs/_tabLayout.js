@@ -1,16 +1,14 @@
-import React,{useState} from 'react';
-import {View} from 'react-native'
+import React,{useState,useRef,useEffect} from 'react';
+import {View, Image} from 'react-native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import {PanGestureHandler,GestureHandlerRootView,State} from 'react-native-gesture-handler'
 import {primaryColors,SecondaryColors} from '../../constants/colors';
 import { useTheme } from '../../constants/themeContext';
-// const { theme, toggleTheme } = useTheme();
 
-
-
-import UpdateIcon from '../../components/UpdateIcon';
-import ChatIcon from '../../components/ChatIcon';
-import GroupIcon from '../../components/GroupIcon';
-import CallIcon from '../../components/CallIcon';
+const chatIcon=require('../../assets/tabIcons/chatIcon.png');
+const groupIcon=require('../../assets/tabIcons/groupIcon.png');
+const updateIcon=require('../../assets/tabIcons/updateIcon.png');
+const callIcon=require('../../assets/tabIcons/callIcon.png');
 
 import ChatsStackNavigator from './chats/ChatsStackNavigator ';
 import GroupStackNavigator from './groups/GroupStackNavigator ';
@@ -24,69 +22,76 @@ import CallHeader from '../../components/CusTabsHeaders/CallHeader'
 
 const Tab = createBottomTabNavigator();
 
+
+
 const MainTabs = () => {
-  // const { theme, toggleTheme } = useTheme();
-  // const [iconColor,setIconColor]=useState(theme === 'dark' ?  primaryColors.white : null)
+  const { theme, toggleTheme } = useTheme();
+  const [index, setIndex] = useState(0);
+  const tabRef = useRef(null);
+
+
+  const handleGesture = ({ nativeEvent }) => {
+    if (nativeEvent.state === State.END) {
+      if (nativeEvent.translationX > 0 && index > 0) {
+        // Swiped right, navigate to previous tab
+        setIndex(index - 1);
+      } else if (nativeEvent.translationX < 0 && index < 3) {
+        // Swiped left, navigate to next tab
+        setIndex(index + 1);
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (tabRef.current) {
+      const routeNames = tabRef.current.getRootState().routeNames;
+      tabRef.current.navigate(routeNames[index]);
+    }
+  }, [index]);
 
 
   return (
+    <PanGestureHandler onHandlerStateChange={handleGesture}>
+      <View style={{ flex: 1 }}>
     <Tab.Navigator
       initialRouteName="Chats"
+      // ref={tabRef}
       screenOptions={({ route }) => ({
-        tabBarStyle: { height: 80,backgroundColor:primaryColors.black },
+        tabBarStyle: { height: 80, },
         tabBarItemStyle:{height:60,marginVertical: 6,marginHorizontal:-20,  }, 
         tabBarIcon: ({ color, size, focused }) => {
-
-          if (route.name === 'Chats') {
-            return(
+            let iconSource;
+            switch (route.name) {
+              case 'Chats':
+                iconSource = chatIcon;
+                break;
+              case 'Groups':
+                iconSource = groupIcon;
+                break;
+              case 'Updates':
+                iconSource = updateIcon;
+                break;
+              case 'Calls':
+                iconSource = callIcon;
+                break;
+            }
+            return (
               <View style={{
-                  backgroundColor: focused ? SecondaryColors.secPurple : 'transparent',
-                  borderRadius: 20,
-                  paddingHorizontal: 10,
-                  paddingVertical: 3,
-                }}>
-                  <ChatIcon width={size*1.3} height={size*1.4} fill={color} />
-                </View>
-            )
-          } else if (route.name === 'Groups') {
-            return(
-              <View style={{
-                  backgroundColor: focused ? SecondaryColors.secPurple : 'transparent',
-                  borderRadius: 20,
-                  paddingHorizontal: 6,
-                  paddingVertical: 0,
-                }}>
-                  <GroupIcon width={size*1.7} height={size*1.7} fill={color} />
-                </View>
-            )
-          } else if (route.name === 'Updates') {
-            return(
-              <View style={{
-                  backgroundColor: focused ? SecondaryColors.secPurple : 'transparent',
-                  borderRadius: 20,
-                  paddingHorizontal: 13,
-                  paddingVertical: 5,
-                }}>
-                  <UpdateIcon width={size*1.2} height={size*1.2} fill={color} />
-                </View>
-            )
-          }else if (route.name === 'Calls') {
-            return(
-              <View style={{
-                  backgroundColor: focused ? SecondaryColors.secPurple : 'transparent',
-                  borderRadius: 20,
-                  paddingHorizontal: 11,
-                  paddingVertical: 5,
-                }}>
-                  <CallIcon width={size*1.2} height={size*1.15} fill={color} />
-                </View>
-            )
-          }
-
-
-        },
-        tabBarActiveTintColor: '#57534E',
-        tabBarInactiveTintColor: '#D6D3D1',
+                backgroundColor: focused ? SecondaryColors.secPurple : 'transparent',
+                borderRadius: 20,
+                paddingHorizontal: 15,
+                paddingVertical: 5,
+              }}>
+                <Image
+                  source={iconSource}
+                  style={{ width: size * 1.1, height: size * 1.1, tintColor: theme === 'dark' ? primaryColors.white : primaryColors.black }}
+                  resizeMode="contain"
+                />
+              </View>
+            );
+          },
+        tabBarActiveTintColor: '#292524',
+        tabBarInactiveTintColor: '#71717A',
         tabBarLabelStyle: {
           fontSize: 15,
           fontWeight:'700'
@@ -126,6 +131,8 @@ const MainTabs = () => {
         }}
       />
     </Tab.Navigator>
+    </View>
+    </PanGestureHandler>
   );
 };
 

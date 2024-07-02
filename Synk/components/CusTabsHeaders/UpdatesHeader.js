@@ -6,11 +6,14 @@ import {primaryColors,SecondaryColors} from '../../constants/colors';
 import { Feather } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
 import { PopupMenu } from '../PopupMenu';
+import { useTheme } from '../../constants/themeContext';
 
 
 const isIOS = Platform.OS === 'ios';
 
 export default function ChatsHeader() {
+
+    const {theme,toggleTheme}=useTheme();
   const insets = useSafeAreaInsets();
   const [menuVisible, setMenuVisible] = useState(false);
 //   console.log('Safe area insets:', insets);
@@ -21,22 +24,22 @@ export default function ChatsHeader() {
   ];
 
     return (
-        <View style={[{ paddingTop: isIOS ? insets.top : insets.top + 10 }, styles.container]}>
-            <Text style={styles.text}>Updates</Text>
+        <View style={[{ paddingTop: isIOS ? insets.top : insets.top + 10 }, styles.container,{backgroundColor:theme === 'dark' ?  primaryColors.black : primaryColors.white}]}>
+            <Text style={[styles.text,{color:theme === 'dark' ?  primaryColors.white : primaryColors.black}]}>Updates</Text>
 
             <View style={styles.option}>
 
                 <TouchableOpacity>
-                    <Feather name="camera" size={22} color="black" />
+                    <Feather name="camera" size={22} color={theme === 'dark' ?  primaryColors.white : primaryColors.black} />
                 </TouchableOpacity>
 
                 <TouchableOpacity>
-                    <Feather name="search" size={24} color="black" />
+                    <Feather name="search" size={24} color={theme === 'dark' ?  primaryColors.white : primaryColors.black} />
                 </TouchableOpacity>
 
                 <Pressable style={[styles.dots]} onPress={() => setMenuVisible(true)}>
                     <PopupMenu visible={menuVisible} onClose={() => setMenuVisible(false)} menuItems={menuItems}  style={styles.popupMenu}/>
-                    <Entypo name="dots-three-vertical" size={20} color="black" />
+                    <Entypo name="dots-three-vertical" size={20} color={theme === 'dark' ?  primaryColors.white : primaryColors.black} />
                 </Pressable>
 
             </View>
