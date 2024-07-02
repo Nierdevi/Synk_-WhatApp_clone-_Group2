@@ -3,6 +3,8 @@ import React from 'react'
 import{getFocusedRouteNameFromRoute} from '@react-navigation/native';
 import {primaryColors,SecondaryColors} from '../../../constants/colors';
 import { useTheme } from '../../../constants/themeContext';
+import Fab from '../../../components/fab';
+
 
 
 export default function CallsScreen({navigation,route}) {
@@ -25,6 +27,8 @@ export default function CallsScreen({navigation,route}) {
         <View style={styles.container}>
           <Text>Call Screen </Text>
           {/* <Button title='tap' onPress={()=>{navigation.navigate('ChatRoom')}}/> */}
+          <Fab type="calls"  handlePress={{}}
+          />
         </View>
       )
     }

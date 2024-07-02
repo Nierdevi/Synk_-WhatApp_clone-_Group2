@@ -8,6 +8,7 @@ import Countdown from '../components/Timer';
 
 import {verifyUser} from '../backend/verificationService';
 import {addUserToDatabase} from '../backend/userService'
+import {getUser} from '../constants/userContext';
 
 
  const Verification = ({navigation,route}) => {
@@ -18,6 +19,7 @@ import {addUserToDatabase} from '../backend/userService'
   const [verifiedUser, setVerifiedUser] = useState(null);
   const inputs = useRef([]);
   const { theme, toggleTheme } = useTheme();
+  const {session,setSession}=getUser();
 
   const { countryCode, phoneNumber, token } = route.params;
 
@@ -79,10 +81,12 @@ import {addUserToDatabase} from '../backend/userService'
       const session = await verifyUser(token.userId, otpCode);
       if (session) {
           const userId = session.userId;
-          await addUserToDatabase(userId, '', countryCode + phoneNumber, '');
+          await addUserToDatabase(userId, '', countryCode + phoneNumber);
+          setSession(session)
+          console.log(session)
           Alert.alert('Verification Successful', 'You have been successfully verified.', [
               { text: 'OK', 
-                // onPress: () => navigation.navigate('Home') 
+                onPress: () => navigation.navigate('Tabs') 
               },
           ]);
       }

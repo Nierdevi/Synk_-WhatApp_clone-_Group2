@@ -4,6 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { MenuProvider } from 'react-native-popup-menu';
 import { ThemeProvider } from './constants/themeContext';
+import {UserProvider} from './constants/userContext'
 import { StyleSheet, SafeAreaView, Text } from 'react-native';
 
 import PhoneNumScreen from './Screens/PhoneNumScreen';
@@ -35,11 +36,13 @@ const MainLayout = () => {
 export default function App() {
   return (
     <SafeAreaProvider style={styles.container}>
-      <ThemeProvider>
-        <MenuProvider>
-          <MainLayout />
-        </MenuProvider>
-      </ThemeProvider>
+      <UserProvider>
+        <ThemeProvider>
+          <MenuProvider>
+            <MainLayout />
+          </MenuProvider>
+        </ThemeProvider>
+      </UserProvider>
     </SafeAreaProvider>
   );
 }
