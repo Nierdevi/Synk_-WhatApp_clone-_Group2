@@ -13,11 +13,7 @@ export default function CallsScreen({navigation,route}) {
   React.useLayoutEffect(() => {
     const routeName = getFocusedRouteNameFromRoute(route) ?? 'CallsScreen';
     if (routeName === 'CallsScreen') {
-<<<<<<< HEAD
       navigation.setOptions({ tabBarStyle: { display: 'flex',height:70,  } });
-=======
-      navigation.setOptions({ tabBarStyle: { display: 'flex',height:80},backgroundColor:theme === 'dark' ?  'black' :'white'   });
->>>>>>> 8035e89c037c9ef55245fc9444d0074e5a722d25
     } else {
       navigation.setOptions({ tabBarStyle: { display: 'none' } });
     }
