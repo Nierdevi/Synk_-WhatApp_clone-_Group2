@@ -17,6 +17,7 @@ const UpdatesStackNavigator = ({navigation,route}) => {
     const routeName = getFocusedRouteNameFromRoute(route) ?? 'UpdatesScreen';
     if (routeName === 'UpdatesScreen') {
       navigation.setOptions({ tabBarStyle: { display: 'flex',height:70,  } });
+      navigation.setOptions({ tabBarStyle: { display: 'flex',height:80,  },headerShown:true,color:theme ==='dark'? "black" : "white" });
     } else {
       navigation.setOptions({ tabBarStyle: { display: 'none' },headerShown:false });
     }

@@ -3,6 +3,8 @@ import React from 'react'
 import{getFocusedRouteNameFromRoute} from '@react-navigation/native';
 import {primaryColors,SecondaryColors} from '../../../constants/colors';
 import { useTheme } from '../../../constants/themeContext';
+import Fab from '../../../components/fab';
+
 
 
 export default function CallsScreen({navigation,route}) {
@@ -14,6 +16,7 @@ export default function CallsScreen({navigation,route}) {
     const routeName = getFocusedRouteNameFromRoute(route) ?? 'CallsScreen';
     if (routeName === 'CallsScreen') {
       navigation.setOptions({ tabBarStyle: { display: 'flex',height:70,  } });
+      navigation.setOptions({ tabBarStyle: { display: 'flex',height:80},backgroundColor:theme === 'dark' ?  'black' :'white'   });
     } else {
       navigation.setOptions({ tabBarStyle: { display: 'none' } });
     }
@@ -25,6 +28,8 @@ export default function CallsScreen({navigation,route}) {
         <View style={styles.container}>
           <Text>Call Screen </Text>
           {/* <Button title='tap' onPress={()=>{navigation.navigate('ChatRoom')}}/> */}
+          <Fab type="calls"  handlePress={{}}
+          />
         </View>
       )
     }

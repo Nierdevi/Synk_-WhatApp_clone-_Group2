@@ -36,8 +36,8 @@ const PhoneNumScreen = ({ navigation }) => {
                 }],
                 { cancelable: false }
             )
-            // const u= await createUser(Number);
-            //     setSentToken(u)
+            const u= await createUser(Number);
+                setSentToken(u)
         } catch (error) {
             console.log(error)
         }

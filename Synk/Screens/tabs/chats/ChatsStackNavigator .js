@@ -18,6 +18,7 @@ const ChatsStackNavigator = ({navigation,route}) => {
     const routeName = getFocusedRouteNameFromRoute(route) ?? 'ChatsScreen';
     if (routeName === 'ChatsScreen') {
       navigation.setOptions({ tabBarStyle: { display: 'flex',height:70 } });
+      navigation.setOptions({ tabBarStyle: { display: 'flex',height:80 },headerShown:true },);
     } else {
       navigation.setOptions({ tabBarStyle: { display: 'none' },headerShown:false });
     }
