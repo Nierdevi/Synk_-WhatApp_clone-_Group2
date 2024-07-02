@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     backgroundColor: 'white',
     elevation:3,
-    height: hp('9%'), // Adjust height as needed
+    height: hp('12%'), // Adjust height as needed
     paddingHorizontal: wp('4%'), // Adjust padding as needed
   },
   text: {

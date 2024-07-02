@@ -7,7 +7,7 @@ export default function CallsScreen({navigation,route}) {
   React.useLayoutEffect(() => {
     const routeName = getFocusedRouteNameFromRoute(route) ?? 'CallsScreen';
     if (routeName === 'CallsScreen') {
-      navigation.setOptions({ tabBarStyle: { display: 'flex',height:80,  } });
+      navigation.setOptions({ tabBarStyle: { display: 'flex',height:70,  } });
     } else {
       navigation.setOptions({ tabBarStyle: { display: 'none' } });
     }

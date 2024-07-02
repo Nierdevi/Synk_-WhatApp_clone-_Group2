@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     backgroundColor: 'white',
     elevation:3,
-    height: hp('9%'), // Adjust height as needed
+    height: hp('12%'), // Adjust height as needed
     paddingHorizontal: wp('4%'), // Adjust padding as needed
   },
   text: {
@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
     flexDirection:'row',
     // backgroundColor:'yellow',
     justifyContent:'space-between',
-    width:wp('21%')
+    width:wp('25 %')
   },
   popupMenu:{
     position:'absolute',
