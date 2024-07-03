@@ -1,16 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Button, FlatList, Modal, Alert, Linking } from 'react-native';
+import { View, Text, StyleSheet, Button, FlatList, Modal, Alert, Linking,TouchableOpacity,Pressable } from 'react-native';
+import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import { getUser } from '../../../constants/userContext';
 import Fab from '../../../components/fab';
 import { databases } from '../../../backend/appwrite';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Query } from 'appwrite';
 import * as Contacts from 'expo-contacts';
+
 import ChatListItem from '../../../src/components/ChatListItem/';
 
 const chatsData = require('../../../assets/data/chats.json')
 
+import { Ionicons, Entypo } from '@expo/vector-icons';
+import { primaryColors } from '../../../constants/colors';
+
 const STORAGE_KEY = '@MyApp:cachedContacts';
+const PAGE_SIZE = 50;
 
 const ChatsScreen = ({ navigation }) => {
   const { session, setSession } = getUser();
@@ -120,9 +126,8 @@ const ChatsScreen = ({ navigation }) => {
     if (modalVisible) {
       fetchContactsIfNeeded();
       // clearCache()
-      
-    console.log('Filtered Contacts In App:', filteredContacts.inApp);
-    console.log('Filtered Contacts Not In App:', filteredContacts.notInApp);
+    // console.log('Filtered Contacts In App:', filteredContacts.inApp);
+    // console.log('Filtered Contacts Not In App:', filteredContacts.notInApp);
     }
   }, [modalVisible]);
 
@@ -132,7 +137,21 @@ const ChatsScreen = ({ navigation }) => {
   };
   
   
-
+     // Render function for each contact item
+  const renderContactItem = ({ item }) => (
+    <TouchableOpacity style={styles.contactItem} onPress={() => {}}>
+      <View style={styles.avatarContainer}>
+        <Text style={styles.avatarText}>{item.name[0]}</Text>
+      </View>
+      <View style={styles.contactDetails}>
+        <Text style={styles.contactName}>{item.name} </Text>
+        {item.note && <Text style={styles.contactStatus}>{item.note}</Text>}
+        {!filteredContacts.inApp.includes(item) && ( // Render Invite text if not in app
+          <Text style={styles.inviteText}>Invite </Text>
+        )}
+      </View>
+    </TouchableOpacity>
+  );
   // Render component based on user session
   if (!session) {
     return (
@@ -149,21 +168,36 @@ const ChatsScreen = ({ navigation }) => {
         />
 
         <Modal visible={modalVisible} animationType="slide">
+          <View style={{width:wp('100%'),flexDirection:'row',justifyContent:'space-between',alignItems:'center',padding:10,height:hp("7%"),elevation:1}}>
+          <Ionicons name="arrow-back-outline" size={24} color="black"style={{marginRight:10,marginTop:6}} onPress={() => setModalVisible(false)}/>
+            <Text style={{fontSize:20,flexGrow:1}}>Select contact </Text>
+            <View style={{width:wp("13%"),flexDirection:'row',justifyContent:'space-between',alignItems:'center'}}>
+              <Ionicons name="search" size={24} color="black" />
+              <Pressable style={[styles.dots,]} onPress={() => setMenuVisible(true)}>
+                <Entypo name="dots-three-vertical" size={20}  />
+              </Pressable>
+            </View>
+          </View>
+          <TouchableOpacity style={{width:wp('100%'),flexDirection:'row',alignItems:'center',padding:10,height:hp("7%"),elevation:1}}>
+            <View style={[styles.avatarContainer,{backgroundColor:primaryColors.purple}]}><Ionicons name="person-add" size={20} color="white" /></View>
+            <Text style={styles.contactName}>New contact </Text>
+          </TouchableOpacity>
           <View style={styles.modalContainer}>
-            <Text>Contacts using the app:</Text>
+            <Text style={{textAlign:'left',width:wp('95%'),fontSize:16}}>Contacts on Synk </Text>
             <FlatList
               data={filteredContacts.inApp}
               keyExtractor={(item) => item.id.toString()}
-              renderItem={({ item }) => <Text>{item.name}</Text>}
+              renderItem={renderContactItem}
+              ListEmptyComponent={()=>{return <Text>No contact on your phone currently uses Synk </Text>}}
             />
 
-            <Text>Contacts not using the app:</Text>
+            <Text style={{textAlign:'left',width:wp('95%'),marginTop:50,fontSize:16}}>Invite to Synk </Text>
             <FlatList
               data={filteredContacts.notInApp}
               keyExtractor={(item) => item.id.toString()}
-              renderItem={({ item }) => <Text>{item.name}</Text>}
+              renderItem={renderContactItem}
+              initialNumToRender='50'
             />
-            <Button title="Close" onPress={() => setModalVisible(false)} />
           </View>
         </Modal>
 
@@ -184,10 +218,37 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    margin: 20,
+    // margin: 20,
     backgroundColor: '#f9f9f9',
     borderRadius: 10,
     padding: 20,
+    width: wp("100%"),
+    // marginTop:-10,
+  },
+  contactItem: {
+    padding: 10,
+    // borderBottomWidth: 1,
+    // borderBottomColor: '#ccc',
+    width: wp("100%"),
+    flexDirection:'row'
+
+  },
+  contactName: {
+    fontSize: 18,
+  },
+  avatarContainer: {
+    width: 45,
+    height: 45,
+    borderRadius: 30,
+    backgroundColor: '#ccc',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 15,
+  },
+  inviteText: {
+    fontSize: 17,
+    marginLeft:250,
+    marginTop:-10,
   },
 });
 

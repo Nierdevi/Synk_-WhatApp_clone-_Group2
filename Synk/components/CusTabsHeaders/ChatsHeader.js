@@ -8,7 +8,6 @@ import { Entypo } from '@expo/vector-icons';
 import { PopupMenu } from '../PopupMenu';
 import { useTheme } from '../../constants/themeContext';
 
-
 const isIOS = Platform.OS === 'ios';
 
 
