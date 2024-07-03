@@ -11,7 +11,7 @@ import { useTheme } from '../../constants/themeContext';
 
 const isIOS = Platform.OS === 'ios';
 
-export default function CallHeader() {
+export default function CallHeader({handleClearCallLogs}) {
 
     const {theme,toggleTheme}=useTheme();
   const insets = useSafeAreaInsets();
@@ -19,7 +19,7 @@ export default function CallHeader() {
 //   console.log('Safe area insets:', insets);
 
   const menuItems = [
-    { label: 'Clear call logs', onPress: () => {} },
+    { label: 'Clear call logs', onPress:handleClearCallLogs },
     { label: 'Settings', onPress: () => {} },
     { label: 'Switch accounts', onPress: () => {} },
   ];

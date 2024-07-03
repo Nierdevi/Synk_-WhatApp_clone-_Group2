@@ -8,6 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Query } from 'appwrite';
 import * as Contacts from 'expo-contacts';
 import { Ionicons, Entypo } from '@expo/vector-icons';
+import { primaryColors } from '../../../constants/colors';
 
 const STORAGE_KEY = '@MyApp:cachedContacts';
 const PAGE_SIZE = 50;
@@ -158,27 +159,30 @@ const ChatsScreen = ({ navigation }) => {
         />
 
         <Modal visible={modalVisible} animationType="slide">
-          <View style={{width:wp('100%'),flexDirection:'row',justifyContent:'space-between',padding:10,}}>
-          <Ionicons name="arrow-back-outline" size={24} color="black"style={{marginRight:10}} onPress={() => setModalVisible(false)}/>
+          <View style={{width:wp('100%'),flexDirection:'row',justifyContent:'space-between',alignItems:'center',padding:10,height:hp("7%"),elevation:1}}>
+          <Ionicons name="arrow-back-outline" size={24} color="black"style={{marginRight:10,marginTop:6}} onPress={() => setModalVisible(false)}/>
             <Text style={{fontSize:20,flexGrow:1}}>Select contact </Text>
-            <View style={{width:wp("13%"),flexDirection:'row',justifyContent:'space-between'}}>
+            <View style={{width:wp("13%"),flexDirection:'row',justifyContent:'space-between',alignItems:'center'}}>
               <Ionicons name="search" size={24} color="black" />
               <Pressable style={[styles.dots,]} onPress={() => setMenuVisible(true)}>
                 <Entypo name="dots-three-vertical" size={20}  />
               </Pressable>
             </View>
           </View>
-          <Text>New contact</Text>
+          <TouchableOpacity style={{width:wp('100%'),flexDirection:'row',alignItems:'center',padding:10,height:hp("7%"),elevation:1}}>
+            <View style={[styles.avatarContainer,{backgroundColor:primaryColors.purple}]}><Ionicons name="person-add" size={20} color="white" /></View>
+            <Text style={styles.contactName}>New contact </Text>
+          </TouchableOpacity>
           <View style={styles.modalContainer}>
-            <Text>Contacts using the app: </Text>
+            <Text style={{textAlign:'left',width:wp('95%'),fontSize:16}}>Contacts on Synk </Text>
             <FlatList
               data={filteredContacts.inApp}
               keyExtractor={(item) => item.id.toString()}
               renderItem={renderContactItem}
-              ListEmptyComponent={()=>{return <Text>No contact on your phone uses Synk </Text>}}
+              ListEmptyComponent={()=>{return <Text>No contact on your phone currently uses Synk </Text>}}
             />
 
-            <Text>Contacts not using the app: </Text>
+            <Text style={{textAlign:'left',width:wp('95%'),marginTop:50,fontSize:16}}>Invite to Synk </Text>
             <FlatList
               data={filteredContacts.notInApp}
               keyExtractor={(item) => item.id.toString()}
@@ -211,11 +215,12 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 20,
     width: wp("100%"),
+    // marginTop:-10,
   },
   contactItem: {
     padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+    // borderBottomWidth: 1,
+    // borderBottomColor: '#ccc',
     width: wp("100%"),
     flexDirection:'row'
 
@@ -224,9 +229,9 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   avatarContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 45,
+    height: 45,
+    borderRadius: 30,
     backgroundColor: '#ccc',
     justifyContent: 'center',
     alignItems: 'center',

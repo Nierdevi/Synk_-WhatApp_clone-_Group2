@@ -129,6 +129,7 @@ const MainTabs = () => {
           tabBarLabel:"Calls ",
           header:()=> <CallHeader />
         }}
+        // initialParams={{ 'handleClearCallLogs' }}
       />
     </Tab.Navigator>
     </View>
