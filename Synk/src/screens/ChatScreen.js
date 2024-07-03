@@ -4,7 +4,7 @@ import { useRoute,useNavigation } from '@react-navigation/native';
 // const bg = require( '../../assets/images/Bg.png')
 import InputBox from '../components/InputBox';
 
-import Message from '../components/Message'; 
+import Message from '../components/Message/'; 
 import messages from '../../assets/data/messages.json' ;
 
 const ChatScreen = () => {

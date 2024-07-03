@@ -7,6 +7,7 @@ import ChatInfo from './ChatInfo';
 import { useTheme } from '../../../constants/themeContext';
 
 
+
 const ChatsStack = createStackNavigator();
 
 const ChatsStackNavigator = ({navigation,route}) => {

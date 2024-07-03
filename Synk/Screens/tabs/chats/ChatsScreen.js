@@ -6,6 +6,9 @@ import { databases } from '../../../backend/appwrite';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Query } from 'appwrite';
 import * as Contacts from 'expo-contacts';
+import ChatListItem from '../../../src/components/ChatListItem/';
+
+const chatsData = require('../../../assets/data/chats.json')
 
 const STORAGE_KEY = '@MyApp:cachedContacts';
 
@@ -131,11 +134,15 @@ const ChatsScreen = ({ navigation }) => {
   
 
   // Render component based on user session
-  if (session) {
+  if (!session) {
     return (
       <View style={styles.container}>
-        <Text>Chat Screen</Text>
-        <Button title='Tap' onPress={() => { navigation.navigate('ChatRoom') }} />
+        <FlatList
+          data={chatsData}
+          renderItem={({item}) => <ChatListItem chat={item} />}
+          keyExtractor={(item) => item.id.tostring}
+        
+        />
         <Fab
           type="chats"
           handlePress={handleFetchContacts}
@@ -167,11 +174,10 @@ const ChatsScreen = ({ navigation }) => {
     return null;
   }
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
+  
     justifyContent: 'center',
   },
   modalContainer: {
