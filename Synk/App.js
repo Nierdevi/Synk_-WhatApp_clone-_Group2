@@ -6,6 +6,8 @@ import { MenuProvider } from 'react-native-popup-menu';
 import { ThemeProvider } from './constants/themeContext';
 import {UserProvider} from './constants/userContext'
 import { StyleSheet, SafeAreaView, Text } from 'react-native';
+import { useEffect } from 'react';
+import { startContactRefresh } from './backend/contacts ';
 
 import PhoneNumScreen from './Screens/PhoneNumScreen';
 import Verification from './Screens/Verification';
@@ -20,6 +22,11 @@ const Stack = createStackNavigator();
 
 
 const MainLayout = () => {
+
+  useEffect(() => {
+    // Start the contact refresh when the app mounts
+    startContactRefresh();
+  }, []);
   // const { isAuthenticated } = useAuth();
   return (
     <NavigationContainer>
