@@ -4,6 +4,7 @@ import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-nat
 import { getUser } from '../../../constants/userContext';
 import Fab from '../../../components/fab';
 import { databases } from '../../../backend/appwrite';
+import { createChat } from '../../../backend/chatService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Query } from 'appwrite';
 import * as Contacts from 'expo-contacts';
@@ -56,7 +57,12 @@ const ChatsScreen = ({ navigation }) => {
         [Query.equal('phoneNumber', phoneNumber)]
       );
       console.log('Database response:', response);
-      return response.documents.length > 0;
+      if (response.documents.length > 0) {
+        return response.documents[0].$id; // Return the user ID
+        console.log(response.documents[0].$id)
+      } else {
+        return null;
+      }
     } catch (error) {
       console.error('Failed to check user in the database:', error);
       return false;
@@ -144,22 +150,44 @@ const ChatsScreen = ({ navigation }) => {
   );
 
      // Render function for each contact item for the modal
-  const renderContactItem = ({ item }) => (
-    <TouchableOpacity style={styles.contactItem} onPress={() => {}}>
-      <View style={styles.avatarContainer}>
-        <Text style={styles.avatarText}>{item.name[0]}</Text>
-      </View>
-      <View style={styles.contactDetails}>
-        <Text style={styles.contactName}>{item.name} </Text>
-        {item.note && <Text style={styles.contactStatus}>{item.note}</Text>}
-        {!filteredContacts.inApp.includes(item) && ( // Render Invite text if not in app
-          <Text style={styles.inviteText}>Invite </Text>
-        )}
-      </View>
-    </TouchableOpacity>
-  );
+     const renderContactItem = ({ item }) => {
+      const handleContactPress = async (contact) => {
+        try {
+          const recipientUserId = contact.id; // Assuming contact.id is the contact's user ID in your app
+          const currentUserId = session.userId; // Current user's ID
+          console.log(session.userId)
+    
+          const chatRoom = await createChat(currentUserId, recipientUserId);
+          if (chatRoom) {
+            navigation.navigate('ChatRoom', { chatRoomId: chatRoom.$id, contact });
+          } else {
+            Alert.alert('Error', 'Failed to create or retrieve chat room');
+          }
+        } catch (error) {
+          console.error('Failed to handle contact press:', error);
+          Alert.alert('Error', 'An error occurred while trying to create or retrieve the chat room');
+        }
+      };
+    
+      return (
+        <TouchableOpacity style={styles.contactItem} onPress={() => handleContactPress(item)}>
+          <View style={styles.avatarContainer}>
+            <Text style={styles.avatarText}>{item.name[0]}</Text>
+          </View>
+          <View style={styles.contactDetails}>
+            <Text style={styles.contactName}>{item.name}</Text>
+            {item.note && <Text style={styles.contactStatus}>{item.note}</Text>}
+            {!filteredContacts.inApp.includes(item) && (
+              <Text style={styles.inviteText}>Invite</Text>
+            )}
+          </View>
+        </TouchableOpacity>
+      );
+    };
+    
   // Render component based on user session
   if (session) {
+    // console.log(session.userId)
     return (
       <View style={styles.container}>
         

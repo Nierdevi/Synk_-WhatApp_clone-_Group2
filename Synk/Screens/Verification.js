@@ -81,7 +81,7 @@ import {getUser} from '../constants/userContext';
       const session = await verifyUser(token.userId, otpCode);
       if (session) {
           const userId = session.userId;
-          await addUserToDatabase(userId, countryCode + phoneNumber,' ');
+          await addUserToDatabase(userId, countryCode + phoneNumber);
           setSession(session)
           console.log(session)
           Alert.alert('Verification Successful', 'You have been successfully verified.', [

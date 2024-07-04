@@ -4,9 +4,14 @@ import { Query } from 'appwrite';
 // Function to check if a chat already exists between two users
 const checkExistingChat = async (senderId, recipientId) => {
     try {
+        // Query to check if a chat exists between the sender and recipient (in either direction)
         const result = await databases.listDocuments('6685cbc40036f4c6a5ad', '6685e691003e5ceef040', [
             Query.equal('senderId', senderId),
-            Query.equal('recipientId', recipientId)
+            Query.equal('recipientId', recipientId),
+            Query.or([
+                Query.equal('senderId', recipientId),
+                Query.equal('recipientId', senderId)
+            ])
         ]);
         return result.documents.length > 0 ? result.documents[0] : null;
     } catch (error) {
@@ -23,14 +28,14 @@ const createChat = async (senderId, recipientId) => {
         if (existingChat) {
             return existingChat; // Return existing chat if found
         } else {
-            const messageId = ID.unique(); // Generate a unique ID for the chat
-            const chat = await databases.createDocument('6685cbc40036f4c6a5ad', '6685e691003e5ceef040', messageId, {
+            const chatId = ID.unique(); // Generate a unique ID for the chat
+            const chat = await databases.createDocument('6685cbc40036f4c6a5ad', '6685e691003e5ceef040', chatId, {
                 createdAt: Date.now(), // Current timestamp
                 senderId,
                 recipientId,
-                messageType: '',
-                messageContent: '',
-                messageStatus: 'created', // Initial status
+                messages: [], // Initialize with an empty array of messages
+                lastMessage: '',
+                lastMessageTime: null,
             });
             return chat; // Return the created chat document
         }
@@ -41,19 +46,22 @@ const createChat = async (senderId, recipientId) => {
 };
 
 // Function to send a message within a chat
-const sendMessage = async (messageId, senderId, recipientId, messageType, messageContent) => {
+const sendMessage = async (chatId, senderId, messageType, messageContent) => {
     try {
-        const chat = await databases.getDocument('6685cbc40036f4c6a5ad', '6685e691003e5ceef040', messageId);
+        // Fetch the existing chat document
+        const chat = await databases.getDocument('6685cbc40036f4c6a5ad', '6685e691003e5ceef040', chatId);
+        
         const newMessage = {
+            id: ID.unique(), // Ensure each message has a unique ID
             createdAt: Date.now(), // Current timestamp
             senderId,
-            recipientId,
             messageType,
             messageContent,
             messageStatus: 'sent', // Initial status
         };
 
-        const updatedChat = await databases.updateDocument('6685cbc40036f4c6a5ad', '6685e691003e5ceef040', messageId, {
+        // Update the chat document with the new message
+        const updatedChat = await databases.updateDocument('6685cbc40036f4c6a5ad', '6685e691003e5ceef040', chatId, {
             ...chat,
             messages: [...(chat.messages || []), newMessage], // Add new message to the chat's messages array
             lastMessage: messageContent, // Update last message
@@ -66,4 +74,4 @@ const sendMessage = async (messageId, senderId, recipientId, messageType, messag
     }
 };
 
-export { createChat,sendMessage };
+export { checkExistingChat, createChat, sendMessage };

@@ -1,6 +1,5 @@
-// ChatListItem.js
 import React from 'react';
-import { Text, View, Image, StyleSheet, Pressable } from "react-native";
+import { Text, View, Image, StyleSheet, TouchableOpacity } from "react-native";
 import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import { useNavigation } from "@react-navigation/native";
 import dayjs from 'dayjs';
@@ -13,8 +12,8 @@ const ChatListItem = ({ chat }) => {
     const navigation = useNavigation();
 
     return (
-        <Pressable 
-            onPress={() => navigation.navigate('ChatRoom', { chatId: chat.$id, userId: chat.user.id })} 
+        <TouchableOpacity 
+            onPress={() => navigation.navigate('ChatRoom', { chatId: chat.$id, userId: chat.recipientId })} 
             style={styles.container}
         >
             <Image 
@@ -28,24 +27,24 @@ const ChatListItem = ({ chat }) => {
                         {chat.user.name}
                     </Text>
                     <Text style={styles.subTitle}>
-                        {dayjs(chat.lastMessage.createdAt).fromNow(true)}
+                        {dayjs(chat.lastMessageTime).fromNow(true)}
                     </Text>
                 </View>
 
                 <View style={styles.messageRow}>
                     <Text numberOfLines={1} style={styles.subTitle}>
-                        {chat.lastMessage.text}
+                    {chat.lastMessage?.messageContent}
                     </Text>
                     <Icon
-                        name={chat.lastMessage.status === 'sent' ? 'done' : chat.lastMessage.status === 'delivered' ? 'done-all' : 'done'}
+                        name={'done'}
                         size={20}
-                        color={chat.lastMessage.status === 'read' ? 'blue' : 'grey'}
+                        color={'grey'}
                         style={styles.icon}
                     />
                     {chat.unread && <View style={styles.unreadDot} />}
                 </View>
             </View>
-        </Pressable>
+        </TouchableOpacity>
     );
 };
 
