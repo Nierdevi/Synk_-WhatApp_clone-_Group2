@@ -6,6 +6,8 @@ import Fab from '../../../components/fab';
 import { databases } from '../../../backend/appwrite';
 import { createChat } from '../../../backend/chatService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {fetchAndFilterContacts, loadCachedContacts, startContactRefresh  } from '../../../backend/contacts ';
+
 import { Query } from 'appwrite';
 import * as Contacts from 'expo-contacts';
 
@@ -16,8 +18,6 @@ const chatsData = require('../../../assets/data/chats.json')
 import { Ionicons, Entypo } from '@expo/vector-icons';
 import { primaryColors } from '../../../constants/colors';
 
-const STORAGE_KEY = '@MyApp:cachedContacts';
-const PAGE_SIZE = 50;
 
 const ChatsScreen = ({ navigation }) => {
   const { session, setSession } = getUser();
@@ -26,129 +26,45 @@ const ChatsScreen = ({ navigation }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [contactsCached, setContactsCached] = useState(false);
 
-  // Fetch contacts from device
-  const fetchContacts = async () => {
-    try {
-      const { status } = await Contacts.requestPermissionsAsync();
-      if (status !== 'granted') {
-        console.log('Permission to access contacts was denied');
-        // Alert already present here
-        return [];
-      }
-      const { data } = await Contacts.getContactsAsync({
-        fields: [Contacts.Fields.PhoneNumbers],
-      });
-      console.log('Fetched Contacts:', data); // Log fetched contacts
-      return data;
-    } catch (error) {
-      console.error('Failed to fetch contacts:', error);
-      return [];
-    }
-  };
-  
-
-  // Check if user exists in the app database
-  const isUserInApp = async (phoneNumber) => {
-    try {
-      console.log('Checking if user is in app:', phoneNumber);
-      const response = await databases.listDocuments(
-        '6685cbc40036f4c6a5ad',
-        '668318c2002986810f9a',
-        [Query.equal('phoneNumber', phoneNumber)]
-      );
-      console.log('Database response:', response);
-      if (response.documents.length > 0) {
-        return response.documents[0].$id; // Return the user ID
-        console.log(response.documents[0].$id)
-      } else {
-        return null;
-      }
-    } catch (error) {
-      console.error('Failed to check user in the database:', error);
-      return false;
-    }
-  };
-
-  // Load cached contacts from AsyncStorage
   useEffect(() => {
-    const loadCachedContacts = async () => {
-      try {
-        const cachedContacts = await AsyncStorage.getItem(STORAGE_KEY);
-        if (cachedContacts) {
-          const parsedContacts = JSON.parse(cachedContacts);
-          setContacts(parsedContacts.contactsList);
-          setFilteredContacts(parsedContacts.filteredContacts);
-          setContactsCached(true);
+    const loadContacts = async () => {
+      const cachedContacts = await loadCachedContacts();
+      if (cachedContacts) {
+        setContacts(cachedContacts.contactsList);
+        setFilteredContacts(cachedContacts.filteredContacts);
+      } else {
+        const newContacts = await fetchAndFilterContacts();
+        if (newContacts) {
+          setContacts(newContacts.contactsList);
+          setFilteredContacts(newContacts.filteredContacts);
         }
-      } catch (error) {
-        console.error('Failed to load cached contacts:', error);
       }
     };
 
-    loadCachedContacts();
+    loadContacts();
+    startContactRefresh(); // Start the contact refresh service
   }, []);
 
-  // Fetch contacts when modal is visible
-  const fetchContactsIfNeeded = async () => {
-    try {
-      if (!contactsCached) {
-        const fetchedContacts = await fetchContacts();
-        const inAppContacts = [];
-        const notInAppContacts = [];
-  
-        for (const contact of fetchedContacts) {
-          if (contact.phoneNumbers && contact.phoneNumbers.length > 0) {
-            const isInApp = await isUserInApp(contact.phoneNumbers[0].number);
-            if (isInApp) {
-              inAppContacts.push(contact);
-            } else {
-              notInAppContacts.push(contact);
-            }
-          }
-        }
-        const contactsToCache = {
-          contactsList: fetchedContacts,
-          filteredContacts: { inApp: inAppContacts, notInApp: notInAppContacts }
-        };
-        await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(contactsToCache));
-        setContactsCached(true);
-        setContacts(fetchedContacts);
-        setFilteredContacts({ inApp: inAppContacts, notInApp: notInAppContacts });
-      }
-    } catch (error) {
-      console.error('Failed to fetch and cache contacts:', error);
-    }
-  };
-  
-
-  // Handle fetching contacts and showing modal
-  const handleFetchContacts = async () => {
-    setModalVisible(true);
-    await fetchContactsIfNeeded();
-  };
-
-  // Log filtered contacts for debugging
   useEffect(() => {
     if (modalVisible) {
-      fetchContactsIfNeeded();
-      // clearCache()
-    // console.log('Filtered Contacts In App:', filteredContacts.inApp);
-    // console.log('Filtered Contacts Not In App:', filteredContacts.notInApp);
+      fetchAndFilterContacts().then(newContacts => {
+        if (newContacts) {
+          setContacts(newContacts.contactsList);
+          setFilteredContacts(newContacts.filteredContacts);
+        }
+      });
     }
   }, [modalVisible]);
 
+  const handleFetchContacts = () => {
+    setModalVisible(true);
+  };
+
   const clearCache = async () => {
     await AsyncStorage.removeItem(STORAGE_KEY);
-    setContactsCached(false);
   };
-  //render fuction for each chatlist item
+
   
-  const renderChatListItem =()=>(
-    <TouchableOpacity onPress={()=>{{}}}>
-
-    </TouchableOpacity>
-  );
-
      // Render function for each contact item for the modal
      const renderContactItem = ({ item }) => {
       const handleContactPress = async (contact) => {
@@ -199,7 +115,7 @@ const ChatsScreen = ({ navigation }) => {
         />
         <Fab
           type="chats"
-          handlePress={handleFetchContacts}
+          handlePress={() => setModalVisible(true)}
         />
 
         <Modal visible={modalVisible} animationType="slide">
