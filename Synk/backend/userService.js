@@ -1,9 +1,9 @@
 import {databases,ID} from './appwrite'
 
 
-const addUserToDatabase = async (userId, username, phoneNumber, profilePicUrl) => {
+const addUserToDatabase = async (userId, username, phoneNumber) => {
     try {
-        await databases.createDocument('6682d430002d49900dfb','668318c2002986810f9a', 'users',  {
+        await databases.createDocument('6685cbc40036f4c6a5ad','6685cc6600212adefdbf', 'users',  {
             userId,
             username,
             phoneNumber,

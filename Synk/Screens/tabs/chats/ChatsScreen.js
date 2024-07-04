@@ -8,7 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Query } from 'appwrite';
 import * as Contacts from 'expo-contacts';
 
-import ChatListItem from '../../../src/components/ChatListItem/';
+import ChatListItem from './components/ChatListItem';
 
 const chatsData = require('../../../assets/data/chats.json')
 
@@ -51,7 +51,7 @@ const ChatsScreen = ({ navigation }) => {
     try {
       console.log('Checking if user is in app:', phoneNumber);
       const response = await databases.listDocuments(
-        '6682d430002d49900dfb',
+        '6685cbc40036f4c6a5ad',
         '668318c2002986810f9a',
         [Query.equal('phoneNumber', phoneNumber)]
       );
@@ -135,9 +135,15 @@ const ChatsScreen = ({ navigation }) => {
     await AsyncStorage.removeItem(STORAGE_KEY);
     setContactsCached(false);
   };
+  //render fuction for each chatlist item
   
-  
-     // Render function for each contact item
+  const renderChatListItem =()=>(
+    <TouchableOpacity onPress={()=>{{}}}>
+
+    </TouchableOpacity>
+  );
+
+     // Render function for each contact item for the modal
   const renderContactItem = ({ item }) => (
     <TouchableOpacity style={styles.contactItem} onPress={() => {}}>
       <View style={styles.avatarContainer}>
@@ -153,13 +159,14 @@ const ChatsScreen = ({ navigation }) => {
     </TouchableOpacity>
   );
   // Render component based on user session
-  if (!session) {
+  if (session) {
     return (
       <View style={styles.container}>
+        
         <FlatList
           data={chatsData}
           renderItem={({item}) => <ChatListItem chat={item} />}
-          keyExtractor={(item) => item.id.tostring}
+          keyExtractor={(item) => item.id.toString()}
         
         />
         <Fab
