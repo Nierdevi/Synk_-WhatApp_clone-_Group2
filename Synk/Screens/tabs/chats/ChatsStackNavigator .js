@@ -29,13 +29,13 @@ const ChatsStackNavigator = ({navigation,route}) => {
   return (
     <ChatsStack.Navigator initialRouteName="ChatsScreen">
         <ChatsStack.Screen name="ChatsScreen" component={ChatsScreen} options={{ headerShown: false}} />
-        <ChatsStack.Screen name="ChatRoom" component={ChatRoom} 
-        options={()=>({ 
-            headerShown: true,
-            // tabBarVisible:false
-            })} 
-
-            />
+        <ChatsStack.Screen name="chat" component={ChatRoom} 
+          options={()=>({ 
+              headerShown: true,
+              // tabBarVisible:false
+            })
+          } 
+        />
         <ChatsStack.Screen name="ChatInfo" component={ChatInfo} 
         options={()=>({ 
             headerShown: true,

@@ -166,7 +166,6 @@ const ChatsScreen = ({ navigation }) => {
             <Button title="Close" onPress={() => setModalVisible(false)} />
           </View>
         </Modal>
-
       </View>
     );
   } else {
@@ -177,7 +176,6 @@ const ChatsScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  
     justifyContent: 'center',
   },
   modalContainer: {
@@ -188,6 +186,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#f9f9f9',
     borderRadius: 10,
     padding: 20,
+    marginTop: 'auto'
   },
 });
 
