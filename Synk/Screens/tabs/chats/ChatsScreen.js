@@ -8,7 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Query } from 'appwrite';
 import * as Contacts from 'expo-contacts';
 
-import ChatListItem from '../../../src/components/ChatListItem/';
+import ChatListItem from './ChatListItem';
 
 const chatsData = require('../../../assets/data/chats.json')
 
