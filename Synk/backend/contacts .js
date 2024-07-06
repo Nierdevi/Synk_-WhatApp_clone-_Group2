@@ -1,5 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Contacts from 'expo-contacts';
+import { Linking, Alert, Platform } from 'react-native';
+import { client, databases } from './appwrite';
 
 const STORAGE_KEY = '@MyApp:cachedContacts';
 const REFRESH_INTERVAL = 60000; // 30 seconds in milliseconds
@@ -31,7 +33,23 @@ const fetchContacts = async () => {
   try {
     const { status } = await Contacts.requestPermissionsAsync();
     if (status !== 'granted') {
-      console.log('Permission to access contacts was denied');
+      Alert.alert(
+        'Permission Required',
+        'This app needs access to your contacts to function properly. Please grant access from settings.',
+        [
+          {
+            text: 'Open Settings',
+            onPress: () => {
+              if (Platform.OS === 'ios') {
+                Linking.openURL('app-settings:');
+              } else {
+                Linking.openSettings();
+              }
+            },
+          },
+        ],
+        { cancelable: false }
+      );
       return [];
     }
     const { data } = await Contacts.getContactsAsync({
@@ -68,6 +86,7 @@ const fetchAndNormalizeContacts = async () => {
 // Load cached contacts from AsyncStorage
 const loadCachedContacts = async () => {
   try {
+    
     const cachedContacts = await AsyncStorage.getItem(STORAGE_KEY);
     if (cachedContacts) {
       return JSON.parse(cachedContacts);
@@ -85,4 +104,26 @@ const startContactRefresh = () => {
   }, REFRESH_INTERVAL);
 };
 
-export { fetchAndNormalizeContacts, loadCachedContacts, startContactRefresh, normalizePhoneNumber };
+
+// Real-time subscription to listen for database changes
+const subscribeToDatabaseChanges = (setContacts) => {
+  const unsubscribe = client.subscribe(
+    'collections.[6685cc6600212adefdbf].documents',
+    response => {
+      // Assuming the document structure matches your contacts data
+      if (response.events.includes('database.documents.create') ||
+          response.events.includes('database.documents.update') ||
+          response.events.includes('database.documents.delete')) {
+        fetchAndNormalizeContacts().then(updatedContacts => {
+          if (updatedContacts) {
+            setContacts(updatedContacts);
+          }
+        });
+      }
+    }
+  );
+  return unsubscribe;
+};
+
+
+export { fetchAndNormalizeContacts, loadCachedContacts, startContactRefresh, normalizePhoneNumber,subscribeToDatabaseChanges };

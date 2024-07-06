@@ -1,72 +1,51 @@
-import { View, Text, StyleSheet, ImageBackground, KeyboardAvoidingView, Platform, FlatList, Alert } from 'react-native';
-import React, { useEffect, useState } from 'react';
-// import { useNavigation, useRoute } from '@react-navigation/native';
-import Message from '../../../src/components/Message';
-import InputBox from '../../../src/components/InputBox';
-import { createChat, sendMessage } from '../../../backend/chatService';
-import { databases } from '../../../backend/appwrite';
+import React, { useState, useEffect } from 'react';
+import { View, Text, Button, TextInput } from 'react-native';
+import { sendMessage, fetchMessages, getExistingChat } from '../../../backend/chatService';
 
-const ChatRoom = ({route,navigation}) => {
-    const [messages, setMessages] = useState([]);
-    const [chatId, setChatId] = useState(null);
-    // const route = useRoute();
-    // const navigation = useNavigation();
-    const senderId = 'currentUserId'; // Replace with the actual current user ID
+const ChatRoom = ({ route }) => {
+  const { contact, currentUserPhoneNumber } = route.params;
+  const [messages, setMessages] = useState([]);
+  const [messageText, setMessageText] = useState('');
+  const recipientPhoneNumber = contact.normalizedPhoneNumbers[0]; // Use the first normalized phone number
 
-    useEffect(() => {
-        navigation.setOptions({ title: route.params.name });
-
-        const { chatRoomId, contact } = route.params;
-        const initializeChat = async () => {
-            try {
-                const recipientId = route.params.userId; // Assuming you pass recipient user ID through route params
-                const chat = await createChat(senderId, recipientId);
-                setChatId(chat.$id);
-                setMessages(chat.messages || []);
-            } catch (error) {
-                console.error('Error initializing chat:', error);
-            }
-        };
-
-        initializeChat();
-    }, [route.params.name, route.params.userId]);
-
-    const handleSendMessage = async (messageContent) => {
-        if (!chatId) {
-            Alert.alert('Error', 'Chat not initialized');
-            return;
-        }
-
-        try {
-            const updatedChat = await sendMessage(chatId, senderId, 'text', messageContent);
-            setMessages(updatedChat.messages);
-        } catch (error) {
-            console.error('Error sending message:', error);
-            Alert.alert('Error', 'Failed to send message');
-        }
+  useEffect(() => {
+    const loadMessages = async () => {
+      console.log(currentUserPhoneNumber)
+      console.log(contact.id)
+      const existingChat = await getExistingChat(currentUserPhoneNumber, recipientPhoneNumber);
+      if (existingChat) {
+        const chatId = existingChat.$id;
+        console.log("existing chatId"+ existingChat.$id)
+        const messages = await fetchMessages(chatId);
+        setMessages(messages);
+      }
     };
+    loadMessages();
+  }, [currentUserPhoneNumber, recipientPhoneNumber]);
 
-    return (
-        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.talkiobg}>
-            <FlatList
-                data={messages}
-                renderItem={({ item }) => <Message message={item} />}
-                style={styles.list}
-                inverted
-                keyExtractor={(item) => item.id}
-            />
-            <InputBox onSendMessage={handleSendMessage} />
-        </KeyboardAvoidingView>
-    );
+  const handleSendMessage = async () => {
+    if (messageText.trim()) {
+      const response = await sendMessage(currentUserPhoneNumber, recipientPhoneNumber, messageText);
+      if (response) {
+        setMessages([...messages, response]);
+        setMessageText('');
+      }
+    }
+  };
+// console.log(messages)
+  return (
+    <View>
+      {messages.map((msg) => (
+        <Text key={msg.$id}>{msg.messageText}</Text>
+      ))}
+      <TextInput
+        value={messageText}
+        onChangeText={setMessageText}
+        placeholder="Type your message..."
+      />
+      <Button title="Send" onPress={handleSendMessage} />
+    </View>
+  );
 };
-
-const styles = StyleSheet.create({
-    talkiobg: {
-        flex: 1,
-    },
-    list: {
-        padding: 10,
-    },
-});
 
 export default ChatRoom;

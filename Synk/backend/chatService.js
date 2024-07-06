@@ -1,77 +1,108 @@
 import { databases, ID } from './appwrite';
 import { Query } from 'appwrite';
 
-// Function to check if a chat already exists between two users
-const checkExistingChat = async (senderId, recipientId) => {
-    try {
-        // Query to check if a chat exists between the sender and recipient (in either direction)
-        const result = await databases.listDocuments('6685cbc40036f4c6a5ad', '6685e691003e5ceef040', [
-            Query.equal('senderId', senderId),
-            Query.equal('recipientId', recipientId),
-            Query.or([
-                Query.equal('senderId', recipientId),
-                Query.equal('recipientId', senderId)
-            ])
-        ]);
-        return result.documents.length > 0 ? result.documents[0] : null;
-    } catch (error) {
-        console.error("Failed to check existing chat:", error);
-        throw error;
+// Function to get an existing chat room
+const getExistingChat = async (senderPhoneNumber, recipientPhoneNumber) => {
+  try {
+    const response = await databases.listDocuments(
+      '6685cbc40036f4c6a5ad',
+      '6685e691003e5ceef040',
+      [
+        Query.or(
+          [
+            Query.and([Query.equal('senderId', senderPhoneNumber), Query.equal('receiverId', recipientPhoneNumber)]),
+            Query.and([Query.equal('senderId', recipientPhoneNumber), Query.equal('receiverId', senderPhoneNumber)])
+          ]
+        )
+      ]
+    );
+
+    if (response.documents.length > 0) {
+      return response.documents[0]; // Return the existing chat room
+    } else {
+      return null;
     }
+  } catch (error) {
+    console.error('Failed to get existing chat room:', error);
+    return null;
+  }
 };
 
-// Function to create a new chat document
-const createChat = async (senderId, recipientId) => {
-    try {
-        const existingChat = await checkExistingChat(senderId, recipientId);
+// Function to create a new chat room
+const createChat = async (senderPhoneNumber, recipientPhoneNumber) => {
+  try {
+    const chatId = ID.unique(); // Generate a unique chat ID
 
-        if (existingChat) {
-            return existingChat; // Return existing chat if found
-        } else {
-            const chatId = ID.unique(); // Generate a unique ID for the chat
-            const chat = await databases.createDocument('6685cbc40036f4c6a5ad', '6685e691003e5ceef040', chatId, {
-                createdAt: Date.now(), // Current timestamp
-                senderId,
-                recipientId,
-                messages: [], // Initialize with an empty array of messages
-                lastMessage: '',
-                lastMessageTime: null,
-            });
-            return chat; // Return the created chat document
-        }
-    } catch (error) {
-        console.error("Failed to create or retrieve chat:", error);
-        throw error;
-    }
+    // Create a new document in the ChatsService collection
+    const response = await databases.createDocument(
+      '6685cbc40036f4c6a5ad',
+      '6685e691003e5ceef040', // Replace with your actual ChatsService collection ID
+      chatId, // Appwrite auto-generates a unique ID
+      {
+        chatId: chatId,
+        senderId: senderPhoneNumber,
+        receiverId: recipientPhoneNumber,
+        createdAt: new Date().toISOString(), // Timestamp for when the chat was created
+      }
+    );
+
+    console.log(response);
+    return response; // Return the created chat room data (e.g., document ID)
+  } catch (error) {
+    console.error('Failed to create chat room:', error);
+    return null;
+  }
 };
 
-// Function to send a message within a chat
-const sendMessage = async (chatId, senderId, messageType, messageContent) => {
-    try {
-        // Fetch the existing chat document
-        const chat = await databases.getDocument('6685cbc40036f4c6a5ad', '6685e691003e5ceef040', chatId);
-        
-        const newMessage = {
-            id: ID.unique(), // Ensure each message has a unique ID
-            createdAt: Date.now(), // Current timestamp
-            senderId,
-            messageType,
-            messageContent,
-            messageStatus: 'sent', // Initial status
-        };
+// Function to send a message
+const sendMessage = async (senderId, receiverId, messageText = '', mediaUrl = '', type = 'text') => {
+  try {
+    let chatRoom = await getExistingChat(senderId, receiverId);
 
-        // Update the chat document with the new message
-        const updatedChat = await databases.updateDocument('6685cbc40036f4c6a5ad', '6685e691003e5ceef040', chatId, {
-            ...chat,
-            messages: [...(chat.messages || []), newMessage], // Add new message to the chat's messages array
-            lastMessage: messageContent, // Update last message
-            lastMessageTime: Date.now(), // Update last message time
-        });
-        return updatedChat; // Return the updated chat document
-    } catch (error) {
-        console.error("Failed to send message:", error);
-        throw error;
+    if (!chatRoom) {
+      // Create a new chat room document if it doesn't exist
+      chatRoom = await createChat(senderId, receiverId);
     }
+
+    const chatId = chatRoom.$id; // Use the chat room ID from the created or fetched chat room
+
+    // Send the message
+    const response = await databases.createDocument(
+      '6685cbc40036f4c6a5ad',
+      '6685e691003e5ceef040', 
+      ID.unique(), // Appwrite auto-generates a unique ID for the message
+      {
+        chatId: chatId,
+        senderId: senderId,
+        receiverId: receiverId,
+        messageText: messageText,
+        mediaUrl: mediaUrl,
+        type: type,
+        createdAt: new Date().toISOString(), // Timestamp for when the message was created
+      }
+    );
+
+    return response; // Return the created message data (e.g., document ID)
+  } catch (error) {
+    console.error('Failed to send message:', error);
+    return null;
+  }
 };
 
-export { checkExistingChat, createChat, sendMessage };
+// Function to fetch messages for a chat room
+const fetchMessages = async (chatId) => {
+  try {
+    const response = await databases.listDocuments(
+      '6685cbc40036f4c6a5ad',
+      '6685e691003e5ceef040', // Replace with your actual ChatsService collection ID
+      [Query.equal('chatId', chatId)]
+    );
+
+    return response.documents; // Return the list of messages
+  } catch (error) {
+    console.error('Failed to fetch messages:', error);
+    return [];
+  }
+};
+
+export { createChat, sendMessage, fetchMessages, getExistingChat };

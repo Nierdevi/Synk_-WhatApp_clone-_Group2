@@ -8,6 +8,7 @@ import {UserProvider} from './constants/userContext'
 import { StyleSheet, SafeAreaView, Text } from 'react-native';
 import { useEffect } from 'react';
 import { startContactRefresh } from './backend/contacts ';
+import { loadCachedContacts } from './backend/contacts ';
 
 import PhoneNumScreen from './Screens/PhoneNumScreen';
 import Verification from './Screens/Verification';
@@ -25,7 +26,8 @@ const MainLayout = () => {
 
   useEffect(() => {
     // Start the contact refresh when the app mounts
-    startContactRefresh();
+    loadCachedContacts();
+    // startContactRefresh();
   }, []);
   // const { isAuthenticated } = useAuth();
   return (

@@ -14,7 +14,7 @@ import ChatListItem from './components/ChatListItem';
 
 const chatsData = require('../../../assets/data/chats.json');
 
-import { fetchAndNormalizeContacts, loadCachedContacts, startContactRefresh } from '../../../backend/contacts ';
+import { fetchAndNormalizeContacts, loadCachedContacts, startContactRefresh,subscribeToDatabaseChanges } from '../../../backend/contacts ';
 
 const ChatsScreen = ({ navigation }) => {
   const { session, setSession } = getUser();
@@ -52,7 +52,7 @@ const ChatsScreen = ({ navigation }) => {
         }
       }
     }
-    console.log('Filtered in-app contacts:', inAppContacts); // Log in-app contacts
+    // console.log('Filtered in-app contacts:', inAppContacts); // Log in-app contacts
     // console.log('Filtered not-in-app contacts:', notInAppContacts); // Log not-in-app contacts
     setFilteredContacts({ inApp: inAppContacts, notInApp: notInAppContacts });
   };
@@ -78,11 +78,16 @@ const ChatsScreen = ({ navigation }) => {
   };
 
   const fetchContactsIfNeeded = async () => {
-    const fetchedContacts = await fetchAndNormalizeContacts();
-    // console.log('Fetched contacts:', fetchedContacts); 
-    if (fetchedContacts) {
-      setContacts(fetchedContacts);
-      filterContacts(fetchedContacts);
+    const cachedContacts = await loadCachedContacts();
+    if (cachedContacts) {
+      setContacts(cachedContacts);
+      filterContacts(cachedContacts);
+    } else {
+      const fetchedContacts = await fetchAndNormalizeContacts();
+      if (fetchedContacts) {
+        setContacts(fetchedContacts);
+        filterContacts(fetchedContacts);
+      }
     }
   };
 
@@ -93,24 +98,28 @@ const ChatsScreen = ({ navigation }) => {
 
   };
 
+  useEffect(() => {
+    fetchContactsIfNeeded();
+    startContactRefresh();
+    const unsubscribe = subscribeToDatabaseChanges(setContacts);
+    return () => unsubscribe(); // Clean up the subscription on unmount
+  }, []);
 
   const renderContactItem = ({ item }) => {
-    const handleContactPress = async (contact) => {
-      try {
-        const recipientUserId = contact.id; // Assuming contact.id is the contact's user ID in your app
-        const currentUserId = session.userId; // Current user's ID
 
-        const chatRoom = await createChat(currentUserId, recipientUserId);
-        if (chatRoom) {
-          navigation.navigate('ChatRoom', { chatRoomId: chatRoom.$id, contact });
-        } else {
-          Alert.alert('Error', 'Failed to create or retrieve chat room');
-        }
-      } catch (error) {
-        console.error('Failed to handle contact press:', error);
-        Alert.alert('Error', 'An error occurred while trying to create or retrieve the chat room');
-      }
-    };
+  const handleContactPress = async (contact) => {
+    try {
+      // const recipientPhoneNumber = contact.normalizedPhoneNumbers[0];
+      const currentPhoneNumber = session.phoneNumber; // Assuming session contains the current user's phone number
+
+      navigation.navigate('ChatRoom', { contact, currentUserPhoneNumber: currentPhoneNumber });
+      setModalVisible(false);
+    } catch (error) {
+      console.error('Failed to handle contact press:', error);
+      Alert.alert('Error', 'An error occurred while trying to navigate to the chat room');
+    }
+};
+
 
     return (
       <TouchableOpacity style={styles.contactItem} onPress={() => handleContactPress(item)}>
@@ -130,6 +139,7 @@ const ChatsScreen = ({ navigation }) => {
 
   // Render component based on user session
   if (session) {
+    console.log(session)
     return (
       <View style={styles.container}>
         <FlatList
@@ -139,7 +149,7 @@ const ChatsScreen = ({ navigation }) => {
         />
         <Fab type="chats" handlePress={handleFetchContacts} />
 
-        <Modal visible={modalVisible} animationType="slide">
+        <Modal visible={modalVisible} animationType="slide" onRequestClose={()=>{setModalVisible(false)}}>
           <View style={styles.modalHeader}>
             <Ionicons name="arrow-back-outline" size={24} color="black" onPress={() => setModalVisible(false)} />
             <Text style={styles.modalTitle}>Select contact</Text>
