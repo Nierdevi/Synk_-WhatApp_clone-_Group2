@@ -24,11 +24,11 @@ const Stack = createStackNavigator();
 
 const MainLayout = () => {
 
-  useEffect(() => {
-    // Start the contact refresh when the app mounts
-    loadCachedContacts();
-    // startContactRefresh();
-  }, []);
+  // useEffect(() => {
+  //   // Start the contact refresh when the app mounts
+  //   loadCachedContacts();
+  //   // startContactRefresh();
+  // }, []);
   // const { isAuthenticated } = useAuth();
   return (
     <NavigationContainer>

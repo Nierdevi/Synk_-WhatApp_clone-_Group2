@@ -46,7 +46,7 @@ const createChat = async (senderPhoneNumber, recipientPhoneNumber) => {
       }
     );
 
-    console.log(response);
+    // console.log(response);
     return response; // Return the created chat room data (e.g., document ID)
   } catch (error) {
     console.error('Failed to create chat room:', error);
@@ -58,14 +58,11 @@ const createChat = async (senderPhoneNumber, recipientPhoneNumber) => {
 const sendMessage = async (senderId, receiverId, messageText = '', mediaUrl = '', type = 'text') => {
   try {
     let chatRoom = await getExistingChat(senderId, receiverId);
-
     if (!chatRoom) {
       // Create a new chat room document if it doesn't exist
       chatRoom = await createChat(senderId, receiverId);
     }
-
     const chatId = chatRoom.$id; // Use the chat room ID from the created or fetched chat room
-
     // Send the message
     const response = await databases.createDocument(
       '6685cbc40036f4c6a5ad',
@@ -88,6 +85,7 @@ const sendMessage = async (senderId, receiverId, messageText = '', mediaUrl = ''
     return null;
   }
 };
+
 
 // Function to fetch messages for a chat room
 const fetchMessages = async (chatId) => {

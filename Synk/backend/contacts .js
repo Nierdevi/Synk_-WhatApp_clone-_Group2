@@ -89,6 +89,7 @@ const loadCachedContacts = async () => {
     
     const cachedContacts = await AsyncStorage.getItem(STORAGE_KEY);
     if (cachedContacts) {
+      // console.log(cachedContacts)
       return JSON.parse(cachedContacts);
     }
   } catch (error) {

@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Button, FlatList, Modal, Alert, Linking, Toucha
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import { getUser } from '../../../constants/userContext';
 import Fab from '../../../components/fab';
-import { createChat } from '../../../backend/chatService';
+import { createChat,fetchChats } from '../../../backend/chatService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons, Entypo } from '@expo/vector-icons';
 import { primaryColors } from '../../../constants/colors';
@@ -21,21 +21,26 @@ const ChatsScreen = ({ navigation }) => {
   const [contacts, setContacts] = useState([]);
   const [filteredContacts, setFilteredContacts] = useState({ inApp: [], notInApp: [] });
   const [modalVisible, setModalVisible] = useState(false);
+  const [messagedContacts,setMessagedContacts]=useState([])
 
-  // Load cached contacts when the component mounts
+
   useEffect(() => {
     const loadContacts = async () => {
       const cachedContacts = await loadCachedContacts();
-      // console.log('Cached contacts:', cachedContacts); // Log cached contacts
       if (cachedContacts) {
+        // console.log(cachedContacts)
         setContacts(cachedContacts);
         filterContacts(cachedContacts);
       }
     };
 
+
     loadContacts();
-    // startContactRefresh(); // Start refreshing contacts periodically
-  }, []);
+    startContactRefresh();
+    const unsubscribe = subscribeToDatabaseChanges(setContacts);
+    return () => unsubscribe(); // Clean up the subscription on unmount
+  }, [session]);
+
 
   const filterContacts = async (contacts) => {
     const inAppContacts = [];
@@ -82,13 +87,13 @@ const ChatsScreen = ({ navigation }) => {
     if (cachedContacts) {
       setContacts(cachedContacts);
       filterContacts(cachedContacts);
-    } else {
+    }
+
       const fetchedContacts = await fetchAndNormalizeContacts();
       if (fetchedContacts) {
         setContacts(fetchedContacts);
         filterContacts(fetchedContacts);
       }
-    }
   };
 
   const handleFetchContacts = async () => {
@@ -98,27 +103,28 @@ const ChatsScreen = ({ navigation }) => {
 
   };
 
+
   useEffect(() => {
     fetchContactsIfNeeded();
     startContactRefresh();
-    const unsubscribe = subscribeToDatabaseChanges(setContacts);
-    return () => unsubscribe(); // Clean up the subscription on unmount
+    // const unsubscribe = subscribeToDatabaseChanges(setContacts);
+    // return () => unsubscribe(); // Clean up the subscription on unmount
   }, []);
+  
 
   const renderContactItem = ({ item }) => {
+      const handleContactPress = async (contact) => {
+        try {
+          // const recipientPhoneNumber = contact.normalizedPhoneNumbers[0];
+          const currentPhoneNumber = session.phoneNumber; // Assuming session contains the current user's phone number
 
-  const handleContactPress = async (contact) => {
-    try {
-      // const recipientPhoneNumber = contact.normalizedPhoneNumbers[0];
-      const currentPhoneNumber = session.phoneNumber; // Assuming session contains the current user's phone number
-
-      navigation.navigate('ChatRoom', { contact, currentUserPhoneNumber: currentPhoneNumber });
-      setModalVisible(false);
-    } catch (error) {
-      console.error('Failed to handle contact press:', error);
-      Alert.alert('Error', 'An error occurred while trying to navigate to the chat room');
-    }
-};
+          navigation.navigate('ChatRoom', { contact, currentUserPhoneNumber: currentPhoneNumber });
+          setModalVisible(false);
+        } catch (error) {
+          console.error('Failed to handle contact press:', error);
+          Alert.alert('Error', 'An error occurred while trying to navigate to the chat room');
+        }
+      };
 
 
     return (
@@ -145,7 +151,7 @@ const ChatsScreen = ({ navigation }) => {
         <FlatList
           data={chatsData}
           renderItem={({ item }) => <ChatListItem chat={item} />}
-          keyExtractor={(item) => item.id.toString()}
+          keyExtractor={(item) => item.id}
         />
         <Fab type="chats" handlePress={handleFetchContacts} />
 
