@@ -59,27 +59,28 @@ const sendMessage = async (senderId, receiverId, messageText = '', mediaUrl = ''
   try {
     let chatRoom = await getExistingChat(senderId, receiverId);
     if (!chatRoom) {
-      // Create a new chat room document if it doesn't exist
       chatRoom = await createChat(senderId, receiverId);
     }
-    const chatId = chatRoom.$id; // Use the chat room ID from the created or fetched chat room
-    // Send the message
+    const chatId = chatRoom.$id;
     const response = await databases.createDocument(
       '6685cbc40036f4c6a5ad',
       '6685e691003e5ceef040', 
-      ID.unique(), // Appwrite auto-generates a unique ID for the message
+      ID.unique(),
       {
-        chatId: chatId,
-        senderId: senderId,
-        receiverId: receiverId,
-        messageText: messageText,
-        mediaUrl: mediaUrl,
-        type: type,
-        createdAt: new Date().toISOString(), // Timestamp for when the message was created
+        chatId,
+        senderId,
+        receiverId,
+        messageText,
+        mediaUrl,
+        type,
+        createdAt: new Date().toISOString(),
       }
     );
 
-    return response; // Return the created message data (e.g., document ID)
+    // Add contacts to MessagedContacts
+    await addMessagedContact(senderId, receiverId);
+
+    return response;
   } catch (error) {
     console.error('Failed to send message:', error);
     return null;
@@ -103,4 +104,99 @@ const fetchMessages = async (chatId) => {
   }
 };
 
-export { createChat, sendMessage, fetchMessages, getExistingChat };
+const addMessagedContact = async (userPhoneNumber, contactPhoneNumber) => {
+  try {
+    // Check if the contact already exists
+    const existingContactResponse = await databases.listDocuments(
+      '6685cbc40036f4c6a5ad',
+      '668aec1c002358157dad',
+      [
+        Query.or(
+          [
+            Query.and([Query.equal('userPhoneNumber', userPhoneNumber), Query.equal('contactPhoneNumber', contactPhoneNumber)]),
+            Query.and([Query.equal('userPhoneNumber', contactPhoneNumber), Query.equal('contactPhoneNumber', userPhoneNumber)])
+          ]
+        )
+      ]
+    );
+
+    if (existingContactResponse.documents.length === 0) {
+      // Add the new contact
+      await databases.createDocument(
+        '6685cbc40036f4c6a5ad',
+        '668aec1c002358157dad',
+        ID.unique(),
+        {
+          userPhoneNumber,
+          contactPhoneNumber,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        }
+      );
+    } else {
+      // Update the existing contact's updatedAt field
+      const existingContactId = existingContactResponse.documents[0].$id;
+      await databases.updateDocument(
+        '6685cbc40036f4c6a5ad',
+        '668aec1c002358157dad',
+        existingContactId,
+        {
+          updatedAt: new Date().toISOString(),
+        }
+      );
+    }
+  } catch (error) {
+    console.error('Failed to add messaged contact:', error);
+  }
+};
+
+const fetchUserMessages = async (userPhoneNumber) => {
+  try {
+    const response = await databases.listDocuments(
+      '6685cbc40036f4c6a5ad',
+      '668aec1c002358157dad',
+      [
+        Query.or(
+          [Query.equal('userPhoneNumber', userPhoneNumber), Query.equal('contactPhoneNumber', userPhoneNumber)]
+        )
+      ]
+    );
+      // console.log(response)
+    return response.documents;
+  } catch (error) {
+    console.error('Failed to fetch messaged contacts:', error);
+    return [];
+  }
+};
+
+const fetchMessagedContacts = async (currentUserPhoneNumber) => {
+  try {
+    const messages = await fetchUserMessages(currentUserPhoneNumber);
+
+    const uniqueContacts = new Set();
+
+    messages.forEach(message => {
+      // Determine the contact's phone number based on whether currentUserPhoneNumber
+      // matches the userPhoneNumber or contactPhoneNumber in each message
+      const contactPhoneNumber = message.userPhoneNumber === currentUserPhoneNumber
+        ? message.contactPhoneNumber
+        : message.userPhoneNumber;
+
+      // Add the contact's phone number to uniqueContacts if it's different from currentUserPhoneNumber
+      if (contactPhoneNumber && contactPhoneNumber !== currentUserPhoneNumber) {
+        uniqueContacts.add(contactPhoneNumber);
+      }
+    });
+
+    // Convert Set to Array and return the list of unique contact phone numbers
+    const contacts = Array.from(uniqueContacts);
+    // console.log(contacts)
+    return contacts;
+  } catch (error) {
+    console.error('Failed to fetch messaged contacts:', error);
+    return []; // Return an empty array or handle error as needed
+  }
+};
+
+
+export { createChat, sendMessage, fetchMessages, getExistingChat,addMessagedContact ,fetchMessagedContacts};
