@@ -1,17 +1,46 @@
-// src/screens/UpdatesScreen.js
 import React from 'react';
-import { Image, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { FlatList, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons'; // Import the icons
 import Fab from '../../../components/fab'; // Adjust the import path as needed
 
 const statuses = [
-    { id: 1, user: 'Alice', time: 'Today, 8:45 AM', img: 'https://via.placeholder.com/50' },
-    { id: 2, user: 'Bob', time: 'Today, 9:15 AM', img: 'https://via.placeholder.com/50' }
+    { id: 1, user: 'Alice', img: 'https://via.placeholder.com/50', total: 3, viewed: 1 },
+    { id: 2, user: 'Bob', img: 'https://via.placeholder.com/50', total: 2, viewed: 1 }
 ];
 
 const channels = [
-    { id: 1, name: 'News Channel', description: 'Latest news updates' },
-    { id: 2, name: 'Sports Channel', description: 'Live sports updates' }
+    { 
+        id: 1, 
+        name: 'News Channel', 
+        description: 'Latest news updates', 
+        img: 'https://via.placeholder.com/50', 
+        time: '2h ago', 
+        unread: 3 
+    },
+    { 
+        id: 2, 
+        name: 'Sports Channel', 
+        description: 'Live sports updates', 
+        img: 'https://via.placeholder.com/50', 
+        time: '1h ago', 
+        unread: 5 
+    }
 ];
+
+const DefaultProfileImg = () => (
+    <View style={styles.statusContainer}>
+        <View style={styles.statusWrapperDefault}>
+            <Image source={{ uri: 'https://via.placeholder.com/50' }} style={styles.statusImg} />
+            <View style={styles.plusSign}>
+                <Text style={styles.plusText}>+</Text>
+            </View>
+            <View style={styles.pencilIcon}>
+                <Ionicons name="pencil" size={16} color="#fff" />
+            </View>
+        </View>
+        <Text style={styles.statusUser}>My Status</Text>
+    </View>
+);
 
 export default function UpdatesScreen({ navigation }) {
     return (
@@ -19,23 +48,47 @@ export default function UpdatesScreen({ navigation }) {
             <ScrollView>
                 <View style={styles.section}>
                     <Text style={styles.title}>Status</Text>
-                    {statuses.map(status => (
-                        <View key={status.id} style={styles.listItem}>
-                            <Image source={{ uri: status.img }} style={styles.statusImg} />
-                            <View style={styles.statusInfo}>
-                                <Text style={styles.statusUser}>{status.user}</Text>
-                                <Text style={styles.statusTime}>{status.time}</Text>
-                            </View>
-                        </View>
-                    ))}
+                    <FlatList
+                        horizontal
+                        data={[{ id: 'default', user: 'My Status', img: 'https://via.placeholder.com/50' }, ...statuses]}
+                        renderItem={({ item }) => (
+                            item.id === 'default' ? (
+                                <DefaultProfileImg />
+                            ) : (
+                                <View key={item.id} style={styles.statusContainer}>
+                                    <View style={[
+                                        styles.statusWrapper, 
+                                        { borderColor: item.viewed < item.total ? 'purple' : '#ccc' }
+                                    ]}>
+                                        <Image source={{ uri: item.img }} style={styles.statusImg} />
+                                    </View>
+                                    <Text style={styles.statusUser}>{item.user}</Text>
+                                </View>
+                            )
+                        )}
+                        keyExtractor={item => item.id.toString()}
+                        showsHorizontalScrollIndicator={false}
+                    />
                 </View>
                 <View style={styles.section}>
-                    <Text style={styles.title}>Channels</Text>
+                    <View style={styles.channelsHeader}>
+                        <Text style={styles.title}>Channels</Text>
+                        <TouchableOpacity onPress={() => navigation.navigate('Explore')}>
+                            <Text style={styles.exploreText}>Explore &gt;</Text>
+                        </TouchableOpacity>
+                    </View>
                     {channels.map(channel => (
                         <View key={channel.id} style={styles.listItem}>
+                            <Image source={{ uri: channel.img }} style={styles.channelImg} />
                             <View style={styles.channelInfo}>
                                 <Text style={styles.channelName}>{channel.name}</Text>
                                 <Text style={styles.channelDescription}>{channel.description}</Text>
+                            </View>
+                            <View style={styles.channelMeta}>
+                                <Text style={styles.channelTime}>{channel.time}</Text>
+                                <View style={styles.unreadBadge}>
+                                    <Text style={styles.unreadText}>{channel.unread}</Text>
+                                </View>
                             </View>
                         </View>
                     ))}
@@ -60,6 +113,78 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold'
     },
+    channelsHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: 10
+    },
+    exploreText: {
+        color: 'purple',
+        fontSize: 16,
+        fontWeight: 'bold'
+    },
+    statusContainer: {
+        alignItems: 'center',
+        marginRight: 15
+    },
+    statusWrapper: {
+        width: 60,
+        height: 60,
+        borderRadius: 30,
+        borderWidth: 2,
+        justifyContent: 'center',
+        alignItems: 'center',
+        position: 'relative'
+    },
+    statusWrapperDefault: {
+        width: 60,
+        height: 60,
+        borderRadius: 30,
+        justifyContent: 'center',
+        alignItems: 'center',
+        position: 'relative'
+    },
+    plusSign: {
+        position: 'absolute',
+        bottom: 0,
+        right: 0,
+        backgroundColor: 'purple',
+        borderRadius: 12,
+        width: 24,
+        height: 24,
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 2
+    },
+    plusText: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: 'bold'
+    },
+    pencilIcon: {
+        position: 'absolute',
+        bottom: 0,
+        right: 30,
+        backgroundColor: 'purple',
+        borderRadius: 12,
+        width: 24,
+        height: 24,
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 2
+    },
+    statusImg: {
+        width: 50,
+        height: 50,
+        borderRadius: 25,
+        zIndex: 2
+    },
+    statusUser: {
+        marginTop: 5,
+        textAlign: 'center',
+        fontWeight: 'bold'
+    },
     listItem: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -73,22 +198,14 @@ const styles = StyleSheet.create({
         shadowRadius: 3,
         elevation: 2
     },
-    statusImg: {
+    channelImg: {
         width: 50,
         height: 50,
         borderRadius: 25,
         marginRight: 10
     },
-    statusInfo: {
-        flexDirection: 'column'
-    },
-    statusUser: {
-        fontWeight: 'bold'
-    },
-    statusTime: {
-        color: '#888'
-    },
     channelInfo: {
+        flex: 1,
         flexDirection: 'column'
     },
     channelName: {
@@ -96,5 +213,24 @@ const styles = StyleSheet.create({
     },
     channelDescription: {
         color: '#888'
+    },
+    channelMeta: {
+        alignItems: 'flex-end'
+    },
+    channelTime: {
+        fontSize: 12,
+        color: '#888'
+    },
+    unreadBadge: {
+        backgroundColor: 'purple',
+        borderRadius: 12,
+        paddingVertical: 2,
+        paddingHorizontal: 6,
+        marginTop: 2
+    },
+    unreadText: {
+        color: '#fff',
+        fontSize: 12,
+        fontWeight: 'bold'
     }
 });
