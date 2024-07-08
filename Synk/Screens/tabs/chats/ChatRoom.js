@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
     height: 40,
     borderRadius: 20,
    // marginLeft: 10,
-    marginRight: 210,
+    marginRight: 211,
     alignSelf: ""
   },
 });
