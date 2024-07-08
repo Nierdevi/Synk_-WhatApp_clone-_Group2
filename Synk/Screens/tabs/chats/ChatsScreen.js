@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Button, FlatList, Modal, Alert, TextInput, TouchableOpacity, Pressable } from 'react-native';
+import { View, Text, StyleSheet, Button, FlatList, Modal, Alert, TextInput, TouchableOpacity, Pressable,ScrollView } from 'react-native';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import { getUser } from '../../../constants/userContext';
 import Fab from '../../../components/fab';
@@ -127,7 +127,7 @@ const ChatsScreen = ({ navigation }) => {
 
   
   const renderMessagedContactItem = ({ item }) => {
-    console.log("Item:", item); // Log item to understand its structure and value
+    // console.log("Item:", item); // Log item to understand its structure and value
   
     // Find the contact in your contacts list based on any normalized phone number
     const contact = contacts.find(contact => {
@@ -138,7 +138,7 @@ const ChatsScreen = ({ navigation }) => {
       return false;
     });
   
-    console.log("Contact:", contact); // Log contact to understand why it might be undefined
+    // console.log("Contact:", contact); // Log contact to understand why it might be undefined
   
     if (!contact) {
       console.warn(`No contact found for ${item}`);
