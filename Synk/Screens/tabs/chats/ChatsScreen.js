@@ -1,16 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Button, FlatList, Modal, Alert, TextInput, TouchableOpacity, Pressable,ScrollView } from 'react-native';
+import { Entypo, Ionicons } from '@expo/vector-icons';
+import React, { useEffect, useState } from 'react';
+import { Alert, FlatList, Modal, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
-import { getUser } from '../../../constants/userContext';
+import { fetchMessagedContacts, } from '../../../backend/chatService';
 import Fab from '../../../components/fab';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Ionicons, Entypo } from '@expo/vector-icons';
 import { primaryColors } from '../../../constants/colors';
-import { databases } from '../../../backend/appwrite';
-import {fetchMessagedContacts,} from '../../../backend/chatService'
-import ChatListItem from './components/ChatListItem';
+import { getUser } from '../../../constants/userContext';
 
-import { fetchAndNormalizeContacts, loadCachedContacts, startContactRefresh, subscribeToDatabaseChanges } from '../../../backend/contacts ';
+import { fetchAndNormalizeContacts, loadCachedContacts } from '../../../backend/contacts ';
 
 const FILTEREDCONTACTS = '@MyApp:filteredContacts';
 const chatsData = require('../../../assets/data/chats.json');
