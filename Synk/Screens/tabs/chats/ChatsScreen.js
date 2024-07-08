@@ -147,7 +147,7 @@ const ChatsScreen = ({ navigation }) => {
   
 
 
-  if (session) {
+  if (!session) {
     return (
       <View style={styles.container}>
         <FlatList
