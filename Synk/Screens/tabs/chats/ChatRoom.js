@@ -1,13 +1,14 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, FlatList, KeyboardAvoidingView, Platform } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, KeyboardAvoidingView, Platform, View, Text } from 'react-native';
 import { sendMessage, fetchMessages, getExistingChat } from '../../../backend/chatService';
 import InputBox from '../../../components/InputBox';
-import { primaryColors } from '../../../constants/colors';
+import ChatList from '../../../components/ChatListItem';
+import { fetchLastMessage } from '../../../backend/chatService'; // Import fetchLastMessage function
 
 const ChatRoom = ({ route }) => {
   const { contact, currentUserPhoneNumber } = route.params;
   const [messages, setMessages] = useState([]);
-  const flatListRef = useRef(null);
+  const [lastMessage, setLastMessage] = useState(null); // State to hold last message
 
   const recipientPhoneNumber = contact.normalizedPhoneNumbers[0]; // Use the first normalized phone number
 
@@ -18,6 +19,14 @@ const ChatRoom = ({ route }) => {
         const chatId = existingChat.$id;
         const fetchedMessages = await fetchMessages(chatId);
         setMessages(fetchedMessages.reverse()); // Reverse to display the latest message at the bottom
+
+        // Fetch the last message
+        try {
+          const lastMessageData = await fetchLastMessage(chatId);
+          setLastMessage(lastMessageData);
+        } catch (error) {
+          console.error('Failed to fetch last message:', error);
+        }
       }
     };
     loadMessages();
@@ -28,40 +37,23 @@ const ChatRoom = ({ route }) => {
       const response = await sendMessage(currentUserPhoneNumber, recipientPhoneNumber, messageText);
       if (response) {
         setMessages((prevMessages) => [response, ...prevMessages]);
-        flatListRef.current.scrollToOffset({ animated: true, offset: 0 });
+        setLastMessage(response); // Update last message after sending new message
       }
     }
   };
 
-  const isCurrentUserMessage = (message) => {
-    return message.senderId === currentUserPhoneNumber;
-  };
-
-  const renderItem = ({ item }) => (
-    <View
-      style={[
-        styles.message,
-        isCurrentUserMessage(item) ? styles.currentUserMessage : styles.recipientMessage,
-      ]}
-    >
-      <Text style={styles.messageText}>{item.messageText}</Text>
-    </View>
-  );
-
   return (
     <KeyboardAvoidingView
       style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      behavior={Platform.OS === 'ios' ? 'padding' : 0}
       keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0}
     >
-      <FlatList
-        ref={flatListRef}
-        data={messages}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.$id}
-        contentContainerStyle={styles.messagesContainer}
-        // inverted
-      />
+      <View style={styles.lastMessageContainer}>
+        {lastMessage && (
+          <Text style={styles.lastMessageText}>{lastMessage.messageText}</Text>
+        )}
+      </View>
+      <ChatList messages={messages} currentUserPhoneNumber={currentUserPhoneNumber} />
       <InputBox onSendMessage={handleSendMessage} />
     </KeyboardAvoidingView>
   );
@@ -71,28 +63,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  messagesContainer: {
-    flexGrow: 1,
-    justifyContent: 'flex-end',
-    padding: 10,
+  lastMessageContainer: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
   },
-  message: {
-    maxWidth: '80%',
-    padding: 10,
-    marginBottom: 10,
-    borderRadius: 10,
-  },
-  currentUserMessage: {
-    alignSelf: 'flex-end',
-    backgroundColor: primaryColors.purple, // Example background color for current user's message
-  },
-  recipientMessage: {
-    alignSelf: 'flex-start',
-    backgroundColor: '#3F3F46', // Example background color for recipient's message
-  },
-  messageText: {
+  lastMessageText: {
     fontSize: 16,
-    color: 'white',
+    color: '#333',
   },
 });
 

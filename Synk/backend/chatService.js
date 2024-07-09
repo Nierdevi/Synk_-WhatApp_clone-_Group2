@@ -1,7 +1,14 @@
 import { databases, ID } from './appwrite';
 import { Query } from 'appwrite';
+import { Alert } from 'react-native';
 
-// Function to get an existing chat room
+const handleNetworkError = (error) => {
+  console.error(error);
+  if (error.message.includes('Network request failed')) {
+    Alert.alert('Network Error', 'Please check your network connection and try again.');
+  }
+};
+
 const getExistingChat = async (senderPhoneNumber, recipientPhoneNumber) => {
   try {
     const response = await databases.listDocuments(
@@ -18,43 +25,39 @@ const getExistingChat = async (senderPhoneNumber, recipientPhoneNumber) => {
     );
 
     if (response.documents.length > 0) {
-      return response.documents[0]; // Return the existing chat room
+      return response.documents[0];
     } else {
       return null;
     }
   } catch (error) {
-    console.error('Failed to get existing chat room:', error);
+    handleNetworkError(error);
     return null;
   }
 };
 
-// Function to create a new chat room
 const createChat = async (senderPhoneNumber, recipientPhoneNumber) => {
   try {
-    const chatId = ID.unique(); // Generate a unique chat ID
+    const chatId = ID.unique();
 
-    // Create a new document in the ChatsService collection
     const response = await databases.createDocument(
       '6685cbc40036f4c6a5ad',
-      '6685e691003e5ceef040', // Replace with your actual ChatsService collection ID
-      chatId, // Appwrite auto-generates a unique ID
+      '6685e691003e5ceef040',
+      chatId,
       {
-        chatId: chatId,
+        chatId,
         senderId: senderPhoneNumber,
         receiverId: recipientPhoneNumber,
-        createdAt: new Date().toISOString(), // Timestamp for when the chat was created
+        createdAt: new Date().toISOString(),
       }
     );
 
-    // console.log(response);
-    return response; // Return the created chat room data (e.g., document ID)
+    return response;
   } catch (error) {
-    console.error('Failed to create chat room:', error);
+    handleNetworkError(error);
     return null;
   }
 };
 
-// Function to send a message
 const sendMessage = async (senderId, receiverId, messageText = '', mediaUrl = '', type = 'text') => {
   try {
     let chatRoom = await getExistingChat(senderId, receiverId);
@@ -62,9 +65,10 @@ const sendMessage = async (senderId, receiverId, messageText = '', mediaUrl = ''
       chatRoom = await createChat(senderId, receiverId);
     }
     const chatId = chatRoom.$id;
+
     const response = await databases.createDocument(
       '6685cbc40036f4c6a5ad',
-      '6685e691003e5ceef040', 
+      '6685e691003e5ceef040',
       ID.unique(),
       {
         chatId,
@@ -77,36 +81,32 @@ const sendMessage = async (senderId, receiverId, messageText = '', mediaUrl = ''
       }
     );
 
-    // Add contacts to MessagedContacts
     await addMessagedContact(senderId, receiverId);
 
     return response;
   } catch (error) {
-    console.error('Failed to send message:', error);
+    handleNetworkError(error);
     return null;
   }
 };
 
-
-// Function to fetch messages for a chat room
 const fetchMessages = async (chatId) => {
   try {
     const response = await databases.listDocuments(
       '6685cbc40036f4c6a5ad',
-      '6685e691003e5ceef040', // Replace with your actual ChatsService collection ID
+      '6685e691003e5ceef040',
       [Query.equal('chatId', chatId)]
     );
 
-    return response.documents; // Return the list of messages
+    return response.documents;
   } catch (error) {
-    console.error('Failed to fetch messages:', error);
+    handleNetworkError(error);
     return [];
   }
 };
 
 const addMessagedContact = async (userPhoneNumber, contactPhoneNumber) => {
   try {
-    // Check if the contact already exists
     const existingContactResponse = await databases.listDocuments(
       '6685cbc40036f4c6a5ad',
       '668aec1c002358157dad',
@@ -121,7 +121,6 @@ const addMessagedContact = async (userPhoneNumber, contactPhoneNumber) => {
     );
 
     if (existingContactResponse.documents.length === 0) {
-      // Add the new contact
       await databases.createDocument(
         '6685cbc40036f4c6a5ad',
         '668aec1c002358157dad',
@@ -134,7 +133,6 @@ const addMessagedContact = async (userPhoneNumber, contactPhoneNumber) => {
         }
       );
     } else {
-      // Update the existing contact's updatedAt field
       const existingContactId = existingContactResponse.documents[0].$id;
       await databases.updateDocument(
         '6685cbc40036f4c6a5ad',
@@ -146,7 +144,7 @@ const addMessagedContact = async (userPhoneNumber, contactPhoneNumber) => {
       );
     }
   } catch (error) {
-    console.error('Failed to add messaged contact:', error);
+    handleNetworkError(error);
   }
 };
 
@@ -161,10 +159,9 @@ const fetchUserMessages = async (userPhoneNumber) => {
         )
       ]
     );
-      // console.log(response)
     return response.documents;
   } catch (error) {
-    console.error('Failed to fetch messaged contacts:', error);
+    handleNetworkError(error);
     return [];
   }
 };
@@ -173,30 +170,52 @@ const fetchMessagedContacts = async (currentUserPhoneNumber) => {
   try {
     const messages = await fetchUserMessages(currentUserPhoneNumber);
 
-    const uniqueContacts = new Set();
+    const uniqueContacts = new Map();
 
     messages.forEach(message => {
-      // Determine the contact's phone number based on whether currentUserPhoneNumber
-      // matches the userPhoneNumber or contactPhoneNumber in each message
       const contactPhoneNumber = message.userPhoneNumber === currentUserPhoneNumber
         ? message.contactPhoneNumber
         : message.userPhoneNumber;
 
-      // Add the contact's phone number to uniqueContacts if it's different from currentUserPhoneNumber
       if (contactPhoneNumber && contactPhoneNumber !== currentUserPhoneNumber) {
-        uniqueContacts.add(contactPhoneNumber);
+        if (!uniqueContacts.has(contactPhoneNumber) || new Date(message.updatedAt) > new Date(uniqueContacts.get(contactPhoneNumber).updatedAt)) {
+          uniqueContacts.set(contactPhoneNumber, { ...message, contactPhoneNumber });
+        }
       }
     });
 
-    // Convert Set to Array and return the list of unique contact phone numbers
-    const contacts = Array.from(uniqueContacts);
-    // console.log(contacts)
-    return contacts;
+    return Array.from(uniqueContacts.values());
   } catch (error) {
     console.error('Failed to fetch messaged contacts:', error);
-    return []; // Return an empty array or handle error as needed
+    if (error.message.includes('Network request failed')) {
+      Alert.alert('Network Error', 'Please check your network connection.');
+    }
+    return [];
+  }
+};
+
+const fetchLastMessage = async (chatId) => {
+  try {
+    const response = await databases.listDocuments(
+      '6685cbc40036f4c6a5ad', // Replace with your collection ID
+      '6685e691003e5ceef040', // Replace with your document ID
+      [
+        Query.equal('chatId', chatId),
+        Query.sort('createdAt', 'desc'), // Fetch messages in descending order of createdAt
+        Query.limit(1), // Limit to retrieve only the last message
+      ]
+    );
+
+    if (response.documents.length > 0) {
+      return response.documents[0]; // Return the last message document
+    } else {
+      return null; // Return null if no message found
+    }
+  } catch (error) {
+    console.error('Failed to fetch last message:', error);
+    throw error; // Throw error for further handling
   }
 };
 
 
-export { createChat, sendMessage, fetchMessages, getExistingChat,addMessagedContact ,fetchMessagedContacts};
+export { createChat, sendMessage, fetchMessages, getExistingChat, addMessagedContact, fetchMessagedContacts,fetchLastMessage };
