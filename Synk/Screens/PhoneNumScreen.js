@@ -4,7 +4,9 @@ import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-nativ
 import PhoneInput  from 'react-native-international-phone-number'
 import {primaryColors} from '../constants/colors';
 import { useTheme } from '../constants/themeContext';
-import {createUser} from '../backend/verificationService'
+import {createUser} from '../backend/verificationService';
+import { databases } from '../backend/appwrite';
+import { Query } from 'appwrite';
 
 
 const PhoneNumScreen = ({ navigation }) => {
@@ -25,24 +27,42 @@ const PhoneNumScreen = ({ navigation }) => {
         setSelectedCountry(country);
     }
 
-    const handleSubmit =async ()=>{
-
+    const checkPhoneNumberExists = async (phoneNumber) => {
         try {
-            Alert.alert(
-                "Request sent","You will recieve a token ",
-                [{
-                    text: "OK",
-                    onPress: () => navigation.navigate('Verification', { token: sentToken,countryCode,phoneNumber })
-                }],
-                { cancelable: false }
-            )
-            const u= await createUser(Number);
-                setSentToken(u)
+            const response = await databases.listDocuments('6685cbc40036f4c6a5ad', '6685cc6600212adefdbf', [
+                Query.equal('phoneNumber', phoneNumber),
+            ]);
+
+            return response.documents.length > 0;
         } catch (error) {
-            console.log(error)
+            console.error('Error checking phone number:', error);
+            throw error;
         }
-        
-    // console.log(Number)
+    };
+
+    const handleSubmit = async () => {
+        try {
+            const phoneNumberExists = await checkPhoneNumberExists(Number);
+
+            if (phoneNumberExists) {
+                Alert.alert('Phone Number Exists', 'The phone number you entered already exists.');
+                return;
+            }else{
+                Alert.alert(
+                    "Request sent", "You will receive a token",
+                    [{
+                        text: "OK",
+                        onPress: () => navigation.navigate('Verification', { token: sentToken, countryCode, phoneNumber })
+                    }],
+                    { cancelable: false }
+                );
+
+                const u = await createUser(Number);
+                setSentToken(u);
+            }
+        } catch (error) {
+            console.log(error);
+        }
     };
 
 

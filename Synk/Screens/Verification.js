@@ -81,7 +81,7 @@ import {getUser} from '../constants/userContext';
       const session = await verifyUser(token.userId, otpCode);
       if (session) {
           const userId = session.userId;
-          await addUserToDatabase(userId, '', countryCode + phoneNumber);
+          await addUserToDatabase(userId, countryCode + phoneNumber);
           setSession(session)
           console.log(session)
           Alert.alert('Verification Successful', 'You have been successfully verified.', [
@@ -91,8 +91,10 @@ import {getUser} from '../constants/userContext';
           ]);
       }
   } catch (error) {
+
       console.log(error);
       Alert.alert('Verification Failed', 'The OTP you entered is incorrect or expired. Please try again.');
+      
   }
 
  }
