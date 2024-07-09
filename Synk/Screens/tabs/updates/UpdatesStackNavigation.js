@@ -1,10 +1,10 @@
-import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
-import UpdatesScreen from './UpdatesScreen'; 
-import StatusView from './StatusView';
-import ChannelsScreen from './Channels';
+import { createStackNavigator } from '@react-navigation/stack';
+import React from 'react';
 import { useTheme } from '../../../constants/themeContext';
+import ChannelsScreen from './ChannelDetails';
+import StatusView from './StatusView';
+import UpdatesScreen from './UpdatesScreen';
 
 const ChatsStack = createStackNavigator();
 
@@ -34,7 +34,7 @@ const UpdatesStackNavigator = ({navigation,route}) => {
             })} 
 
             />
-        <ChatsStack.Screen name="Channels" component={ChannelsScreen} 
+        <ChatsStack.Screen name="ChannelDetails" component={ChannelsScreen} 
         options={()=>({ 
             headerShown: true,
             // tabBarVisible:false
