@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { FlatList, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import channelImage from '../assets/AppLogo.png'; // Adjust the path as needed
 
 // Define DefaultProfileImg as a separate named component
 export const DefaultProfileImg = () => (
@@ -30,7 +31,7 @@ const UpdatesScreen = ({ navigation }) => {
             id: 1, 
             name: 'The New York Times', 
             description: 'Top stories', 
-            img: 'https://via.placeholder.com/50', 
+            img: channelImage, 
             time: '2h ago', 
             unread: 3 
         },
