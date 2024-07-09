@@ -1,9 +1,18 @@
 import React from 'react';
 import { View, Text, Switch, TouchableOpacity, StyleSheet } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 const SettingsScreen = ({ navigation }) => {
   const [isEnabled, setIsEnabled] = React.useState(false);
   const toggleSwitch = () => setIsEnabled(previousState => !previousState);
+
+  const navigateToNotifications = () => {
+    navigation.navigate('Notifications');
+  };
+
+  const navigateToAccount = () => {
+    navigation.navigate('Account')
+  };
 
   return (
     <View style={styles.container}>
@@ -11,13 +20,13 @@ const SettingsScreen = ({ navigation }) => {
       
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>General</Text>
-        <TouchableOpacity style={styles.option}>
+        <TouchableOpacity style={styles.option} onPress={navigateToAccount}>
           <Text style={styles.optionText}>Account</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.option}>
           <Text style={styles.optionText}>Privacy</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.option}>
+        <TouchableOpacity style={styles.option} onPress={navigateToNotifications}>
           <Text style={styles.optionText}>Notifications</Text>
         </TouchableOpacity>
       </View>
