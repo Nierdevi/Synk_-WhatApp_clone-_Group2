@@ -1,10 +1,22 @@
+import { Entypo, Ionicons } from '@expo/vector-icons';
+import React, { useEffect, useState } from 'react';
+import { Alert, FlatList, Modal, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, Modal, TextInput, TouchableOpacity, Pressable, Alert } from 'react-native';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
-import { getUser } from '../../../constants/userContext';
+import { fetchMessagedContacts, } from '../../../backend/chatService';
 import Fab from '../../../components/fab';
 import { Ionicons, Entypo } from '@expo/vector-icons';
 import { primaryColors } from '../../../constants/colors';
+import { getUser } from '../../../constants/userContext';
+
+import { fetchAndNormalizeContacts, loadCachedContacts } from '../../../backend/contacts ';
+
+const FILTEREDCONTACTS = '@MyApp:filteredContacts';
+const chatsData = require('../../../assets/data/chats.json');
+
+const ChatsScreen = ({ navigation }) => {
+  const { session, setSession } = getUser();
 import { fetchMessagedContacts } from '../../../backend/chatService';
 import { fetchAndNormalizeContacts, loadCachedContacts } from '../../../backend/contacts ';
 import ChatRoom from './ChatRoom';
@@ -120,6 +132,18 @@ const ChatsScreen = ({ navigation }) => {
     contact.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  if (!session) {
+    return (
+      <View style={styles.container}>
+        <TouchableOpacity style={styles.searchButton} onPress={() => Alert.alert('Search button pressed')}>
+          <Text style={styles.searchButtonText}>Ask Synk Ai or Search</Text>
+        </TouchableOpacity>
+        <FlatList
+          data={messagedContacts}
+          renderItem={renderMessagedContactItem}
+          keyExtractor={(item) => item.$id}
+        />
+        <Fab type="chats" handlePress={handleFetchContacts} />
   return (
     <View style={styles.container}>
       <FlatList
@@ -190,6 +214,20 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
   },
+  searchButton: {
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    backgroundColor: 'whitesmoke',
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: 'grey',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginHorizontal: 10,
+  },
+  searchButtonText: {
+    color: 'grey',
+  },
   modalHeader: {
     width: wp('100%'),
     flexDirection: 'row',
@@ -214,12 +252,12 @@ const styles = StyleSheet.create({
     borderColor: 'gray',
     borderWidth: 1,
     paddingLeft: 8,
-    margin: 10,
+    marginHorizontal: 10,
     borderRadius: 5,
   },
   contactItem: {
     padding: 10,
-    width: wp('100%'),
+    width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
   },
@@ -257,6 +295,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   newContact: {
+    width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
     padding: 10,
