@@ -13,7 +13,7 @@ const index = ({message}) => {
     <View style = {[styles.container,
             {
                 //we might chage the colors depending on what the ui designers made
-                backgroundColor:isMyMessage() ? '#DCF8C5'  : 'white',
+                backgroundColor:isMyMessage() ? '#03b6fc'  : 'white',
                 alignSelf: isMyMessage() ? 'flex-end' : 'flex-start',
             },
         ]}

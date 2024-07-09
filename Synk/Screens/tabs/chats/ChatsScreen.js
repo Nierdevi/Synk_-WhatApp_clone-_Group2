@@ -4,6 +4,10 @@ import { Alert, FlatList, Modal, Pressable, StyleSheet, Text, TextInput, Touchab
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import { fetchMessagedContacts, } from '../../../backend/chatService';
 import Fab from '../../../components/fab';
+
+
+const chatsData = require('../../../assets/data/chats.json')
+
 import { primaryColors } from '../../../constants/colors';
 import { getUser } from '../../../constants/userContext';
 
@@ -240,19 +244,20 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-  },
-  searchInput: {
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    paddingLeft: 8,
-    marginHorizontal: 10,
-    borderRadius: 5,
+    // margin: 20,
+    backgroundColor: '#f9f9f9',
+    borderRadius: 10,
+    padding: 20,
+    width: wp("100%"),
+    // marginTop:-10,
   },
   contactItem: {
     padding: 10,
-    width: '100%',
-    flexDirection: 'row',
+    // borderBottomWidth: 1,
+    // borderBottomColor: '#ccc',
+    width: wp("100%"),
+    flexDirection:'row'
+
   },
   contactName: {
     fontSize: 18,
@@ -268,16 +273,8 @@ const styles = StyleSheet.create({
   },
   inviteText: {
     fontSize: 17,
-    marginLeft: 250,
-    marginTop: -10,
-  },
-  newContact: {
-    width: '100%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 10,
-    height: hp('7%'),
-    elevation: 1,
+    marginLeft:250,
+    marginTop:-10,
   },
 });
 
