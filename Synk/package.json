@@ -25,6 +25,7 @@
     "react-native-elements": "^3.4.3",
     "react-native-fs": "^2.20.0",
     "react-native-gesture-handler": "~2.16.1",
+    "react-native-image-picker": "^7.1.2",
     "react-native-international-phone-number": "^0.7.6",
     "react-native-keyboard-aware-scroll-view": "^0.9.5",
     "react-native-popup-menu": "^0.16.1",
