@@ -1,72 +1,46 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity,Image } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
-import { ScrollView } from 'react-native-gesture-handler';
-import AppLogo from '../assets/AppLogo.png';
+import { View, Text, Switch, TouchableOpacity, StyleSheet } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
-const SettingsScreen = () => {
+const SettingsScreen = ({ navigation }) => {
+  const [isEnabled, setIsEnabled] = React.useState(false);
+  const toggleSwitch = () => setIsEnabled(previousState => !previousState);
+
+  const navigateToNotifications = () => {
+    navigation.navigate('Notifications');
+  };
+
+  const navigateToAccount = () => {
+    navigation.navigate('Account')
+  };
+
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.head}>
-        <Image source={AppLogo} style={styles.headerImage} />
-        <View style={styles.headerContainer}>
-          <Text style={styles.username}>Cyber_bhilly</Text>
-          <Text style={styles.status}>我从不松懈型</Text>
-        </View>
-      </View>    
-      <TouchableOpacity style={styles.section}>          
-        <MaterialIcons name="person" size={24} color="#fff" />
-        <View style={styles.sect}>
-          <Text style={styles.sectionTitle}>Account</Text>
-          <Text style={styles.sectionDescription}>Security notifications, change number</Text>
-        </View>
-      </TouchableOpacity>
+    <View style={styles.container}>
+      <Text style={styles.title}>Settings</Text>
+      
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>General</Text>
+        <TouchableOpacity style={styles.option} onPress={navigateToAccount}>
+          <Text style={styles.optionText}>Account</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.option}>
+          <Text style={styles.optionText}>Privacy</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.option} onPress={navigateToNotifications}>
+          <Text style={styles.optionText}>Notifications</Text>
+        </TouchableOpacity>
+      </View>
 
-      <TouchableOpacity style={styles.section}>
-        <MaterialIcons name="lock" size={24} color="#fff" />
-        <View style={styles.sect}>
-          <Text style={styles.sectionTitle}>Privacy</Text>
-          <Text style={styles.sectionDescription}>Block contacts, disappearing messages</Text>
-        </View>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.section}>
-        <MaterialIcons name="photo" size={24} color="#fff" />
-        <View style={styles.sect}>
-          <Text style={styles.sectionTitle}>Avatar</Text>
-          <Text style={styles.sectionDescription}>Create, edit, profile photo</Text>
-        </View>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.section}>
-        <MaterialIcons name="chat" size={24} color="#fff" />
-        <View style={styles.sect}>
-          <Text style={styles.sectionTitle}>Chats</Text>
-          <Text style={styles.sectionDescription}>Theme, wallpapers, chat history</Text>
-        </View>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.section}>
-        <MaterialIcons name="notifications" size={24} color="#fff" />
-        <View style={styles.sect}>
-          <Text style={styles.sectionTitle}>Notifications</Text>
-          <Text style={styles.sectionDescription}>Message, group & call tones</Text>
-        </View>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.section}>
-        <MaterialIcons name="storage" size={24} color="#fff" />
-        <View style={styles.sect}>
-          <Text style={styles.sectionTitle}>Storage and data</Text>
-          <Text style={styles.sectionDescription}>Network usage, auto-download</Text>
-        </View>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.section}>
-        <MaterialIcons name="language" size={24} color="#fff" />
-        <View style={styles.sect}>
-          <Text style={styles.sectionTitle}>App language</Text>
-          <Text style={styles.sectionDescription}>English (device's language)</Text>
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Preferences</Text>
+        <View style={styles.option}>
+          <Text style={styles.optionText}>Dark Mode</Text>
+          <Switch
+            trackColor={{ false: "#767577", true: "#81b0ff" }}
+            thumbColor={isEnabled ? "#f5dd4b" : "#f4f3f4"}
+            onValueChange={toggleSwitch}
+            value={isEnabled}
+          />
         </View>
       </TouchableOpacity>
 
@@ -107,67 +81,45 @@ const SettingsScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#222',
     padding: 20,
+    backgroundColor: '#fff',
   },
-  headerContainer: {
-    //flexDirection: 'row',
-    alignItems: 'left',
-    justifyContent: 'space-between',
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
     marginBottom: 20,
   },
-  header: {
-    fontSize: 18,
-    color: '#fff',
-  },
-  username: {
-    fontSize: 18,
-    color: '#fff',
-    marginLeft: 10,
-  },
-  status: {
-    fontSize: 18,
-    color: '#fff',
-    marginLeft: 10,
-  },
-  statsContainer: {
-    flexDirection: 'row',
-  },
-  stats: {
-    fontSize: 18,
-    color: '#fff',
-    marginRight: 10,
-  },
   section: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#333',
-    padding: 15,
-    marginBottom: 10,
-    borderRadius: 8,
+    marginVertical: 20,
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
-    color: '#fff',
-    marginLeft: 10,
+    fontWeight: '600',
+    marginBottom: 10,
   },
-  sectionDescription: {
-    color: '#fff',
-    marginLeft: 10,
-  },
-  sect:{
-    
-  },
-  headerImage: {
-    width: 80,
-    height: 80,
-    borderRadius: 20,
-    marginRight: 10,
-  },
-  head:{
+  option: {
     flexDirection: 'row',
-  }
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+  },
+  optionText: {
+    fontSize: 16,
+  },
+  signOutButton: {
+    marginTop: 40,
+    paddingVertical: 15,
+    backgroundColor: '#ff5c5c',
+    borderRadius: 5,
+    alignItems: 'center',
+  },
+  signOutText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
 });
 
 export default SettingsScreen;

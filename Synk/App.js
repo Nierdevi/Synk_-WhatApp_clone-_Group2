@@ -1,18 +1,17 @@
-import 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { StyleSheet } from 'react-native';
+import 'react-native-gesture-handler';
 import { MenuProvider } from 'react-native-popup-menu';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { ThemeProvider } from './constants/themeContext';
-import {UserProvider} from './constants/userContext'
-import { StyleSheet, SafeAreaView, Text } from 'react-native';
+import { UserProvider } from './constants/userContext';
 
 import PhoneNumScreen from './Screens/PhoneNumScreen';
 import Verification from './Screens/Verification';
 import WelcomeScreen from './Screens/WelcomeScreen';
-import SettingsScreen from './Screens/SettingsScreen';
 // import Tabs from './src/navigation/Tabs';
-import MainTabs from './Screens/tabs/_tabLayout'
+import MainTabs from './Screens/tabs/_tabLayout';
 
 
 const Stack = createStackNavigator();
@@ -20,6 +19,12 @@ const Stack = createStackNavigator();
 
 
 const MainLayout = () => {
+
+  // useEffect(() => {
+  //   // Start the contact refresh when the app mounts
+  //   loadCachedContacts();
+  //   // startContactRefresh();
+  // }, []);
   // const { isAuthenticated } = useAuth();
   return (
     <NavigationContainer>

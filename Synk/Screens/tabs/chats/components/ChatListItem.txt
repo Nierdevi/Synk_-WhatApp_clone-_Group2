@@ -1,0 +1,73 @@
+import React from 'react';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+
+const ChatListItem = ({ chat }) => {
+  const navigation = useNavigation();
+
+  const handlePress = () => {
+    navigation.navigate('ChatRoom', { chatId: chat.chatId });
+  };
+
+  return (
+    <TouchableOpacity style={styles.container} onPress={handlePress}>
+      <View style={styles.avatarContainer}>
+        <Text style={styles.avatarText}>{chat.partnerName[0]}</Text>
+      </View>
+      <View style={styles.detailsContainer}>
+        <View style={styles.nameAndTime}>
+          <Text style={styles.name}>{chat.partnerName}</Text>
+          <Text style={styles.time}>{chat.lastMessageTime}</Text>
+        </View>
+        <Text style={styles.lastMessage} numberOfLines={1}>
+          {chat.lastMessage}
+        </Text>
+      </View>
+    </TouchableOpacity>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: 'row',
+    padding: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+  },
+  avatarContainer: {
+    width: 45,
+    height: 45,
+    borderRadius: 22.5,
+    backgroundColor: '#ccc',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 15,
+  },
+  avatarText: {
+    fontSize: 18,
+    color: '#fff',
+  },
+  detailsContainer: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  nameAndTime: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  name: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  time: {
+    fontSize: 14,
+    color: '#999',
+  },
+  lastMessage: {
+    fontSize: 16,
+    color: '#666',
+  },
+});
+
+export default ChatListItem;
