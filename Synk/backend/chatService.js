@@ -168,21 +168,36 @@ const fetchUserMessages = async (userPhoneNumber) => {
 
 const fetchMessagedContacts = async (currentUserPhoneNumber) => {
   try {
-    const messages = await fetchUserMessages(currentUserPhoneNumber);
+    const response = await databases.listDocuments(
+      '6685cbc40036f4c6a5ad',
+      '668aec1c002358157dad',
+      [
+        Query.or(
+          [Query.equal('userPhoneNumber', currentUserPhoneNumber), Query.equal('contactPhoneNumber', currentUserPhoneNumber)]
+        )
+      ]
+    );
 
     const uniqueContacts = new Map();
 
-    messages.forEach(message => {
+    for (const message of response.documents) {
       const contactPhoneNumber = message.userPhoneNumber === currentUserPhoneNumber
         ? message.contactPhoneNumber
         : message.userPhoneNumber;
 
       if (contactPhoneNumber && contactPhoneNumber !== currentUserPhoneNumber) {
+        let existingChat = await getExistingChat(currentUserPhoneNumber, contactPhoneNumber);
+        let lastMessage = null;
+
+        if (existingChat) {
+          lastMessage = await fetchLastMessage(existingChat.$id);
+        }
+
         if (!uniqueContacts.has(contactPhoneNumber) || new Date(message.updatedAt) > new Date(uniqueContacts.get(contactPhoneNumber).updatedAt)) {
-          uniqueContacts.set(contactPhoneNumber, { ...message, contactPhoneNumber });
+          uniqueContacts.set(contactPhoneNumber, { ...message, contactPhoneNumber, lastMessage });
         }
       }
-    });
+    }
 
     return Array.from(uniqueContacts.values());
   } catch (error) {
@@ -201,7 +216,7 @@ const fetchLastMessage = async (chatId) => {
       '6685e691003e5ceef040', // Replace with your document ID
       [
         Query.equal('chatId', chatId),
-        Query.sort('createdAt', 'desc'), // Fetch messages in descending order of createdAt
+        Query.orderDesc('createdAt'), // Fetch messages in descending order of createdAt
         Query.limit(1), // Limit to retrieve only the last message
       ]
     );
@@ -212,8 +227,8 @@ const fetchLastMessage = async (chatId) => {
       return null; // Return null if no message found
     }
   } catch (error) {
-    console.error('Failed to fetch last message:', error);
-    throw error; // Throw error for further handling
+    handleNetworkError(error);
+    return null;
   }
 };
 

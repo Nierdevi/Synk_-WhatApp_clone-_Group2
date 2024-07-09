@@ -1,30 +1,16 @@
-import { Entypo, Ionicons } from '@expo/vector-icons';
-import React, { useEffect, useState } from 'react';
-import { Alert, FlatList, Modal, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, Modal, TextInput, TouchableOpacity, Pressable, Alert } from 'react-native';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
-import { fetchMessagedContacts, } from '../../../backend/chatService';
+import { getUser } from '../../../constants/userContext';
 import Fab from '../../../components/fab';
 import { Ionicons, Entypo } from '@expo/vector-icons';
 import { primaryColors } from '../../../constants/colors';
-import { getUser } from '../../../constants/userContext';
-
-import { fetchAndNormalizeContacts, loadCachedContacts } from '../../../backend/contacts ';
-
-const FILTEREDCONTACTS = '@MyApp:filteredContacts';
-const chatsData = require('../../../assets/data/chats.json');
-
-const ChatsScreen = ({ navigation }) => {
-  const { session, setSession } = getUser();
 import { fetchMessagedContacts } from '../../../backend/chatService';
 import { fetchAndNormalizeContacts, loadCachedContacts } from '../../../backend/contacts ';
-import ChatRoom from './ChatRoom';
-
 
 const useContacts = (session) => {
   const [contacts, setContacts] = useState([]);
-  
+
   useEffect(() => {
     const loadContacts = async () => {
       try {
@@ -69,9 +55,9 @@ const useMessagedContacts = (session) => {
 
     fetchMessagedContactsData();
 
-    const intervalId = setInterval(fetchMessagedContactsData, 10);
+    const intervalId = setInterval(fetchMessagedContactsData, 10000); // refresh every 10 seconds
 
-    return () => clearInterval(intervalId); // Clear interval on component unmount
+    return () => clearInterval(intervalId); // cleanup on unmount
   }, [session]);
 
   return messagedContacts;
@@ -92,6 +78,25 @@ const ChatsScreen = ({ navigation }) => {
 
   const handleSearch = (query) => setSearchQuery(query);
 
+  const renderContactItem = ({ item }) => {
+    const handleContactPress = () => {
+      navigation.navigate('ChatRoom', { contact: item, currentUserPhoneNumber: session.phoneNumber });
+      setModalVisible(false);
+    };
+
+    return (
+      <TouchableOpacity style={styles.contactItem} onPress={handleContactPress}>
+        <View style={styles.avatarContainer}>
+          <Text style={styles.avatarText}>{item.name[0]}</Text>
+        </View>
+        <View style={styles.contactDetails}>
+          <Text style={styles.contactName}>{item.name}</Text>
+          {item.note && <Text style={styles.contactStatus}>{item.note}</Text>}
+        </View>
+      </TouchableOpacity>
+    );
+  };
+
   const renderMessagedContactItem = ({ item }) => {
     const contact = contacts.find(contact =>
       contact.normalizedPhoneNumbers?.includes(item.contactPhoneNumber)
@@ -99,22 +104,14 @@ const ChatsScreen = ({ navigation }) => {
 
     if (!contact) return null;
 
-    const handleContactPress = () => {
-      navigation.navigate('ChatRoom', { contact, currentUserPhoneNumber: session.phoneNumber });
-    };
-
-    const lastMessage = item.messageText; // Assuming messageText is the last message
-    const isNewMessage = item.senderId !== session.phoneNumber; // Assuming senderId is the id of the sender
-
     return (
-      <TouchableOpacity style={styles.contactItem} onPress={handleContactPress}>
+      <TouchableOpacity style={styles.contactItem} onPress={() => navigation.navigate('ChatRoom', { contact, currentUserPhoneNumber: session.phoneNumber })}>
         <View style={styles.avatarContainer}>
           <Text style={styles.avatarText}>{contact.name[0]}</Text>
         </View>
         <View style={styles.contactDetails}>
           <Text style={styles.contactName}>{contact.name}</Text>
-          <Text style={styles.lastMessage}>{lastMessage}</Text>
-          {isNewMessage && <View style={styles.newMessageIndicator} />}
+          {item.lastMessage && <Text style={styles.lastMessageText}>{item.lastMessage.messageText}</Text>}
         </View>
       </TouchableOpacity>
     );
@@ -125,29 +122,14 @@ const ChatsScreen = ({ navigation }) => {
     return null;
   }
 
-  // Sort messagedContacts by updatedAt in descending order
-  const sortedMessagedContacts = messagedContacts.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
-
   const filteredContacts = contacts.filter(contact =>
     contact.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  if (!session) {
-    return (
-      <View style={styles.container}>
-        <TouchableOpacity style={styles.searchButton} onPress={() => Alert.alert('Search button pressed')}>
-          <Text style={styles.searchButtonText}>Ask Synk Ai or Search</Text>
-        </TouchableOpacity>
-        <FlatList
-          data={messagedContacts}
-          renderItem={renderMessagedContactItem}
-          keyExtractor={(item) => item.$id}
-        />
-        <Fab type="chats" handlePress={handleFetchContacts} />
   return (
     <View style={styles.container}>
       <FlatList
-        data={sortedMessagedContacts}
+        data={messagedContacts}
         renderItem={renderMessagedContactItem}
         keyExtractor={(item) => item.contactPhoneNumber}
       />
@@ -164,46 +146,19 @@ const ChatsScreen = ({ navigation }) => {
             </Pressable>
           </View>
         </View>
-        <TouchableOpacity style={styles.newContact}>
-          <View style={[styles.avatarContainer, { backgroundColor: primaryColors.purple }]}>
-            <Ionicons name="person-add" size={20} color="white" />
-          </View>
-          <Text style={styles.contactName}>New contact</Text>
-        </TouchableOpacity>
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Search contacts"
-          value={searchQuery}
-          onChangeText={handleSearch}
-        />
-        {filteredContacts.length > 0 ? (
-          <FlatList
-            data={filteredContacts}
-            keyExtractor={(item) => item.id.toString()}
-            renderItem={({ item }) => {
-              const handleContactPress = () => {
-                navigation.navigate('ChatRoom', { contact: item, currentUserPhoneNumber: session.phoneNumber });
-                setModalVisible(false);
-              };
-
-              return (
-                <TouchableOpacity style={styles.contactItem} onPress={handleContactPress}>
-                  <View style={styles.avatarContainer}>
-                    <Text style={styles.avatarText}>{item.name[0]}</Text>
-                  </View>
-                  <View style={styles.contactDetails}>
-                    <Text style={styles.contactName}>{item.name}</Text>
-                    {item.note && <Text style={styles.contactStatus}>{item.note}</Text>}
-                  </View>
-                </TouchableOpacity>
-              );
-            }}
+        <View style={styles.searchInputContainer}>
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Search"
+            value={searchQuery}
+            onChangeText={handleSearch}
           />
-        ) : (
-          <View style={styles.noContactsView}>
-            <Text style={{ fontSize: wp(5), textAlign: 'center' }}>No contacts found</Text>
-          </View>
-        )}
+        </View>
+        <FlatList
+          data={filteredContacts}
+          renderItem={renderContactItem}
+          keyExtractor={(item) => item.id}
+        />
       </Modal>
     </View>
   );
@@ -212,101 +167,69 @@ const ChatsScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-  },
-  searchButton: {
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-    backgroundColor: 'whitesmoke',
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: 'grey',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginHorizontal: 10,
-  },
-  searchButtonText: {
-    color: 'grey',
-  },
-  modalHeader: {
-    width: wp('100%'),
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 10,
-    height: hp('7%'),
-    elevation: 1,
-  },
-  modalTitle: {
-    fontSize: 20,
-    flexGrow: 1,
-  },
-  modalActions: {
-    width: wp('13%'),
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  searchInput: {
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    paddingLeft: 8,
-    marginHorizontal: 10,
-    borderRadius: 5,
+    backgroundColor: 'white',
   },
   contactItem: {
-    padding: 10,
-    width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f2f2f2',
   },
   avatarContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: wp('13%'),
+    height: hp('6.5%'),
+    borderRadius: 30,
     backgroundColor: primaryColors.purple,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 10,
+    marginRight: wp('3%'),
   },
   avatarText: {
+    fontSize: hp('3%'),
     color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold',
   },
   contactDetails: {
-    flex: 1,
     justifyContent: 'center',
   },
   contactName: {
-    fontSize: 16,
+    fontSize: hp('2.5%'),
     fontWeight: 'bold',
   },
-  lastMessage: {
-    fontSize: 14,
+  lastMessageText: {
+    fontSize: hp('2%'),
     color: 'gray',
   },
-  newMessageIndicator: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-    backgroundColor: 'red',
-    marginLeft: 10,
-  },
-  newContact: {
-    width: '100%',
+  modalHeader: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
     padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f2f2f2',
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  modalActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   dots: {
-    padding: 5,
+    marginLeft: 10,
   },
-  noContactsView: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+  searchInputContainer: {
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f2f2f2',
+  },
+  searchInput: {
+    height: 40,
+    borderWidth: 1,
+    borderColor: '#f2f2f2',
+    borderRadius: 5,
+    paddingHorizontal: 10,
   },
 });
 
