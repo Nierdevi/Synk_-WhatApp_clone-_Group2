@@ -150,6 +150,9 @@ const ChatsScreen = ({ navigation }) => {
   if (!session) {
     return (
       <View style={styles.container}>
+        <TouchableOpacity style={styles.searchButton} onPress={() => Alert.alert('Search button pressed')}>
+          <Text style={styles.searchButtonText}>Ask Synk Ai or Search</Text>
+        </TouchableOpacity>
         <FlatList
           data={messagedContacts}
           renderItem={renderMessagedContactItem}
@@ -205,6 +208,20 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
   },
+  searchButton: {
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    backgroundColor: 'whitesmoke',
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: 'grey',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginHorizontal: 10,
+  },
+  searchButtonText: {
+    color: 'grey',
+  },
   modalHeader: {
     width: wp('100%'),
     flexDirection: 'row',
@@ -229,12 +246,12 @@ const styles = StyleSheet.create({
     borderColor: 'gray',
     borderWidth: 1,
     paddingLeft: 8,
-    margin: 10,
+    marginHorizontal: 10,
     borderRadius: 5,
   },
   contactItem: {
     padding: 10,
-    width: wp('100%'),
+    width: '100%',
     flexDirection: 'row',
   },
   contactName: {
@@ -255,29 +272,12 @@ const styles = StyleSheet.create({
     marginTop: -10,
   },
   newContact: {
-    width: wp('100%'),
+    width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
     padding: 10,
     height: hp('7%'),
     elevation: 1,
-  },
-  contactItem: {
-    padding: 10,
-    width: wp('100%'),
-    flexDirection: 'row',
-  },
-  contactName: {
-    fontSize: 18,
-  },
-  avatarContainer: {
-    width: 45,
-    height: 45,
-    borderRadius: 30,
-    backgroundColor: '#ccc',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 15,
   },
 });
 

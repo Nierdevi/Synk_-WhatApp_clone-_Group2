@@ -355,14 +355,14 @@ const styles = StyleSheet.create({
     },
     exploreMoreButton: {
         marginTop: 10,
-        backgroundColor: 'purple',
+        backgroundColor: '#fff',
         paddingVertical: 10,
         paddingHorizontal: 20,
         borderRadius: 5,
-        alignItems: 'center'
+        alignItems: 'left'
     },
     exploreMoreButtonText: {
-        color: '#fff',
+        color: 'purple',
         fontSize: 16,
         fontWeight: 'bold'
     },
