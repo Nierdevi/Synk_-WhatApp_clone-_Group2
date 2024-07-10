@@ -3,7 +3,7 @@ import { FlatList, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View }
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 // Define DefaultProfileImg as a separate named component
-export const DefaultProfileImg = () => (
+const DefaultProfileImg = () => (
     <View style={styles.statusContainer}>
         <View style={styles.statusWrapperDefault}>
             <Image source={{ uri: 'https://via.placeholder.com/50' }} style={styles.statusImg} />

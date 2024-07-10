@@ -2,6 +2,7 @@ import React, { useRef, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList } from 'react-native';
 import { primaryColors } from '../constants/colors';
 import DateTime from './DateTime';
+import { widthPercentageToDP as wp} from 'react-native-responsive-screen';
 
 const ChatList = ({ messages, currentUserPhoneNumber }) => {
   const flatListRef = useRef(null);
@@ -22,7 +23,7 @@ const ChatList = ({ messages, currentUserPhoneNumber }) => {
         ]}
       >
         <Text style={styles.messageText}>{item.messageText} </Text>
-        <Text style={styles.messageText}>{DateTime(item.$createdAt)} </Text>
+        <Text style={[styles.timeText,{}]}>{DateTime(item.$createdAt)} </Text>
       </View>
     );
   };
@@ -52,6 +53,9 @@ const styles = StyleSheet.create({
     padding: 10,
     marginBottom: 10,
     borderRadius: 10,
+    // flexDirection:'row',
+    gap:4,
+    // position:'relative'
     // flex:1,
   },
   currentUserMessage: {
@@ -65,7 +69,17 @@ const styles = StyleSheet.create({
   messageText: {
     fontSize: 16,
     color: 'white',
+    // marginTop:-20,
   },
+  timeText:{
+    color:'white',
+    fontSize:wp('3%'),
+    alignSelf: 'flex-end',
+    // backgroundColor:'red',
+    justifyContent:'flex-end',
+    // marginTop:10,
+    marginBottom:0,
+  }
 });
 
 export default ChatList;

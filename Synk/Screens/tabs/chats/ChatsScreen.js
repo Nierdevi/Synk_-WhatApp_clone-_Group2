@@ -73,7 +73,6 @@ const ChatsScreen = ({ navigation }) => {
   const contacts = useContacts(session);
   const messagedContacts = useMessagedContacts(session);
   const [searchQuery, setSearchQuery] = useState('');
-  const [searchVisibile, setSearchVisibile] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
@@ -84,6 +83,7 @@ const ChatsScreen = ({ navigation }) => {
 
   const handleSearch = (query) => setSearchQuery(query);
 
+  //displays the contacts on your phone in the modal
   const renderContactItem = ({ item }) => {
     const handleContactPress = () => {
       navigation.navigate('ChatRoom', { contact: item, currentUserPhoneNumber: session.phoneNumber });
@@ -103,6 +103,8 @@ const ChatsScreen = ({ navigation }) => {
     );
   };
 
+
+  //Display contacts u have message with
   const renderMessagedContactItem = ({ item }) => {
     const contact = contacts.find(contact =>
       contact.normalizedPhoneNumbers?.includes(item.contactPhoneNumber)
@@ -117,8 +119,13 @@ const ChatsScreen = ({ navigation }) => {
         </View>
         <View style={styles.contactDetails}>
           <Text style={styles.contactName}>{contact.name} </Text>
-          {item.lastMessage && <Text style={styles.lastMessageText}>{item.lastMessage.messageText} </Text>}
-          {item.lastMessage && <Text style={styles.lastMessageText}>{DateTime(item.lastMessage.$createdAt)} </Text>}
+          <View style={styles.lastMessageConatiner}>
+            {item.lastMessage && <Text style={styles.lastMessageText} numberOfLines={1}  ellipsizeMode='tail'>{item.lastMessage.messageText} </Text>}
+            <View style={styles.timestampContainer}>
+
+            {item.lastMessage && <Text style={styles.lastMessageTime}>{DateTime(item.lastMessage.$createdAt)} </Text>}
+            </View>
+          </View>
         </View>
       </TouchableOpacity>
     );
@@ -199,13 +206,22 @@ const styles = StyleSheet.create({
   contactDetails: {
     justifyContent: 'center',
   },
+  lastMessageConatiner:{
+    flexDirection:'row',
+    width:wp('80%'),
+    justifyContent:'space-between',
+    alignItems:'flex-end'
+  },
+  lastMessageTime:{
+    fontSize:wp('3'),
+  },
   contactName: {
     fontSize: hp('2.5%'),
-    // fontWeight: 'bold',
   },
   lastMessageText: {
     fontSize: hp('2%'),
     color: 'gray',
+    alignSelf:'flex-end'
   },
   modalHeader: {
     flexDirection: 'row',

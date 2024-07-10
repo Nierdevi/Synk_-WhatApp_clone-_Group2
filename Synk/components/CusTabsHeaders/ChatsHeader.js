@@ -11,7 +11,7 @@ import { useNavigation } from '@react-navigation/native'; // Import useNavigatio
 
 const isIOS = Platform.OS === 'ios';
 
-export default function UpdatesHeader() {
+export default function ChatsHeader() {
   const { theme, toggleTheme } = useTheme();
   const insets = useSafeAreaInsets();
   const navigation = useNavigation(); // Access the navigation object
