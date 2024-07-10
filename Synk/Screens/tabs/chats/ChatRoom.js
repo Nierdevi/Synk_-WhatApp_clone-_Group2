@@ -1,7 +1,10 @@
-import React from 'react';
-import { KeyboardAvoidingView, StyleSheet } from 'react-native';
-//import talkiobg from '../../../assets/images/talkioBG.png'
-import InputBox from '../../../src/components/InputBox';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, KeyboardAvoidingView, Platform, View, Text } from 'react-native';
+import { sendMessage, fetchMessages, getExistingChat } from '../../../backend/chatService';
+import InputBox from '../../../components/InputBox';
+import ChatList from '../../../components/ChatListItem';
+import { fetchLastMessage } from '../../../backend/chatService'; // Import fetchLastMessage function
+import DateTime from '../../../components/DateTime';
 
 const ChatRoom = ({ route }) => {
   const { contact, currentUserPhoneNumber } = route.params;

@@ -108,12 +108,11 @@ const ChatsScreen = ({ navigation }) => {
     setSearchQuery(query);
   };
 
-  const filteredContacts = contacts.filter(contact =>
-    contact.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // const filteredContacts = contacts.filter(contact =>
+  //   contact.name.toLowerCase().includes(searchQuery.toLowerCase())
+  // );
 
 
-  //displays the contacts on your phone in the modal
   const renderContactItem = ({ item }) => {
     const handleContactPress = async (contact) => {
       try {
@@ -162,41 +161,19 @@ const ChatsScreen = ({ navigation }) => {
     }
   
     return renderContactItem({ item: contact });
-    const contact = contacts.find(contact =>
-      contact.normalizedPhoneNumbers?.includes(item.contactPhoneNumber)
-    );
-
-    if (!contact) return null;
-
-    return (
-      <TouchableOpacity style={styles.contactItem} onPress={() => navigation.navigate('ChatRoom', { contact, currentUserPhoneNumber: session.phoneNumber })}>
-        <View style={styles.avatarContainer}>
-          <Text style={styles.avatarText}>{contact.name[0]}</Text>
-        </View>
-        <View style={styles.contactDetails}>
-          <Text style={styles.contactName}>{contact.name} </Text>
-          <View style={styles.lastMessageConatiner}>
-            {item.lastMessage && <Text style={styles.lastMessageText} numberOfLines={1}  ellipsizeMode='tail'>{item.lastMessage.messageText} </Text>}
-            <View style={styles.timestampContainer}>
-
-            {item.lastMessage && <Text style={styles.lastMessageTime}>{DateTime(item.lastMessage.$createdAt)} </Text>}
-            </View>
-          </View>
-        </View>
-      </TouchableOpacity>
-    );
   };
   
 
 
-  if (!session) {
-    navigation.replace("welcome");
-    return null;
-  }
+
+
 
   const filteredContacts = contacts.filter(contact =>
     contact.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  
+  if (session) {
 
   return (
     <View style={styles.container}>
@@ -235,6 +212,7 @@ const ChatsScreen = ({ navigation }) => {
               <Text style={{fontSize:wp(5),textAlign:'center'}}>No contacts found</Text>
             </View>
           )}
+          </View>
         </Modal>
       </View>
     );
