@@ -4,21 +4,24 @@ import { sendMessage, fetchMessages, getExistingChat } from '../../../backend/ch
 import InputBox from '../../../components/InputBox';
 import ChatList from '../../../components/ChatListItem';
 import { fetchLastMessage } from '../../../backend/chatService'; // Import fetchLastMessage function
+import DateTime from '../../../components/DateTime';
 
 const ChatRoom = ({ route }) => {
   const { contact, currentUserPhoneNumber } = route.params;
   const [messages, setMessages] = useState([]);
-  const [lastMessage, setLastMessage] = useState(null); // State to hold last message
+  const [lastMessage, setLastMessage] = useState(null);
 
   const recipientPhoneNumber = contact.normalizedPhoneNumbers[0]; // Use the first normalized phone number
 
+  // console.log(messages)
   useEffect(() => {
     const loadMessages = async () => {
       const existingChat = await getExistingChat(currentUserPhoneNumber, recipientPhoneNumber);
       if (existingChat) {
         const chatId = existingChat.$id;
         const fetchedMessages = await fetchMessages(chatId);
-        setMessages(fetchedMessages.reverse()); // Reverse to display the latest message at the bottom
+        const sortedMessages = fetchedMessages.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+        setMessages(sortedMessages);
 
         // Fetch the last message
         try {
@@ -48,11 +51,6 @@ const ChatRoom = ({ route }) => {
       behavior={Platform.OS === 'ios' ? 'padding' : 0}
       keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0}
     >
-      <View style={styles.lastMessageContainer}>
-        {lastMessage && (
-          <Text style={styles.lastMessageText}>{lastMessage.messageText}</Text>
-        )}
-      </View>
       <ChatList messages={messages} currentUserPhoneNumber={currentUserPhoneNumber} />
       <InputBox onSendMessage={handleSendMessage} />
     </KeyboardAvoidingView>
@@ -62,16 +60,6 @@ const ChatRoom = ({ route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  lastMessageContainer: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-  },
-  lastMessageText: {
-    fontSize: 16,
-    color: '#333',
   },
 });
 

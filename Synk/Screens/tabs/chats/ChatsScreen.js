@@ -7,6 +7,7 @@ import { Ionicons, Entypo } from '@expo/vector-icons';
 import { primaryColors } from '../../../constants/colors';
 import { fetchMessagedContacts } from '../../../backend/chatService';
 import { fetchAndNormalizeContacts, loadCachedContacts } from '../../../backend/contacts ';
+import DateTime from '../../../components/DateTime';
 
 const useContacts = (session) => {
   const [contacts, setContacts] = useState([]);
@@ -55,19 +56,20 @@ const useMessagedContacts = (session) => {
 
     fetchMessagedContactsData();
 
-    const intervalId = setInterval(fetchMessagedContactsData, 10000); // refresh every 10 seconds
-
-    return () => clearInterval(intervalId); // cleanup on unmount
+ 
   }, [session]);
 
   return messagedContacts;
 };
+
+
 
 const ChatsScreen = ({ navigation }) => {
   const { session } = getUser();
   const contacts = useContacts(session);
   const messagedContacts = useMessagedContacts(session);
   const [searchQuery, setSearchQuery] = useState('');
+  const [searchVisibile, setSearchVisibile] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
@@ -90,7 +92,7 @@ const ChatsScreen = ({ navigation }) => {
           <Text style={styles.avatarText}>{item.name[0]}</Text>
         </View>
         <View style={styles.contactDetails}>
-          <Text style={styles.contactName}>{item.name}</Text>
+          <Text style={styles.contactName}>{item.name} </Text>
           {item.note && <Text style={styles.contactStatus}>{item.note}</Text>}
         </View>
       </TouchableOpacity>
@@ -110,8 +112,9 @@ const ChatsScreen = ({ navigation }) => {
           <Text style={styles.avatarText}>{contact.name[0]}</Text>
         </View>
         <View style={styles.contactDetails}>
-          <Text style={styles.contactName}>{contact.name}</Text>
-          {item.lastMessage && <Text style={styles.lastMessageText}>{item.lastMessage.messageText}</Text>}
+          <Text style={styles.contactName}>{contact.name} </Text>
+          {item.lastMessage && <Text style={styles.lastMessageText}>{item.lastMessage.messageText} </Text>}
+          {item.lastMessage && <Text style={styles.lastMessageText}>{DateTime(item.lastMessage.$createdAt)} </Text>}
         </View>
       </TouchableOpacity>
     );
@@ -140,7 +143,6 @@ const ChatsScreen = ({ navigation }) => {
           <Ionicons name="arrow-back-outline" size={24} color="black" onPress={() => setModalVisible(false)} />
           <Text style={styles.modalTitle}>Select contact</Text>
           <View style={styles.modalActions}>
-            <Ionicons name="search" size={24} color="black" />
             <Pressable style={styles.dots}>
               <Entypo name="dots-three-vertical" size={20} />
             </Pressable>
@@ -158,6 +160,7 @@ const ChatsScreen = ({ navigation }) => {
           data={filteredContacts}
           renderItem={renderContactItem}
           keyExtractor={(item) => item.id}
+          ListEmptyComponent={filteredContacts.length===0 && <Text style={{fontSize: hp('2.5%'),textAlign:'center'}}>No Contacts Found </Text>}
         />
       </Modal>
     </View>
@@ -194,7 +197,7 @@ const styles = StyleSheet.create({
   },
   contactName: {
     fontSize: hp('2.5%'),
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
   },
   lastMessageText: {
     fontSize: hp('2%'),
@@ -217,7 +220,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   dots: {
-    marginLeft: 10,
+    marginRight: 10,
   },
   searchInputContainer: {
     padding: 10,
@@ -227,9 +230,10 @@ const styles = StyleSheet.create({
   searchInput: {
     height: 40,
     borderWidth: 1,
-    borderColor: '#f2f2f2',
+    borderColor:primaryColors.purple,
     borderRadius: 5,
     paddingHorizontal: 10,
+    fontSize:wp('4%')
   },
 });
 

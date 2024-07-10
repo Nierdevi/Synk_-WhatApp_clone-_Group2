@@ -95,7 +95,9 @@ const fetchMessages = async (chatId) => {
     const response = await databases.listDocuments(
       '6685cbc40036f4c6a5ad',
       '6685e691003e5ceef040',
-      [Query.equal('chatId', chatId)]
+      [Query.equal('chatId', chatId),
+        Query.orderDesc('createdAt'),
+      ]
     );
 
     return response.documents;
@@ -174,7 +176,8 @@ const fetchMessagedContacts = async (currentUserPhoneNumber) => {
       [
         Query.or(
           [Query.equal('userPhoneNumber', currentUserPhoneNumber), Query.equal('contactPhoneNumber', currentUserPhoneNumber)]
-        )
+        ),
+        Query.orderAsc('updatedAt'),
       ]
     );
 

@@ -1,6 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList } from 'react-native';
 import { primaryColors } from '../constants/colors';
+import DateTime from './DateTime';
 
 const ChatList = ({ messages, currentUserPhoneNumber }) => {
   const flatListRef = useRef(null);
@@ -21,32 +22,37 @@ const ChatList = ({ messages, currentUserPhoneNumber }) => {
         ]}
       >
         <Text style={styles.messageText}>{item.messageText} </Text>
+        <Text style={styles.messageText}>{DateTime(item.$createdAt)} </Text>
       </View>
     );
   };
 
   return (
     <FlatList
-      ref={flatListRef}
-      data={messages}
-      renderItem={renderItem}
-      keyExtractor={(item) => item.$id.toString()}
-      contentContainerStyle={styles.messagesContainer}
-      onContentSizeChange={() => flatListRef.current.scrollToEnd({ animated: true })}
+        ref={flatListRef}
+        data={messages}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.$id}
+    //   contentContainerStyle={styles.messagesContainer}
+        onContentSizeChange={() => flatListRef.current.scrollToEnd({ animated: true })}
+        inverted
+        contentContainerStyle={styles.flatListContainer}
     />
   );
 };
 
 const styles = StyleSheet.create({
   messagesContainer: {
-    padding: 10,
-    flexGrow: 1,
+    flexGrow: 1, // Ensure the FlatList takes up all available space
+    paddingTop: 10, // Adjust as needed
+    paddingBottom: 10, // Adjust as needed
   },
   message: {
     maxWidth: '80%',
     padding: 10,
     marginBottom: 10,
     borderRadius: 10,
+    // flex:1,
   },
   currentUserMessage: {
     alignSelf: 'flex-end',
