@@ -28,7 +28,7 @@ const MainLayout = () => {
   // const { isAuthenticated } = useAuth();
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Tabs">
+      <Stack.Navigator initialRouteName="welcome">
         <Stack.Screen name='welcome' component={WelcomeScreen} options={{headerShown:false}}/>
         <Stack.Screen name='Verification' component={Verification} options={{headerShown:false}}/>
         <Stack.Screen name='PhoneNumber' component={PhoneNumScreen} options={{headerShown:false}} />
