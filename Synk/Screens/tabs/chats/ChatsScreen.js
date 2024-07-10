@@ -3,6 +3,10 @@ import { View, Text, StyleSheet, FlatList, Modal, TextInput, TouchableOpacity, P
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import { getUser } from '../../../constants/userContext';
 import Fab from '../../../components/fab';
+
+
+const chatsData = require('../../../assets/data/chats.json')
+
 import { Ionicons, Entypo } from '@expo/vector-icons';
 import { primaryColors } from '../../../constants/colors';
 import { fetchMessagedContacts } from '../../../backend/chatService';
@@ -218,6 +222,37 @@ const styles = StyleSheet.create({
   modalActions: {
     flexDirection: 'row',
     alignItems: 'center',
+    // margin: 20,
+    backgroundColor: '#f9f9f9',
+    borderRadius: 10,
+    padding: 20,
+    width: wp("100%"),
+    // marginTop:-10,
+  },
+  contactItem: {
+    padding: 10,
+    // borderBottomWidth: 1,
+    // borderBottomColor: '#ccc',
+    width: wp("100%"),
+    flexDirection:'row'
+
+  },
+  contactName: {
+    fontSize: 18,
+  },
+  avatarContainer: {
+    width: 45,
+    height: 45,
+    borderRadius: 30,
+    backgroundColor: '#ccc',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 15,
+  },
+  inviteText: {
+    fontSize: 17,
+    marginLeft:250,
+    marginTop:-10,
   },
   dots: {
     marginRight: 10,

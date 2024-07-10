@@ -1,3 +1,10 @@
+import { useNavigation, useRoute, } from '@react-navigation/native';
+import React from 'react';
+import { KeyboardAvoidingView, StyleSheet } from 'react-native';
+//import talkiobg from '../../../assets/images/talkioBG.png'
+import messages from '../../../assets/data/messages.json';
+import InputBox from '../../../src/components/InputBox';
+import Message from '../../../src/components/Message';
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, KeyboardAvoidingView, Platform, View, Text } from 'react-native';
 import { sendMessage, fetchMessages, getExistingChat } from '../../../backend/chatService';
@@ -6,6 +13,10 @@ import ChatList from '../../../components/ChatListItem';
 import { fetchLastMessage } from '../../../backend/chatService'; // Import fetchLastMessage function
 import DateTime from '../../../components/DateTime';
 
+const ChatRoom = () => {
+
+    const route = useRoute();
+    const navigation = useNavigation();
 const ChatRoom = ({ route }) => {
   const { contact, currentUserPhoneNumber } = route.params;
   const [messages, setMessages] = useState([]);
@@ -13,6 +24,9 @@ const ChatRoom = ({ route }) => {
 
   const recipientPhoneNumber = contact.normalizedPhoneNumbers[0]; // Use the first normalized phone number
 
+    useEffect(() => {
+        navigation.setOptions({title: route.params.name})
+    },[route.params.name])
   // console.log(messages)
   useEffect(() => {
     const loadMessages = async () => {
@@ -45,6 +59,28 @@ const ChatRoom = ({ route }) => {
     }
   };
 
+    return (
+        <KeyboardAvoidingView behaviour={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.talkiobg } >
+            <Flatlist
+                    data = {messages}
+                    renderItem={({item}) => <Message message={item} />}
+                    style={styles.list}
+                    inverted
+                />
+                <InputBox/>
+        </KeyboardAvoidingView>
+    )
+}
+const styles=StyleSheet.create({
+     talkiobg:{
+            flex:1,
+        },
+        list: {
+            padding: 10,
+        },
+    });
+
+    export default ChatRoom;
   return (
     <KeyboardAvoidingView
       style={styles.container}
