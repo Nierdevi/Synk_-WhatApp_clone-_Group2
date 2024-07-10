@@ -2,16 +2,11 @@ import { Entypo, Ionicons } from '@expo/vector-icons';
 import React, { useEffect, useState } from 'react';
 import { Alert, FlatList, Modal, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
-import { fetchMessagedContacts, } from '../../../backend/chatService';
+import { fetchMessagedContacts } from '../../../backend/chatService';
+import { fetchAndNormalizeContacts, loadCachedContacts } from '../../../backend/contacts';
 import Fab from '../../../components/fab';
-
-
-const chatsData = require('../../../assets/data/chats.json')
-
 import { primaryColors } from '../../../constants/colors';
 import { getUser } from '../../../constants/userContext';
-
-import { fetchAndNormalizeContacts, loadCachedContacts } from '../../../backend/contacts ';
 
 const FILTEREDCONTACTS = '@MyApp:filteredContacts';
 const chatsData = require('../../../assets/data/chats.json');
@@ -29,7 +24,6 @@ const ChatsScreen = ({ navigation }) => {
       if (cachedContacts) {
         setContacts(cachedContacts);
       }
-      // console.log(cah)
     };
 
     const fetchContacts = async () => {
@@ -37,8 +31,6 @@ const ChatsScreen = ({ navigation }) => {
       if (fetchedContacts) {
         setContacts(fetchedContacts);
       }
-      // console.log(fetchedContacts)
-      // console.log(contacts)
     };
 
     const initializeContacts = async () => {
@@ -47,8 +39,6 @@ const ChatsScreen = ({ navigation }) => {
     }
 
     initializeContacts();
-    // const unsubscribe = subscribeToDatabaseChanges(setContacts);
-    // return () => unsubscribe();
   }, [session]);
 
   useEffect(() => {
@@ -56,9 +46,7 @@ const ChatsScreen = ({ navigation }) => {
       if (session && session.phoneNumber) {
         const messagedContactsData = await fetchMessagedContacts(session.phoneNumber);
         setMessagedContacts(messagedContactsData);
-        // console.log(messagedContactsData)
       }
-      // console.log(messagedContacts)
     };
 
     fetchMessagedContactsData();
@@ -70,26 +58,9 @@ const ChatsScreen = ({ navigation }) => {
     }
   }, [modalVisible]);
 
-  // useEffect(() => {
-  //   const fetchUserMessagedContacts = async () => {
-  //     const userMessagedContacts = await fetchMessagedContacts(session.phoneNumber);
-  //     setMessagedContacts(userMessagedContacts);
-  //     // console.log(userMessagedContacts)
-  //   };
-  //   // console.log(messagedContacts)
-  //   if (session) {
-  //     fetchUserMessagedContacts();
-  //   }
-  // }, [session]);
-
   const handleFetchContacts = () => {
     setModalVisible(true);
   };
-
-  useEffect(()=>{
-    // console.log(contacts)
-    // console.log("messaged contacts "+messagedContacts)
-  })
 
   const handleSearch = (query) => {
     setSearchQuery(query);
@@ -99,12 +70,10 @@ const ChatsScreen = ({ navigation }) => {
     contact.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-
   const renderContactItem = ({ item }) => {
     const handleContactPress = async (contact) => {
       try {
         const currentPhoneNumber = session.phoneNumber;
-
         navigation.navigate('ChatRoom', { contact, currentUserPhoneNumber: currentPhoneNumber });
         setModalVisible(false);
       } catch (error) {
@@ -126,30 +95,21 @@ const ChatsScreen = ({ navigation }) => {
     );
   };
 
-  
   const renderMessagedContactItem = ({ item }) => {
-    // console.log("Item:", item); // Log item to understand its structure and value
-  
-    // Find the contact in your contacts list based on any normalized phone number
     const contact = contacts.find(contact => {
-      // Ensure contact.normalizedPhoneNumbers exists and is an array
       if (contact.normalizedPhoneNumbers && Array.isArray(contact.normalizedPhoneNumbers)) {
         return contact.normalizedPhoneNumbers.includes(item);
       }
       return false;
     });
-  
-    // console.log("Contact:", contact); // Log contact to understand why it might be undefined
-  
+
     if (!contact) {
       console.warn(`No contact found for ${item}`);
       return null;
     }
-  
+
     return renderContactItem({ item: contact });
   };
-  
-
 
   if (!session) {
     return (
@@ -195,7 +155,7 @@ const ChatsScreen = ({ navigation }) => {
             />
           ) : (
             <View style={styles.noContactsView}>
-              <Text style={{fontSize:wp(5),textAlign:'center'}}>No contacts found</Text>
+              <Text style={{ fontSize: wp(5), textAlign: 'center' }}>No contacts found</Text>
             </View>
           )}
         </Modal>
@@ -244,20 +204,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    // margin: 20,
     backgroundColor: '#f9f9f9',
     borderRadius: 10,
     padding: 20,
     width: wp("100%"),
-    // marginTop:-10,
   },
   contactItem: {
     padding: 10,
-    // borderBottomWidth: 1,
-    // borderBottomColor: '#ccc',
     width: wp("100%"),
-    flexDirection:'row'
-
+    flexDirection: 'row'
   },
   contactName: {
     fontSize: 18,
@@ -273,9 +228,10 @@ const styles = StyleSheet.create({
   },
   inviteText: {
     fontSize: 17,
-    marginLeft:250,
-    marginTop:-10,
+    marginLeft: 250,
+    marginTop: -10,
   },
 });
 
 export default ChatsScreen;
+ 

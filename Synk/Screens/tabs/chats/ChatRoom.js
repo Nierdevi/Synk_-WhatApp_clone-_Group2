@@ -3,7 +3,7 @@ import React from 'react';
 import { KeyboardAvoidingView, StyleSheet } from 'react-native';
 //import talkiobg from '../../../assets/images/talkioBG.png'
 import messages from '../../../assets/data/messages.json';
-import InputBox from '../../../src/components/InputBox';
+import InputBox from '../../../components/InputBox';
 import Message from '../../../src/components/Message';
 
 const ChatRoom = () => {
