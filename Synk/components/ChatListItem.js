@@ -1,8 +1,9 @@
 import React, { useRef, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableWithoutFeedback  } from 'react-native';
 import { primaryColors } from '../constants/colors';
 import DateTime from './DateTime';
 import { widthPercentageToDP as wp} from 'react-native-responsive-screen';
+import { LongPressGestureHandler, State } from 'react-native-gesture-handler';
 
 const ChatList = ({ messages, currentUserPhoneNumber }) => {
   const flatListRef = useRef(null);
@@ -13,50 +14,60 @@ const ChatList = ({ messages, currentUserPhoneNumber }) => {
     }
   }, [messages]);
 
+  const handleLongPress = (message) => {
+    // Implement your logic for handling long press (e.g., show options like copy, pin, forward)
+    console.log('Long press detected on message:', message.messageText);
+  };
+
   const renderItem = ({ item }) => {
     const isCurrentUser = item.senderId === currentUserPhoneNumber;
+
     return (
-      <View
-        style={[
-          styles.message,
-          isCurrentUser ? styles.currentUserMessage : styles.recipientMessage,
-        ]}
+      <LongPressGestureHandler
+        onHandlerStateChange={({ nativeEvent }) => {
+          if (nativeEvent.state === State.ACTIVE) {
+            handleLongPress(item);
+          }
+        }}
       >
-        <Text style={styles.messageText}>{item.messageText} </Text>
-        <Text style={[styles.timeText,{}]}>{DateTime(item.$createdAt)} </Text>
-      </View>
+        <TouchableWithoutFeedback>
+          <View
+            style={[
+              styles.message,
+              isCurrentUser ? styles.currentUserMessage : styles.recipientMessage,
+            ]}
+          >
+            <Text style={styles.messageText}>{item.messageText}</Text>
+            <Text style={styles.timeText}>{DateTime(item.$createdAt)}</Text>
+          </View>
+        </TouchableWithoutFeedback>
+      </LongPressGestureHandler>
     );
   };
 
   return (
     <FlatList
-        ref={flatListRef}
-        data={messages}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.$id}
-    //   contentContainerStyle={styles.messagesContainer}
-        onContentSizeChange={() => flatListRef.current.scrollToEnd({ animated: true })}
-        inverted
-        contentContainerStyle={styles.flatListContainer}
+      ref={flatListRef}
+      data={messages}
+      renderItem={renderItem}
+      keyExtractor={(item) => item.$id}
+      inverted
+      contentContainerStyle={styles.flatListContainer}
     />
   );
 };
 
 const styles = StyleSheet.create({
-  messagesContainer: {
-    flexGrow: 1, // Ensure the FlatList takes up all available space
-    paddingTop: 10, // Adjust as needed
-    paddingBottom: 10, // Adjust as needed
+  flatListContainer: {
+    flexGrow: 1,
+    paddingTop: 10,
+    paddingBottom: 10,
   },
   message: {
     maxWidth: '80%',
     padding: 10,
     marginBottom: 10,
     borderRadius: 10,
-    // flexDirection:'row',
-    gap:4,
-    // position:'relative'
-    // flex:1,
   },
   currentUserMessage: {
     alignSelf: 'flex-end',
@@ -69,17 +80,12 @@ const styles = StyleSheet.create({
   messageText: {
     fontSize: 16,
     color: 'white',
-    // marginTop:-20,
   },
-  timeText:{
-    color:'white',
-    fontSize:wp('3%'),
+  timeText: {
+    color: 'white',
+    fontSize: wp('3%'),
     alignSelf: 'flex-end',
-    // backgroundColor:'red',
-    justifyContent:'flex-end',
-    // marginTop:10,
-    marginBottom:0,
-  }
+  },
 });
 
 export default ChatList;

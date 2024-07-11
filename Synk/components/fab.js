@@ -28,7 +28,8 @@ const styles =StyleSheet.create({
         padding:10,
         alignItems:'center',
         justifyContent:'center',
-        borderRadius:20
+        borderRadius:20,
+        zIndex:222,
         // height:200
     }
 })

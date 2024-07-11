@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, Modal, TextInput, TouchableOpacity, Pressable, Alert } from 'react-native';
+import { View, Text, StyleSheet, FlatList, Modal, TextInput, TouchableOpacity, Pressable, Alert,StatusBar } from 'react-native';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import { getUser } from '../../../constants/userContext';
 import Fab from '../../../components/fab';
@@ -122,9 +122,11 @@ const ChatsScreen = ({ navigation }) => {
           <Text style={styles.avatarText}>{contact.name[0]}</Text>
         </View>
         <View style={styles.contactDetails}>
-          <Text style={styles.contactName}>{contact.name} </Text>
-          {item.lastMessage && <Text style={styles.lastMessageText}>{item.lastMessage.messageText} </Text>}
-          {item.lastMessage && <Text style={styles.lastMessageText}>{DateTime(item.lastMessage.$createdAt)} </Text>}
+          <View style={styles.upperContactdetails}>
+            <Text style={styles.contactName}>{contact.name} </Text>
+            {item.lastMessage && <Text style={styles.lastMessageTime}>{DateTime(item.lastMessage.$createdAt)} </Text>}
+          </View>
+          {item.lastMessage && <Text style={styles.lastMessageText} numberOfLines={1} ellipsizeMode='tail'>{item.lastMessage.messageText} </Text>}
         </View>
       </TouchableOpacity>
     );
@@ -180,7 +182,10 @@ const ChatsScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    // backgroundColor: 'red',
+    width:wp('100%'),
+    paddingRight:10,
+
   },
   contactItem: {
     flexDirection: 'row',
@@ -188,6 +193,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderBottomWidth: 1,
     borderBottomColor: '#f2f2f2',
+    // backgroundColor:'yellow',
   },
   avatarContainer: {
     width: wp('13%'),
@@ -205,12 +211,18 @@ const styles = StyleSheet.create({
   contactDetails: {
     justifyContent: 'center',
   },
+  upperContactdetails:{
+    justifyContent:'space-between',
+    flexDirection:'row',
+    width:'90%'
+  },
   contactName: {
     fontSize: hp('2.5%'),
   },
   lastMessageText: {
     fontSize: hp('2%'),
     color: 'gray',
+    width:wp("70%")
   },
   modalHeader: {
     flexDirection: 'row',

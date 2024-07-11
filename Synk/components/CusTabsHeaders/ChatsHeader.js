@@ -3,8 +3,7 @@ import { View, Text, Platform, StyleSheet, Pressable, TouchableOpacity } from 'r
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { primaryColors } from '../../constants/colors';
-import { Feather } from '@expo/vector-icons';
-import { Entypo } from '@expo/vector-icons';
+import { Feather, Entypo } from '@expo/vector-icons';
 import { PopupMenu } from '../PopupMenu';
 import { useTheme } from '../../constants/themeContext';
 import { useNavigation } from '@react-navigation/native'; // Import useNavigation hook
@@ -23,7 +22,7 @@ export default function ChatsHeader() {
     { label: 'Starred messages', onPress: () => {} },
     { label: 'Settings', onPress: () => handleNavigateToSettings() }, // Navigate to SettingsScreen
     { label: 'Switch accounts', onPress: () => {} },
-  ];
+  ]; 
 
   const handleNavigateToSettings = () => {
     navigation.navigate('SettingsScreen'); // Navigate to SettingsScreen

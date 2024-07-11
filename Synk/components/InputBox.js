@@ -4,9 +4,26 @@ import { View, TextInput, Button, StyleSheet, TouchableOpacity } from 'react-nat
 import { MaterialCommunityIcons, Ionicons  } from '@expo/vector-icons';
 import { primaryColors } from '../constants/colors';
 import { widthPercentageToDP  as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
+import { PopupMenu } from './PopupMenu';
 
 const InputBox = ({ onSendMessage }) => {
   const [messageText, setMessageText] = useState('');
+  const [menuVisible, setMenuVisible] = useState(false);
+
+  const attachmentItem=[
+    { label: 'New broadcast', onPress: () => {} },
+    { label: 'New broadcast', onPress: () => {} },
+    { label: 'New broadcast', onPress: () => {} },
+  ]
+
+  const renderAttachments = () => {
+    return attachmentItem.map((item, index) => (
+      <TouchableOpacity key={index} style={styles.attachmentItem} onPress={item.onPress}>
+        <Ionicons name={item.icon} size={24} color="black" style={styles.attachmentIcon} />
+      </TouchableOpacity>
+    ));
+  };
+  
 
   const handleSendMessage = () => {
     if (messageText.trim()) {
@@ -24,7 +41,8 @@ const InputBox = ({ onSendMessage }) => {
         placeholder="message"
         cursorColor={primaryColors.purple}
       />
-      <TouchableOpacity style={styles.attachement}>
+      <TouchableOpacity style={styles.attachement} onPress={() => setMenuVisible(true)}>
+        <PopupMenu visible={menuVisible} onClose={() => setMenuVisible(false)} menuItems={attachmentItem} style={styles.popupMenu} />
         <Ionicons name="attach" size={24} color="black" />
       </TouchableOpacity>
       {messageText &&
