@@ -39,6 +39,10 @@ const useContacts = (session) => {
   return contacts;
 };
 
+useEffect(()=>{
+  console.log("all good🥧")
+})
+
 const useMessagedContacts = (session) => {
   const [messagedContacts, setMessagedContacts] = useState([]);
 
