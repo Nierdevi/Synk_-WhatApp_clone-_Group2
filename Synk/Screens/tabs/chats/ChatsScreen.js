@@ -1,257 +1,254 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Button, FlatList, Modal, Alert, Linking, TouchableOpacity, Pressable, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, FlatList, Modal, TextInput, TouchableOpacity, Pressable, Alert,StatusBar } from 'react-native';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import { getUser } from '../../../constants/userContext';
 import Fab from '../../../components/fab';
-import { databases } from '../../../backend/appwrite';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Query } from 'appwrite';
-import * as Contacts from 'expo-contacts';
-import ChatListItem from './ChatListItem';
-import { Ionicons, Entypo } from '@expo/vector-icons';
-import { primaryColors } from '../../../constants/colors';
 
 const chatsData = require('../../../assets/data/chats.json');
 
-const STORAGE_KEY = '@MyApp:cachedContacts';
-const PAGE_SIZE = 50;
+import { Ionicons, Entypo } from '@expo/vector-icons';
+import { primaryColors } from '../../../constants/colors';
+import { fetchMessagedContacts } from '../../../backend/chatService';
+import { fetchAndNormalizeContacts, loadCachedContacts } from '../../../backend/contacts ';
+import DateTime from '../../../components/DateTime';
 
-const ChatsScreen = ({ navigation }) => {
-  const { session, setSession } = getUser();
+const useContacts = (session) => {
   const [contacts, setContacts] = useState([]);
-  const [filteredContacts, setFilteredContacts] = useState({ inApp: [], notInApp: [] });
-  const [modalVisible, setModalVisible] = useState(false);
-  const [contactsCached, setContactsCached] = useState(false);
-
-  const fetchContacts = async () => {
-    try {
-      const { status } = await Contacts.requestPermissionsAsync();
-      if (status !== 'granted') {
-        Alert.alert('Permission to access contacts was denied');
-        return [];
-      }
-      const { data } = await Contacts.getContactsAsync({
-        fields: [Contacts.Fields.PhoneNumbers],
-      });
-      return data;
-    } catch (error) {
-      console.error('Failed to fetch contacts:', error);
-      return [];
-    }
-  };
-
-  const isUserInApp = async (phoneNumber) => {
-    try {
-      const response = await databases.listDocuments(
-        '6682d430002d49900dfb',
-        '668318c2002986810f9a',
-        [Query.equal('phoneNumber', phoneNumber)]
-      );
-      return response.documents.length > 0;
-    } catch (error) {
-      console.error('Failed to check user in the database:', error);
-      return false;
-    }
-  };
 
   useEffect(() => {
-    const loadCachedContacts = async () => {
+    const loadContacts = async () => {
       try {
-        const cachedContacts = await AsyncStorage.getItem(STORAGE_KEY);
-        if (cachedContacts) {
-          const parsedContacts = JSON.parse(cachedContacts);
-          setContacts(parsedContacts.contactsList);
-          setFilteredContacts(parsedContacts.filteredContacts);
-          setContactsCached(true);
-        }
+        const cachedContacts = await loadCachedContacts();
+        if (cachedContacts) setContacts(cachedContacts);
+
+        const fetchedContacts = await fetchAndNormalizeContacts();
+        if (fetchedContacts) setContacts(fetchedContacts);
       } catch (error) {
-        console.error('Failed to load cached contacts:', error);
+        console.error('Failed to fetch contacts:', error);
+        if (error.message.includes('Network request failed')) {
+          Alert.alert('Network Error', 'Please check your network connection and try again.');
+        }
       }
     };
 
-    loadCachedContacts();
-  }, []);
-
-  const fetchContactsIfNeeded = async () => {
-    try {
-      if (!contactsCached) {
-        const fetchedContacts = await fetchContacts();
-        const inAppContacts = [];
-        const notInAppContacts = [];
-  
-        for (const contact of fetchedContacts) {
-          if (contact.phoneNumbers && contact.phoneNumbers.length > 0) {
-            const isInApp = await isUserInApp(contact.phoneNumbers[0].number);
-            if (isInApp) {
-              inAppContacts.push(contact);
-            } else {
-              notInAppContacts.push(contact);
-            }
-          }
-        }
-        const contactsToCache = {
-          contactsList: fetchedContacts,
-          filteredContacts: { inApp: inAppContacts, notInApp: notInAppContacts }
-        };
-        await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(contactsToCache));
-        setContactsCached(true);
-        setContacts(fetchedContacts);
-        setFilteredContacts({ inApp: inAppContacts, notInApp: notInAppContacts });
-      }
-    } catch (error) {
-      console.error('Failed to fetch and cache contacts:', error);
+    if (session) {
+      loadContacts();
     }
-  };
+  }, [session]);
 
-  const handleFetchContacts = async () => {
-    setModalVisible(true);
-    await fetchContactsIfNeeded();
-  };
+  return contacts;
+};
+
+const useMessagedContacts = (session) => {
+  const [messagedContacts, setMessagedContacts] = useState([]);
 
   useEffect(() => {
-    if (modalVisible) {
-      fetchContactsIfNeeded();
-    }
+    const fetchMessagedContactsData = async () => {
+      try {
+        if (session && session.phoneNumber) {
+          const messagedContactsData = await fetchMessagedContacts(session.phoneNumber);
+          setMessagedContacts(messagedContactsData);
+        }
+      } catch (error) {
+        console.error('Failed to fetch messaged contacts:', error);
+        if (error.message.includes('Network request failed')) {
+          Alert.alert('Network Error', 'Please check your network connection and try again.');
+        }
+      }
+    };
+
+    fetchMessagedContactsData();
+  }, [session]);
+
+  return messagedContacts;
+};
+
+const ChatsScreen = ({ navigation }) => {
+  const { session } = getUser();
+  const contacts = useContacts(session);
+  const messagedContacts = useMessagedContacts(session);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [modalVisible, setModalVisible] = useState(false);
+
+  useEffect(() => {
+    if (!modalVisible) setSearchQuery('');
   }, [modalVisible]);
 
-  const clearCache = async () => {
-    await AsyncStorage.removeItem(STORAGE_KEY);
-    setContactsCached(false);
+  const handleFetchContacts = () => setModalVisible(true);
+
+  const handleSearch = (query) => setSearchQuery(query);
+
+  const checkIfContactExistsInDatabase = async (phoneNumber) => {
+    // Replace with actual database check logic
+    const response = await fetch(`https://example.com/check-contact?phoneNumber=${phoneNumber}`);
+    const result = await response.json();
+    return result.exists;
   };
 
-  const renderContactItem = ({ item }) => (
-    <TouchableOpacity style={styles.contactItem} onPress={() => {}}>
-      <View style={styles.avatarContainer}>
-        <Text style={styles.avatarText}>{item.name[0]}</Text>
-      </View>
-      <View style={styles.contactDetails}>
-        <Text style={styles.contactName}>{item.name}</Text>
-        {item.note && <Text style={styles.contactStatus}>{item.note}</Text>}
-        {!filteredContacts.inApp.includes(item) && (
-          <Text style={styles.inviteText}>Invite</Text>
-        )}
-      </View>
-    </TouchableOpacity>
-  );
+  const handleContactPress = async (item) => {
+    const contactExists = await checkIfContactExistsInDatabase(item.phoneNumber);
+    if (contactExists) {
+      navigation.navigate('ChatRoom', { contact: item, currentUserPhoneNumber: session.phoneNumber });
+      setModalVisible(false);
+    } else {
+      Alert.alert('Contact Not Found', 'The selected contact is not available in the database.');
+    }
+  };
+
+  const renderContactItem = ({ item }) => {
+    return (
+      <TouchableOpacity style={styles.contactItem} onPress={() => handleContactPress(item)}>
+        <View style={styles.avatarContainer}>
+          <Text style={styles.avatarText}>{item.name[0]}</Text>
+        </View>
+        <View style={styles.contactDetails}>
+          <Text style={styles.contactName}>{item.name} </Text>
+          {item.note && <Text style={styles.contactStatus}>{item.note}</Text>}
+        </View>
+      </TouchableOpacity>
+    );
+  };
+
+  const renderMessagedContactItem = ({ item }) => {
+    const contact = contacts.find(contact =>
+      contact.normalizedPhoneNumbers?.includes(item.contactPhoneNumber)
+    );
+
+    if (!contact) return null;
+
+    return (
+      <TouchableOpacity style={styles.contactItem} onPress={() => navigation.navigate('ChatRoom', { contact, currentUserPhoneNumber: session.phoneNumber })}>
+        <View style={styles.avatarContainer}>
+          <Text style={styles.avatarText}>{contact.name[0]}</Text>
+        </View>
+        <View style={styles.contactDetails}>
+          <View style={styles.upperContactdetails}>
+            <Text style={styles.contactName}>{contact.name} </Text>
+            {item.lastMessage && <Text style={styles.lastMessageTime}>{DateTime(item.lastMessage.$createdAt)} </Text>}
+          </View>
+          {item.lastMessage && <Text style={styles.lastMessageText} numberOfLines={1} ellipsizeMode='tail'>{item.lastMessage.messageText} </Text>}
+        </View>
+      </TouchableOpacity>
+    );
+  };
 
   if (!session) {
-    return (
-      <View style={{flex: 1,}}>
-        <ScrollView style={styles.container}>
-          <FlatList
-            data={chatsData}
-            renderItem={({ item }) => <ChatListItem chat={item} />}
-            keyExtractor={(item) => item.id.toString()}
-          />
-            <Modal visible={modalVisible} animationType="slide">
-              <View style={styles.modalHeader}>
-                <Ionicons
-                  name="arrow-back-outline"
-                  size={24}
-                  color="black"
-                  style={styles.modalBackIcon}
-                  onPress={() => setModalVisible(false)}
-                />
-                <Text style={styles.modalTitle}>Select contact</Text>
-                <View style={styles.modalActions}>
-                  <Ionicons name="search" size={24} color="black" />
-                  <Pressable style={styles.dots} onPress={() => setMenuVisible(true)}>
-                    <Entypo name="dots-three-vertical" size={20} />
-                  </Pressable>
-                </View>
-              </View>
-              <TouchableOpacity style={styles.newContactButton}>
-                <View style={[styles.avatarContainer, { backgroundColor: primaryColors.purple }]}>
-                  <Ionicons name="person-add" size={20} color="white" />
-                </View>
-                <Text style={styles.contactName}>New contact</Text>
-              </TouchableOpacity>
-              <View style={styles.modalContainer}>
-                <Text style={styles.sectionTitle}>Contacts on Synk</Text>
-                <FlatList
-                  data={filteredContacts.inApp}
-                  keyExtractor={(item) => item.id.toString()}
-                  renderItem={renderContactItem}
-                  ListEmptyComponent={() => (
-                    <Text>No contacts on your phone currently use Synk</Text>
-                  )}
-                />
-                <Text style={[styles.sectionTitle, { marginTop: 50 }]}>Invite to Synk</Text>
-                <FlatList
-                  data={filteredContacts.notInApp}
-                  keyExtractor={(item) => item.id.toString()}
-                  renderItem={renderContactItem}
-                  initialNumToRender={50}
-                />
-              </View>
-            </Modal>
-        </ScrollView>
-        <Fab type="chats" handlePress={handleFetchContacts}/>
-      </View>
-    );
-  } else {
-    navigation.replace('welcome');
+    navigation.replace("welcome");
     return null;
   }
+
+  const filteredContacts = contacts.filter(contact =>
+    contact.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  return (
+    <View style={styles.container}>
+      <FlatList
+        data={messagedContacts}
+        renderItem={renderMessagedContactItem}
+        keyExtractor={(item) => item.contactPhoneNumber}
+      />
+      <Fab type="chats" handlePress={handleFetchContacts} />
+
+      <Modal visible={modalVisible} animationType="fade" onRequestClose={() => setModalVisible(false)}>
+        <View style={styles.modalHeader}>
+          <Ionicons name="arrow-back-outline" size={24} color="black" onPress={() => setModalVisible(false)} />
+          <Text style={styles.modalTitle}>Select contact</Text>
+          <View style={styles.modalActions}>
+            <Pressable style={styles.dots}>
+              <Entypo name="dots-three-vertical" size={20} />
+            </Pressable>
+          </View>
+        </View>
+        <View style={styles.searchInputContainer}>
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Search"
+            value={searchQuery}
+            onChangeText={handleSearch}
+          />
+        </View>
+        <FlatList
+          data={filteredContacts}
+          renderItem={renderContactItem}
+          keyExtractor={(item) => item.id}
+          ListEmptyComponent={filteredContacts.length === 0 && <Text style={{ fontSize: hp('2.5%'), textAlign: 'center' }}>No Contacts Found </Text>}
+        />
+      </Modal>
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  modalHeader: {
-    width: wp('100%'),
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 10,
-    height: hp('7%'),
-    elevation: 1,
-  },
-  modalBackIcon: {
-    marginRight: 10,
-    marginTop: 6,
-  },
-  modalTitle: {
-    fontSize: 20,
-    flexGrow: 1,
-  },
-  modalActions: {
-    width: wp('13%'),
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  dots: {
-    padding: 5,
-  },
-  newContactButton: {
-    width: wp('100%'),
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 10,
-    height: hp('7%'),
-    elevation: 1,
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#f9f9f9',
-    borderRadius: 10,
-    padding: 20,
-  },
-  sectionTitle: {
-    textAlign: 'left',
-    width: wp('95%'),
-    fontSize: 16,
+    // backgroundColor: 'red',
+    width:wp('100%'),
+    paddingRight:10,
+
   },
   contactItem: {
     flexDirection: 'row',
     alignItems: 'center',
     padding: 10,
     borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+    borderBottomColor: '#f2f2f2',
+    // backgroundColor:'yellow',
+  },
+  avatarContainer: {
+    width: wp('13%'),
+    height: hp('6.5%'),
+    borderRadius: 30,
+    backgroundColor: primaryColors.purple,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: wp('3%'),
+  },
+  avatarText: {
+    fontSize: hp('3%'),
+    color: 'white',
+  },
+  contactDetails: {
+    justifyContent: 'center',
+  },
+  upperContactdetails:{
+    justifyContent:'space-between',
+    flexDirection:'row',
+    width:'90%'
+  },
+  contactName: {
+    fontSize: hp('2.5%'),
+  },
+  lastMessageText: {
+    fontSize: hp('2%'),
+    color: 'gray',
+    width:wp("70%")
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f2f2f2',
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  modalActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  contactItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 10,
+    width: wp("100%"),
+    flexDirection: 'row',
+  },
+  contactName: {
+    fontSize: 18,
   },
   avatarContainer: {
     width: 40,
@@ -278,8 +275,25 @@ const styles = StyleSheet.create({
     color: 'gray',
   },
   inviteText: {
-    fontSize: 14,
-    color: 'blue',
+    fontSize: 17,
+    marginLeft: 250,
+    marginTop: -10,
+  },
+  dots: {
+    marginRight: 10,
+  },
+  searchInputContainer: {
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f2f2f2',
+  },
+  searchInput: {
+    height: 40,
+    borderWidth: 1,
+    borderColor: primaryColors.purple,
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    fontSize: wp('4%'),
   },
 });
 

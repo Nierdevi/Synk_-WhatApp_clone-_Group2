@@ -30,7 +30,7 @@ const ChatsStackNavigator = ({ navigation, route }) => {
   return (
     <ChatsStack.Navigator initialRouteName="ChatsScreen">
       <ChatsStack.Screen name="ChatsScreen" component={ChatsScreen} options={{ headerShown: false }} />
-      <ChatsStack.Screen name="chat" component={ChatRoom} options={{ headerShown: true}} />
+      <ChatsStack.Screen name="ChatRoom" component={ChatRoom} options={{ headerShown: true}} />
       <ChatsStack.Screen name="ChatInfo" component={ChatInfo} options={{ headerShown: true }} />
       <ChatsStack.Screen name="UpdatesHeader" component={UpdatesHeader} options={{ headerShown: false }} />
       <ChatsStack.Screen name="SettingsScreen" component={SettingsScreen} options={{ headerShown: false }} />

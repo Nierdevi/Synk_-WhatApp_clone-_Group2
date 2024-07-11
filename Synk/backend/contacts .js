@@ -11,19 +11,16 @@ const DEFAULT_COUNTRY_CODE = '+233';
 const normalizePhoneNumber = (phoneNumber) => {
   // Remove all non-digit characters from the phone number
   const cleaned = phoneNumber.replace(/\D/g, '');
-
   // Check if the number starts with '0'
   if (cleaned.startsWith('0')) {
     // Replace '0' with your default country code
     return `${DEFAULT_COUNTRY_CODE}${cleaned.slice(1)}`;
   }
-
   // Check if the number does not start with the default country code
   if (!cleaned.startsWith(DEFAULT_COUNTRY_CODE.replace('+', ''))) {
     // Append the default country code
     return `${DEFAULT_COUNTRY_CODE}${cleaned}`;
   }
-
   // Return the number with a '+' prefix
   return `+${cleaned}`;
 };

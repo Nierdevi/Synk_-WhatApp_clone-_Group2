@@ -1,124 +1,65 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, KeyboardAvoidingView, Platform, ImageBackground, TouchableOpacity, Image, TouchableWithoutFeedback } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
-import talkiobg from '../../../assets/images/talkioBG.png';
-import AppLogo from '../../../assets/AppLogo.png';
-import Message from './Message';
-import messages from '../../../assets/data/messages.json';
-import InputBox from './InputBox';
-import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, KeyboardAvoidingView, Platform, View, Text } from 'react-native';
+import { sendMessage, fetchMessages, getExistingChat } from '../../../backend/chatService';
+import InputBox from '../../../components/InputBox';
+import ChatList from '../../../components/ChatListItem';
+import { fetchLastMessage } from '../../../backend/chatService'; // Import fetchLastMessage function
+import DateTime from '../../../components/DateTime';
 
-const ChatRoom = () => {
-  const route = useRoute();
-  const navigation = useNavigation();
-  const [menuVisible, setMenuVisible] = useState(false);
+const ChatRoom = ({ route }) => {
+  const { contact, currentUserPhoneNumber } = route.params;
+  const [messages, setMessages] = useState([]);
+  const [lastMessage, setLastMessage] = useState(null);
 
-  const { name, image } = route.params; // Extract name and image from route params
+  const recipientPhoneNumber = contact.normalizedPhoneNumbers[0]; // Use the first normalized phone number
 
-  const menuItems = [
-    { label: 'View contact', onPress: () => alert('View contact') },
-    { label: 'Media, links, and docs', onPress: () => alert('Media, links, and docs') },
-    { label: 'Search', onPress: () => alert('Search') },
-    { label: 'Mute notifications', onPress: () => alert('Mute notifications') },
-    { label: 'Disappearing messages', onPress: () => alert('Disappearing messages') },
-    { label: 'Wallpaper', onPress: () => alert('Wallpaper') },
-    { label: 'More', onPress: () => alert('More') },
-  ];
-
+  // console.log(messages)
   useEffect(() => {
-    navigation.setOptions({ 
-      title: name,
-      headerRight: () => (
-        <View style={styles.headerRight}>
-          <Image source={AppLogo} style={styles.headerImage} />
-          <TouchableOpacity onPress={() => alert('Camera Icon Pressed')} style={styles.iconButton}>
-            <Ionicons name="camera" size={24} color="black" />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.iconButton} onPress={() => setMenuVisible(!menuVisible)}>
-            <MaterialIcons name="more-vert" size={24} color="black" />
-          </TouchableOpacity>
-        </View>
-      ),
-    });
-  }, [navigation, route.params.name, menuVisible]);
+    const loadMessages = async () => {
+      const existingChat = await getExistingChat(currentUserPhoneNumber, recipientPhoneNumber);
+      if (existingChat) {
+        const chatId = existingChat.$id;
+        const fetchedMessages = await fetchMessages(chatId);
+        const sortedMessages = fetchedMessages.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+        setMessages(sortedMessages);
 
-  const closeMenu = () => {
-    if (menuVisible) {
-      setMenuVisible(false);
+        // Fetch the last message
+        try {
+          const lastMessageData = await fetchLastMessage(chatId);
+          setLastMessage(lastMessageData);
+        } catch (error) {
+          console.error('Failed to fetch last message:', error);
+        }
+      }
+    };
+    loadMessages();
+  }, [currentUserPhoneNumber, recipientPhoneNumber]);
+
+  const handleSendMessage = async (messageText) => {
+    if (messageText.trim()) {
+      const response = await sendMessage(currentUserPhoneNumber, recipientPhoneNumber, messageText);
+      if (response) {
+        setMessages((prevMessages) => [response, ...prevMessages]);
+        setLastMessage(response); // Update last message after sending new message
+      }
     }
   };
 
   return (
-    <KeyboardAvoidingView 
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'} 
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 100}
-      style={styles.bg}
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : 0}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0}
     >
-      <ImageBackground source={talkiobg} style={styles.bg}>
-        <TouchableWithoutFeedback onPress={closeMenu}>
-          <View style={styles.container}>
-            <FlatList
-              data={messages}
-              renderItem={({ item }) => <Message message={item} />}
-              style={styles.list}
-              inverted
-            />
-            <InputBox />
-          </View>
-        </TouchableWithoutFeedback>
-        {menuVisible && (
-          <View style={styles.popupMenu}>
-            {menuItems.map((item, index) => (
-              <TouchableOpacity key={index} onPress={item.onPress}>
-                <Text style={styles.menuOptionText}>{item.label}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        )}
-      </ImageBackground>
+      <ChatList messages={messages} currentUserPhoneNumber={currentUserPhoneNumber} />
+      <InputBox onSendMessage={handleSendMessage} />
     </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
-  bg: {
-    flex: 1,
-  },
   container: {
     flex: 1,
-  },
-  list: {
-    padding: 10,
-  },
-  headerRight: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  headerImage: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    marginRight: 10,
-  },
-  iconButton: {
-    marginHorizontal: 5,
-  },
-  popupMenu: {
-    position: 'absolute',
-    backgroundColor: 'white',
-    borderRadius: 10,
-    paddingVertical: 5,
-    paddingHorizontal: 5,
-    elevation: 2,
-    top: 5,
-    right: 3,
-    width: 185,
-  },
-  menuOptionText: {
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    fontSize: 15,
-    color: '#333',
   },
 });
 
