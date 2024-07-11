@@ -9,6 +9,8 @@ import UpdatesHeader from '../../../components/CusTabsHeaders/ChatsHeader';
 import SettingsScreen from '../../SettingsScreen';
 import NotificationsScreen from '../../NotificationsScreen';
 import AccountScreen from '../../AccountScreen';
+import StorageScreen from '../../StorageScreen';
+import ProfileScreen from '../../ProfileScreen';
 
 const ChatsStack = createStackNavigator();
 
@@ -31,9 +33,11 @@ const ChatsStackNavigator = ({ navigation, route }) => {
       <ChatsStack.Screen name="chat" component={ChatRoom} options={{ headerShown: true}} />
       <ChatsStack.Screen name="ChatInfo" component={ChatInfo} options={{ headerShown: true }} />
       <ChatsStack.Screen name="UpdatesHeader" component={UpdatesHeader} options={{ headerShown: false }} />
-      <ChatsStack.Screen name="SettingsScreen" component={SettingsScreen} options={{ headerShown: true }} />
-      <ChatsStack.Screen name="Notifications" component={NotificationsScreen} options={{ headerShown: true }} />
-      <ChatsStack.Screen name="Account" component={AccountScreen} options={{ headerShown: true }}/>
+      <ChatsStack.Screen name="SettingsScreen" component={SettingsScreen} options={{ headerShown: false }} />
+      <ChatsStack.Screen name="Notifications" component={NotificationsScreen} options={{ headerShown: false }} />
+      <ChatsStack.Screen name="Account" component={AccountScreen} options={{ headerShown: false }}/>
+      <ChatsStack.Screen name="Storage" component={StorageScreen} options={{ headerShown: false }}/>
+      <ChatsStack.Screen name="Profile" component={ProfileScreen} options={{ headerShown: false }}/>
     </ChatsStack.Navigator>
   );
 };

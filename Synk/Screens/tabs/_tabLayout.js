@@ -51,7 +51,6 @@ const MainTabs = () => {
 
 
   return (
-    <PanGestureHandler onHandlerStateChange={handleGesture}>
       <View style={{ flex: 1 }}>
     <Tab.Navigator
       initialRouteName="Chats"
@@ -133,7 +132,6 @@ const MainTabs = () => {
       />
     </Tab.Navigator>
     </View>
-    </PanGestureHandler>
   );
 };
 

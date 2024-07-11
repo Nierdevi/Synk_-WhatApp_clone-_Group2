@@ -1,124 +1,236 @@
 import React from 'react';
-import { View, Text, Switch, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, Pressable } from 'react-native';
+import { MaterialIcons, Ionicons } from '@expo/vector-icons';
+import { ScrollView } from 'react-native-gesture-handler';
+import AppLogo from '../assets/AppLogo.png';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 
-const SettingsScreen = ({ navigation }) => {
-  const [isEnabled, setIsEnabled] = React.useState(false);
-  const toggleSwitch = () => setIsEnabled(previousState => !previousState);
+const SettingsScreen = () => {
+  const navigation = useNavigation();
 
-  const navigateToNotifications = () => {
+  const handleNavigateToNotification = () => {
     navigation.navigate('Notifications');
   };
 
-  const navigateToAccount = () => {
-    navigation.navigate('Account')
+  const handleNavigateToAccount = () => {
+    navigation.navigate('Account');
   };
 
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Settings</Text>
-      
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>General</Text>
-        <TouchableOpacity style={styles.option} onPress={navigateToAccount}>
-          <Text style={styles.optionText}>Account</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.option}>
-          <Text style={styles.optionText}>Privacy</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.option} onPress={navigateToNotifications}>
-          <Text style={styles.optionText}>Notifications</Text>
-        </TouchableOpacity>
-      </View>
+  const handleNavigateToStorage = () => {
+    navigation.navigate('Storage');
+  };
 
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Preferences</Text>
-        <View style={styles.option}>
-          <Text style={styles.optionText}>Dark Mode</Text>
-          <Switch
-            trackColor={{ false: "#767577", true: "#81b0ff" }}
-            thumbColor={isEnabled ? "#f5dd4b" : "#f4f3f4"}
-            onValueChange={toggleSwitch}
-            value={isEnabled}
-          />
+  const handleNavigateToProfile = () => {
+    navigation.navigate('Profile');
+  };
+
+  return (  
+    <SafeAreaView style={styles.container}>  
+      <View style={styles.header}>
+        <Pressable onPress={() => navigation.goBack()}>
+          <Ionicons name="arrow-back" size={24} color="#000" />
+        </Pressable>
+        <Text style={styles.headerTitle}>Settings</Text>
+      </View>   
+
+      <ScrollView style={styles.container}>
+          <TouchableOpacity style={styles.head} onPress={handleNavigateToProfile}>
+            <Image source={AppLogo} style={styles.headerImage} />
+            <View style={{flexDirection: 'row'}}>
+              <View style={styles.headerContainer}>
+                <Text style={styles.username}>Synk_User</Text>
+                <Text style={styles.status}>我从不松懈型</Text>
+              </View>
+              <Pressable style={styles.scan}>
+                <Ionicons name="qr-code" size={24} color="black" />
+              </Pressable>
+              <Pressable style={styles.down}>
+              <Ionicons name="chevron-down-circle" size={24} color="black" />  
+              </Pressable>	
+            </View>
+          </TouchableOpacity>
+        <View style={{paddingLeft: 20, paddingRight: 20}}>
+          <TouchableOpacity style={styles.section} onPress={handleNavigateToAccount}>
+          <Ionicons name="person-outline" size={24} color="black" />
+            <View style={styles.sect}>
+              <Text style={styles.sectionTitle}>Account</Text>
+              <Text style={styles.sectionDescription}>Security notifications, change number</Text>
+            </View>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.section}>
+          <MaterialIcons name="lock-outline" size={24} color="black" />
+            <View style={styles.sect}>
+              <Text style={styles.sectionTitle}>Privacy</Text>
+              <Text style={styles.sectionDescription}>Block contacts, disappearing messages</Text>
+            </View>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.section}>
+            <MaterialIcons name="photo" size={24} color="#000" />
+            <View style={styles.sect}>
+              <Text style={styles.sectionTitle}>Avatar</Text>
+              <Text style={styles.sectionDescription}>Create, edit, profile photo</Text>
+            </View>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.section}>
+          <Ionicons name="chatbox-outline" size={24} color="black" />
+            <View style={styles.sect}>
+              <Text style={styles.sectionTitle}>Chats</Text>
+              <Text style={styles.sectionDescription}>Theme, wallpapers, chat history</Text>
+            </View>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.section} onPress={handleNavigateToNotification}>
+          <Ionicons name="notifications-outline" size={24} color="black" />
+            <View style={styles.sect}>
+              <Text style={styles.sectionTitle}>Notifications</Text>
+              <Text style={styles.sectionDescription}>Message, group & call tones</Text>
+            </View>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.section} onPress={handleNavigateToStorage}>
+          <Ionicons name="list-sharp" size={24} color="black" />
+            <View style={styles.sect}>
+              <Text style={styles.sectionTitle}>Storage and data</Text>
+              <Text style={styles.sectionDescription}>Network usage, auto-download</Text>
+            </View>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.section}>
+          <Ionicons name="globe-outline" size={24} color="black" />
+            <View style={styles.sect}>
+              <Text style={styles.sectionTitle}>App language</Text>
+              <Text style={styles.sectionDescription}>English (device's language)</Text>
+            </View>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.section}>
+          <Ionicons name="help-circle-outline" size={24} color="black" />
+            <View style={styles.sect}>
+              <Text style={styles.sectionTitle}>Help</Text>
+              <Text style={styles.sectionDescription}>Help center, contact us, privacy policy</Text>
+            </View>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.section}>
+          <Ionicons name="person-add-outline" size={24} color="black" />
+            <Text style={styles.optionText}>Invite a friend</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.section}>
+          <MaterialIcons name="system-update-tv" size={24} color="black" />
+            <Text style={styles.optionText}>App updates</Text>
+          </TouchableOpacity>
+
+          <Text style={styles.footerTitle}>Also from Meta</Text>
+
+          <TouchableOpacity style={styles.section}>
+          <Ionicons name="logo-instagram" size={24} color="#000" />
+            <Text style={styles.optionText}>Open Instagram</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.section}>
+          <Ionicons name="logo-facebook" size={24} color="black" />
+            <Text style={styles.optionText}>Open Facebook</Text>
+          </TouchableOpacity>
         </View>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.section}>
-        <MaterialIcons name="help" size={24} color="#fff" />
-        <View style={styles.sect}>
-          <Text style={styles.sectionTitle}>Help</Text>
-          <Text style={styles.sectionDescription}>Help center, contact us, privacy policy</Text>
-        </View>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.section}>
-        <MaterialIcons name="person" size={24} color="#fff" />
-        <Text style={{ color: '#fff', marginLeft: 10 }}>Invite a friend</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.section}>
-        <MaterialIcons name="update" size={24} color="#fff" />
-        <Text style={{ color: '#fff', marginLeft: 10 }}>App updates</Text>
-      </TouchableOpacity>
-
-      <Text style={{ color: '#fff', marginTop: 20, fontSize: 12 }}>Also from Meta</Text>
-
-      <TouchableOpacity style={styles.section}>
-        <MaterialIcons name="mail" size={24} color="#fff" />
-        <Text style={{ color: '#fff', marginLeft: 10 }}>Open Instagram</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.section}>
-        <MaterialIcons name="facebook" size={24} color="#fff" />
-        <Text style={{ color: '#fff', marginLeft: 10 ,}}>Open Facebook</Text>
-      </TouchableOpacity>
-
-    </ScrollView>
+        </ScrollView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    backgroundColor: '#fff',
+    backgroundColor: 'yellow',
+    paddingTop: -40,
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
+  head: {
+    flexDirection: 'row',
     marginBottom: 20,
+    alignItems: 'center',
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderTopWidth: StyleSheet.hairlineWidth,
+     borderBottomColor: 'Lightgray',
+     paddingTop: 5,
+     paddingBottom: 10,
+     paddingRight: 20,
+     paddingLeft: 20,
+  },
+  headerImage: {
+    width: 70,
+    height: 70,
+    borderRadius: 50,
+    marginRight: 15,
+  },
+  headerContainer: {
+    justifyContent: 'center',
+  },
+  username: {
+    fontSize: 18,
+    color: '#000',
+  },
+  status: {
+    fontSize: 14,
+    color: '#000',
   },
   section: {
-    marginVertical: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#eee',
+    padding: 15,
+    marginBottom: 10,
+    borderRadius: 8,
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: '600',
-    marginBottom: 10,
+    fontWeight: 'bold',
+    color: '#000',
+    marginLeft: 10,
   },
-  option: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
+  sectionDescription: {
+    fontSize: 14,
+    color: '#666',
+    marginLeft: 10,
   },
   optionText: {
     fontSize: 16,
+    color: '#000',
+    marginLeft: 10,
   },
-  signOutButton: {
-    marginTop: 40,
-    paddingVertical: 15,
-    backgroundColor: '#ff5c5c',
-    borderRadius: 5,
-    alignItems: 'center',
+  footerTitle: {
+    color: '#000',
+    marginTop: 30,
+    fontSize: 14,
+    marginBottom: 5,
   },
-  signOutText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
+  sect: {
+    flex: 1,
+    marginLeft: 10,
+  },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: 'white',
+    paddingTop: 50,
+    paddingLeft: 10,
+  },
+  headerTitle: {
+    fontSize: 28,
+    fontWeight: "bold",
+    marginLeft: 10,
+  },
+  scan:{
+    left: 80,
+    top: 8,
+    
+  },
+  down:{
+    left: 100,
+    top: 8,
   },
 });
 
