@@ -241,8 +241,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   contactItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
     padding: 10,
     width: wp("100%"),
     flexDirection: 'row',
@@ -251,28 +249,13 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   avatarContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#ddd',
+    width: 45,
+    height: 45,
+    borderRadius: 30,
+    backgroundColor: '#ccc',
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 10,
-  },
-  avatarText: {
-    color: '#fff',
-    fontSize: 18,
-  },
-  contactDetails: {
-    flex: 1,
-  },
-  contactName: {
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  contactStatus: {
-    fontSize: 14,
-    color: 'gray',
+    marginRight: 15,
   },
   inviteText: {
     fontSize: 17,
