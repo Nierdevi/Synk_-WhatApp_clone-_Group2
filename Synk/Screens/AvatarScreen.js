@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, Pressable, Image } from 'react-native';
 import React from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
-import avatar from '../assets/images/avatar.jpeg';
+import avatar1 from '../assets/images/avatar1.jpg';
 
 const AvatarScreen = () => {
     const navigation = useNavigation();
@@ -15,7 +15,9 @@ const AvatarScreen = () => {
                 <Text style={styles.headerTitle}>Avatar</Text>
             </View>
 
-            <Image source={avatar.jpeg} style={styles.image}/>
+            <View>
+                <Image source={avatar1} style={styles.image}/>
+            </View>
         </View>
     )
 }
@@ -30,7 +32,7 @@ const styles = StyleSheet.create({
     header: {
         flexDirection: "row",
         alignItems: "center",
-        marginBottom: 5,
+        //marginBottom: 5,
         borderBottomWidth: StyleSheet.hairlineWidth,
         borderBottomColor: 'Lightgray',
         backgroundColor: 'white',
@@ -44,8 +46,11 @@ const styles = StyleSheet.create({
         paddingRight: 250,
     },
     image:{
-        height: 100,
-        width: 100,
+        position: 'absolute',
+        height: 350,
+        width: 358,
+        marginHorizontal: 1,
+        marginVertical: 1,
     },
     
 })
