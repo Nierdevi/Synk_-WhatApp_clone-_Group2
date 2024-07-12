@@ -1,15 +1,13 @@
 import { Entypo } from '@expo/vector-icons';
-import React,{useState} from 'react';
-import { StyleSheet, Text, View,Image, Pressable, Button } from 'react-native';
+import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import React,{useState,useEffect} from 'react';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import { PopupMenu } from '../components/PopupMenu';
-import {primaryColors} from '../constants/colors';
+import { primaryColors } from '../constants/colors';
 import { useTheme } from '../constants/themeContext';
-import {getUser} from '../constants/userContext';
 
 export default function WelcomeScreen({navigation}) {
-  const {session:cUser}=getUser();
   const [menuVisible, setMenuVisible] = useState(false);
   const { theme, toggleTheme,setTheme } = useTheme();
   const toggleButtonLabel = theme === 'dark' ? 'Light Theme' : 'Dark Theme';
@@ -20,9 +18,6 @@ export default function WelcomeScreen({navigation}) {
     { label: 'App Language', onPress: () => {} },
   ];
 
-if(cUser)
-  navigation.replace('Tabs')
-else
   return (
     <View style={[styles.container, { backgroundColor: theme === 'dark' ?  primaryColors.black : primaryColors.white }]}>
         {/* <StatusBar backgroundColor={theme=='dark'? primaryColors.black:primaryColors.white} barStyle={theme=='dark'? 'light-content':'dark-content'} /> */}

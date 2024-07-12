@@ -1,5 +1,6 @@
 import { account, databases,ID } from "./appwrite";
 import { Query } from "appwrite";
+import { Alert } from "react-native";
 
 const createUser = async (phoneNumber) => {
     try {
@@ -7,15 +8,17 @@ const createUser = async (phoneNumber) => {
         return token;
     } catch (error) {
         console.error("Failed to create phone token:", error);
+        Alert.alert("Oops!","Failed to create phone token")
     }
 };
 
 const verifyUser = async (userId, otp) => {
     try {
-        const session = await account.updatePhoneSession(userId, otp);
+        const session = await account.createSession(userId, otp);
         return session;
     } catch (error) {
         console.error("Failed to verify user:", error);
+        Alert.alert("Oops!","Failed to verify user")
     }
 };
 
@@ -33,6 +36,7 @@ const verifyUser = async (userId, otp) => {
         console.log(currentUSer)
         return currentUSer.documents[0];
     } catch (error) {
+        // Alert.alert("Oops!","Failed to get current user")
         throw new Error(error);
     }
 };

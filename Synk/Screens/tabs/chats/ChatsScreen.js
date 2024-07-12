@@ -1,16 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, Modal, TextInput, TouchableOpacity, Pressable, Alert,StatusBar } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Alert, FlatList, Modal, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
-import { getUser } from '../../../constants/userContext';
 import Fab from '../../../components/fab';
+import { getUser } from '../../../constants/userContext';
 
-const chatsData = require('../../../assets/data/chats.json');
+import { databases } from '../../../backend/appwrite';
+import { Query } from 'appwrite';
 
-import { Ionicons, Entypo } from '@expo/vector-icons';
-import { primaryColors } from '../../../constants/colors';
+import { Entypo, Ionicons } from '@expo/vector-icons';
 import { fetchMessagedContacts } from '../../../backend/chatService';
 import { fetchAndNormalizeContacts, loadCachedContacts } from '../../../backend/contacts ';
 import DateTime from '../../../components/DateTime';
+import { primaryColors } from '../../../constants/colors';
 
 const useContacts = (session) => {
   const [contacts, setContacts] = useState([]);
@@ -38,6 +39,8 @@ const useContacts = (session) => {
 
   return contacts;
 };
+
+
 
 
 const useMessagedContacts = (session) => {
@@ -79,20 +82,38 @@ const ChatsScreen = ({ navigation }) => {
 
   const handleSearch = (query) => setSearchQuery(query);
 
-  const checkIfContactExistsInDatabase = async (phoneNumber) => {
-    // Replace with actual database check logic
-    const response = await fetch(`https://example.com/check-contact?phoneNumber=${phoneNumber}`);
-    const result = await response.json();
-    return result.exists;
-  };
+  const checkPhoneNumberExists = async (phoneNumber) => {
+    try {
+        const response = await databases.listDocuments('6685cbc40036f4c6a5ad', '6685cc6600212adefdbf', [
+            Query.equal('phoneNumber', phoneNumber),
+        ]);
+
+        return response.documents.length > 0;
+    } catch (error) {
+        console.error('Error checking phone number:', error);
+        throw error;
+    }
+};
 
   const handleContactPress = async (item) => {
-    const contactExists = await checkIfContactExistsInDatabase(item.phoneNumber);
-    if (contactExists) {
-      navigation.navigate('ChatRoom', { contact: item, currentUserPhoneNumber: session.phoneNumber });
-      setModalVisible(false);
-    } else {
-      Alert.alert('Contact Not Found', 'The selected contact is not available in the database.');
+    try {
+      const recipientPhoneNumber = item.normalizedPhoneNumbers[0];
+      const currentPhoneNumber = session.phoneNumber; // Assuming session contains the current user's phone number
+      console.log(currentPhoneNumber)
+
+      const isInDatabase = await checkPhoneNumberExists(recipientPhoneNumber);
+
+      if(isInDatabase){
+        console.log(isInDatabase)
+        navigation.navigate('ChatRoom', { contact:item, currentUserPhoneNumber: currentPhoneNumber });
+        setModalVisible(false);
+
+      }else{
+        Alert.alert('Oops!', 'This contact isn\'t on Synk');
+      }
+    } catch (error) {
+      console.error('Failed to handle contact press:', error);
+      Alert.alert('Error', 'An error occurred while trying to navigate to the chat room');
     }
   };
 
@@ -133,6 +154,14 @@ const ChatsScreen = ({ navigation }) => {
     );
   };
 
+  // if (!session) {
+  // navigation.replace("welcome");
+  //  return null;
+  //}
+  // if (!session) {
+  //   navigation.replace("welcome");
+  //   return null;
+  // }
   if (session) {
     navigation.replace("welcome");
     return null;
