@@ -10,23 +10,25 @@ const AppUpdatesScreen = () => {
   const navigation = useNavigation();
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Pressable onPress={() => navigation.goBack()}>
-          <Ionicons name="arrow-back" size={24} color="#000" />
-        </Pressable>
-        <Text style={styles.headerTitle}>App update settings</Text>
-      </View>
-      <View style={styles.content}>
-        <View style={styles.row}>
-          <Text style={styles.body}>Auto-update WhatsApp</Text>
-          <Switch
-            value={autoUpdate}
-            onValueChange={(value) => setAutoUpdate(value)}
-            style={styles.switch}
-          />
+      <Pressable>
+        <View style={styles.header}>
+          <Pressable onPress={() => navigation.goBack()}>
+            <Ionicons name="arrow-back" size={24} color="#000" />
+          </Pressable>
+          <Text style={styles.headerTitle}>App update settings</Text>
         </View>
-        <Text style={styles.body1}>Automatically update app over WiFi.</Text>
-      </View>
+        <View style={styles.content}>
+          <View style={styles.row}>
+            <Text style={styles.body}>Auto-update WhatsApp</Text>
+            <Switch
+              value={autoUpdate}
+              onValueChange={(value) => setAutoUpdate(value)}
+              style={styles.switch}
+            />
+          </View>
+          <Text style={styles.body1}>Automatically update app over WiFi.</Text>
+        </View>
+      </Pressable>
       <View style={styles.content}>
         <Text style={styles.headerText}>Notifications</Text>
         <View style={styles.row}>

@@ -96,7 +96,7 @@ const StorageScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "yellow",
     marginTop: 30,
   },
   header: {

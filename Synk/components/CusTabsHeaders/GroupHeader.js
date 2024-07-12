@@ -5,7 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {primaryColors,SecondaryColors} from '../../constants/colors';
 import { Feather } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
-import { PopupMenu } from '../PopupMenu';
+import { PopupMenu } from '../../components/PopupMenu';
 import { useTheme } from '../../constants/themeContext';
 
 
@@ -30,7 +30,7 @@ export default function GroupHeader() {
 
             <View style={styles.option}>
 
-            <TouchableOpacity>
+                <TouchableOpacity>
                     <Feather name="camera" size={22} color={theme === 'dark' ?  primaryColors.white : primaryColors.black} />
                 </TouchableOpacity>
 
