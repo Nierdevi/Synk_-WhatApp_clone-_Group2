@@ -1,17 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, Modal, TextInput, TouchableOpacity, Pressable, Alert,StatusBar } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Alert, FlatList, Modal, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
-import { getUser } from '../../../constants/userContext';
 import Fab from '../../../components/fab';
+import { getUser } from '../../../constants/userContext';
 
 import { databases } from '../../../backend/appwrite';
 import { Query } from 'appwrite';
 
-import { Ionicons, Entypo } from '@expo/vector-icons';
-import { primaryColors } from '../../../constants/colors';
+import { Entypo, Ionicons } from '@expo/vector-icons';
 import { fetchMessagedContacts } from '../../../backend/chatService';
 import { fetchAndNormalizeContacts, loadCachedContacts } from '../../../backend/contacts ';
 import DateTime from '../../../components/DateTime';
+import { primaryColors } from '../../../constants/colors';
 
 const useContacts = (session) => {
   const [contacts, setContacts] = useState([]);
@@ -39,6 +39,7 @@ const useContacts = (session) => {
 
   return contacts;
 };
+
 
 
 
@@ -153,6 +154,10 @@ const ChatsScreen = ({ navigation }) => {
     );
   };
 
+  // if (!session) {
+  // navigation.replace("welcome");
+  //  return null;
+  //}
   // if (!session) {
   //   navigation.replace("welcome");
   //   return null;
