@@ -25,6 +25,26 @@ const SettingsScreen = () => {
     navigation.navigate('Profile');
   };
 
+  const handleNavigateToPrivacy = () => {
+    navigation.navigate('Privacy');
+  };
+
+  const handleNavigateToSChat = () => {
+    navigation.navigate('SChat');
+  };
+
+  const handleNavigateToHelp = () => {
+    navigation.navigate('Help');
+  };
+
+  const handleNavigateToAppUpdate = () => {
+    navigation.navigate('AppUpdate');
+  };
+
+  const handleNavigateToAvatar = () => {
+    navigation.navigate('Avatar');
+  };
+
   return (  
     <SafeAreaView style={styles.container}>  
       <View style={styles.header}>
@@ -59,7 +79,7 @@ const SettingsScreen = () => {
             </View>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.section}>
+          <TouchableOpacity style={styles.section} onPress={handleNavigateToPrivacy}>
           <MaterialIcons name="lock-outline" size={24} color="black" />
             <View style={styles.sect}>
               <Text style={styles.sectionTitle}>Privacy</Text>
@@ -67,7 +87,7 @@ const SettingsScreen = () => {
             </View>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.section}>
+          <TouchableOpacity style={styles.section} onPress={handleNavigateToAvatar}>
             <MaterialIcons name="photo" size={24} color="#000" />
             <View style={styles.sect}>
               <Text style={styles.sectionTitle}>Avatar</Text>
@@ -75,7 +95,7 @@ const SettingsScreen = () => {
             </View>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.section}>
+          <TouchableOpacity style={styles.section} onPress={handleNavigateToSChat}>
           <Ionicons name="chatbox-outline" size={24} color="black" />
             <View style={styles.sect}>
               <Text style={styles.sectionTitle}>Chats</Text>
@@ -107,7 +127,7 @@ const SettingsScreen = () => {
             </View>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.section}>
+          <TouchableOpacity style={styles.section} onPress={handleNavigateToHelp}>
           <Ionicons name="help-circle-outline" size={24} color="black" />
             <View style={styles.sect}>
               <Text style={styles.sectionTitle}>Help</Text>
@@ -120,7 +140,7 @@ const SettingsScreen = () => {
             <Text style={styles.optionText}>Invite a friend</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.section}>
+          <TouchableOpacity style={styles.section} onPress={handleNavigateToAppUpdate}>
           <MaterialIcons name="system-update-tv" size={24} color="black" />
             <Text style={styles.optionText}>App updates</Text>
           </TouchableOpacity>

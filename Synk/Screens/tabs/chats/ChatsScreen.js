@@ -162,6 +162,10 @@ const ChatsScreen = ({ navigation }) => {
   //   navigation.replace("welcome");
   //   return null;
   // }
+  if (session) {
+    navigation.replace("welcome");
+    return null;
+  }
 
   const filteredContacts = contacts.filter(contact =>
     contact.name.toLowerCase().includes(searchQuery.toLowerCase())
