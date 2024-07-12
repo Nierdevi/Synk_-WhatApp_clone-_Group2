@@ -9,90 +9,86 @@ const StorageScreen = () => {
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <Pressable onPress={() => navigation.goBack()}>
-          <Ionicons name="arrow-back" type="material" size={24} />
+          <Ionicons name="arrow-back" size={24} color="#000" />
         </Pressable>
         <Text style={styles.headerTitle}>Storage</Text>
-        <Text style={styles.headerTitle}></Text>
-        <Text style={styles.headerTitle}></Text>
-        <Text style={styles.headerTitle}></Text>
-        <Text style={styles.headerTitle}></Text>
-        <Text style={styles.headerTitle}></Text>
-        <Text style={styles.headerTitle}></Text>
       </View>
 
-      <View style={styles.progressBar}>
-        <View
-          style={[
-            styles.progressSection,
-            { backgroundColor: "green", flex: 1 },
-          ]}
-        />
-        <View
-          style={[
-            styles.progressSection,
-            { backgroundColor: "orange", flex: 1 },
-          ]}
-        />
-        <View
-          style={[
-            styles.progressSection,
-            { backgroundColor: "purple", flex: 1 },
-          ]}
-        />
-        <View
-          style={[styles.progressSection, { backgroundColor: "gray", flex: 1 }]}
-        />
-      </View>
+      <View style={{padding:16,}}>
+        <View style={styles.progressBar}>
+          <View
+            style={[
+              styles.progressSection,
+              { backgroundColor: "green", flex: 1 },
+            ]}
+          />
+          <View
+            style={[
+              styles.progressSection,
+              { backgroundColor: "orange", flex: 1 },
+            ]}
+          />
+          <View
+            style={[
+              styles.progressSection,
+              { backgroundColor: "purple", flex: 1 },
+            ]}
+          />
+          <View
+            style={[styles.progressSection, { backgroundColor: "gray", flex: 1 }]}
+          />
+        </View>
 
-      <View style={styles.storageInfo}>
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 20 }}>
-          <Ionicons name="stop-circle" size={24} color="green" />
-          <Text style={styles.infoText}>Other apps</Text>
+        <View style={styles.storageInfo}>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 20 }}>
+            <Ionicons name="stop-circle" size={24} color="green" />
+            <Text style={styles.infoText}>Other apps</Text>
+          </View>
+          <Text style={styles.infoText}>0.00KB</Text>
         </View>
-        <Text style={styles.infoText}>0.00KB</Text>
-      </View>
-      <View style={styles.storageInfo}>
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 20 }}>
-          <Ionicons name="stop-circle" size={24} color="gold" />
-          <Text style={styles.infoText}>Downloads</Text>
+        <View style={styles.storageInfo}>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 20 }}>
+            <Ionicons name="stop-circle" size={24} color="gold" />
+            <Text style={styles.infoText}>Downloads</Text>
+          </View>
+          <Text style={styles.infoText}>0.00KB</Text>
         </View>
-        <Text style={styles.infoText}>0.00KB</Text>
-      </View>
-      <View style={styles.storageInfo}>
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 20 }}>
-          <Ionicons name="stop-circle" size={24} color="purple" />
-          <Text style={styles.infoText}>Cache</Text>
+        <View style={styles.storageInfo}>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 20 }}>
+            <Ionicons name="stop-circle" size={24} color="purple" />
+            <Text style={styles.infoText}>Cache</Text>
+          </View>
+          <Text style={styles.infoText}>0.00KB</Text>
         </View>
-        <Text style={styles.infoText}>0.00KB</Text>
-      </View>
-      <View style={styles.storageInfo}>
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 20 }}>
-          <Ionicons name="stop-circle" size={24} color="grey" />
-          <Text style={styles.infoText}>Free</Text>
+        <View style={styles.storageInfo}>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 20 }}>
+            <Ionicons name="stop-circle" size={24} color="grey" />
+            <Text style={styles.infoText}>Free</Text>
+          </View>
+          <Text style={styles.infoText}>0.00KB</Text>
         </View>
-        <Text style={styles.infoText}>0.00KB</Text>
-      </View>
 
-      <Text style={[styles.note, { marginTop: 50 }]}>
-        This will remove all downloaded tracks from being available for online
-        listening
-      </Text>
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => Alert.alert("Doesn't work yet")}
-      >
-        <Text style={styles.buttonText}>Remove all downloads</Text>
-      </TouchableOpacity>
+        <Text style={[styles.note, { marginTop: 50 }]}>
+          This will remove all downloaded tracks from being available for online
+          listening
+        </Text>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => Alert.alert("Doesn't work yet")}
+        >
+          <Text style={styles.buttonText}>Remove all downloads</Text>
+        </TouchableOpacity>
 
-      <Text style={[styles.note, { marginTop: 50 }]}>
-        Free up storage by clearing your cache. Your downloads won't be removed
-      </Text>
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => Alert.alert("Doesn't work yet")}
-      >
-        <Text style={styles.buttonText}>Clear cache</Text>
-      </TouchableOpacity>
+        <Text style={[styles.note, { marginTop: 50 }]}>
+          Free up storage by clearing your cache. Your downloads won't be removed
+        </Text>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => Alert.alert("Doesn't work yet")}
+        >
+          <Text style={styles.buttonText}>Clear cache</Text>
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 };
@@ -100,22 +96,24 @@ const StorageScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
     backgroundColor: "#fff",
     marginTop: 30,
   },
   header: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 50,
-    marginHorizontal: 10,
-    fontSize: 25,
-    justifyContent: "space-between",
+    marginBottom: 30,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: 'Lightgray',
+    backgroundColor: 'white',
+    paddingTop: 10,
+    paddingLeft: 10,
   },
   headerTitle: {
-    fontSize: 18,
+    fontSize: 28,
     fontWeight: "bold",
     marginLeft: 10,
+    paddingRight: 150,
   },
   storageInfo: {
     flexDirection: "row",
