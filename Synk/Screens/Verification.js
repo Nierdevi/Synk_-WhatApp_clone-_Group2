@@ -81,7 +81,7 @@ import {getUser} from '../constants/userContext';
           console.log(session)
           Alert.alert('Verification Successful', 'You have been successfully verified.', [
               { text: 'OK', 
-                onPress: () => navigation.navigate('Tabs') 
+                onPress: () => navigation.replace('Tabs') 
               },
           ]);
       }
