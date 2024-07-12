@@ -13,7 +13,7 @@ const InputBox = ({ onSendMessage }) => {
   const attachmentItem=[
     { label: 'New broadcast', onPress: () => {} },
     { label: 'New broadcast', onPress: () => {} },
-    { label: 'New broadcast', onPress: () => {} },
+    { label: 'New broadcast', icon:'',  onPress: () => {} },
   ]
 
   const renderAttachments = () => {
