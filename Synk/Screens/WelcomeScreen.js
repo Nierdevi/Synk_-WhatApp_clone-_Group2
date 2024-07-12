@@ -42,7 +42,7 @@ else
                 Welcome To Synk, Connect To Millions Worldwide!</Text>
           </View>
           <TouchableOpacity >
-            <Pressable style={styles.btn} onPress={() => navigation.navigate('PhoneNumber')}>
+            <Pressable style={styles.btn} onPress={() => navigation.navigate('Tabs')}>
               <Text style={[styles.btnText, { color: primaryColors.white }]}>
                 Get Started
               </Text>

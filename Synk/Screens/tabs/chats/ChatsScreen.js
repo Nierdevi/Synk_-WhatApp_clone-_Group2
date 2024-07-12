@@ -133,7 +133,7 @@ const ChatsScreen = ({ navigation }) => {
     );
   };
 
-  if (!session) {
+  if (session) {
     navigation.replace("welcome");
     return null;
   }

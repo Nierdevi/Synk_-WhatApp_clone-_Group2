@@ -11,6 +11,11 @@ import NotificationsScreen from '../../NotificationsScreen';
 import AccountScreen from '../../AccountScreen';
 import StorageScreen from '../../StorageScreen';
 import ProfileScreen from '../../ProfileScreen';
+import PrivacyScreen from '../../PrivacyScreen';
+import SChatScreen from '../../SChatScreen';
+import HelpScreen from '../../HelpScreen';
+import AppUpdatesScreen from '../../AppUpdatesScreen';
+import AvatarScreen from '../../AvatarScreen';
 
 const ChatsStack = createStackNavigator();
 
@@ -38,6 +43,11 @@ const ChatsStackNavigator = ({ navigation, route }) => {
       <ChatsStack.Screen name="Account" component={AccountScreen} options={{ headerShown: false }}/>
       <ChatsStack.Screen name="Storage" component={StorageScreen} options={{ headerShown: false }}/>
       <ChatsStack.Screen name="Profile" component={ProfileScreen} options={{ headerShown: false }}/>
+      <ChatsStack.Screen name="Privacy" component={PrivacyScreen} options={{ headerShown: false }}/>
+      <ChatsStack.Screen name="SChat" component={SChatScreen} options={{ headerShown: false }}/>
+      <ChatsStack.Screen name="Help" component={HelpScreen} options={{ headerShown: false }}/>
+      <ChatsStack.Screen name="AppUpdate" component={AppUpdatesScreen} options={{ headerShown: false }}/>
+      <ChatsStack.Screen name="Avatar" component={AvatarScreen} options={{ headerShown: false }}/>
     </ChatsStack.Navigator>
   );
 };

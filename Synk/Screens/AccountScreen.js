@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: 'Lightgray',
     backgroundColor: 'white',
-    paddingTop: 30,
+    paddingTop: 20,
     paddingLeft: 10,
   },
   headerTitle: {
