@@ -72,7 +72,7 @@ const SettingsScreen = () => {
           </TouchableOpacity>
         <View style={{paddingLeft: 20, paddingRight: 20}}>
           <TouchableOpacity style={styles.section} onPress={handleNavigateToAccount}>
-          <Ionicons name="person-outline" size={24} color="black" />
+            <Ionicons name="person-outline" size={24} color="black" />
             <View style={styles.sect}>
               <Text style={styles.sectionTitle}>Account</Text>
               <Text style={styles.sectionDescription}>Security notifications, change number</Text>
@@ -80,7 +80,7 @@ const SettingsScreen = () => {
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.section} onPress={handleNavigateToPrivacy}>
-          <MaterialIcons name="lock-outline" size={24} color="black" />
+            <MaterialIcons name="lock-outline" size={24} color="black" />
             <View style={styles.sect}>
               <Text style={styles.sectionTitle}>Privacy</Text>
               <Text style={styles.sectionDescription}>Block contacts, disappearing messages</Text>
@@ -96,7 +96,7 @@ const SettingsScreen = () => {
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.section} onPress={handleNavigateToSChat}>
-          <Ionicons name="chatbox-outline" size={24} color="black" />
+            <Ionicons name="chatbox-outline" size={24} color="black" />
             <View style={styles.sect}>
               <Text style={styles.sectionTitle}>Chats</Text>
               <Text style={styles.sectionDescription}>Theme, wallpapers, chat history</Text>
@@ -104,7 +104,7 @@ const SettingsScreen = () => {
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.section} onPress={handleNavigateToNotification}>
-          <Ionicons name="notifications-outline" size={24} color="black" />
+            <Ionicons name="notifications-outline" size={24} color="black" />
             <View style={styles.sect}>
               <Text style={styles.sectionTitle}>Notifications</Text>
               <Text style={styles.sectionDescription}>Message, group & call tones</Text>
@@ -112,23 +112,23 @@ const SettingsScreen = () => {
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.section} onPress={handleNavigateToStorage}>
-          <Ionicons name="list-sharp" size={24} color="black" />
+            <Ionicons name="list-sharp" size={24} color="black" />
             <View style={styles.sect}>
               <Text style={styles.sectionTitle}>Storage and data</Text>
               <Text style={styles.sectionDescription}>Network usage, auto-download</Text>
             </View>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.section}>
-          <Ionicons name="globe-outline" size={24} color="black" />
+          {/* <TouchableOpacity style={styles.section}>
+            <Ionicons name="globe-outline" size={24} color="black" />
             <View style={styles.sect}>
               <Text style={styles.sectionTitle}>App language</Text>
               <Text style={styles.sectionDescription}>English (device's language)</Text>
             </View>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
           <TouchableOpacity style={styles.section} onPress={handleNavigateToHelp}>
-          <Ionicons name="help-circle-outline" size={24} color="black" />
+            <Ionicons name="help-circle-outline" size={24} color="black" />
             <View style={styles.sect}>
               <Text style={styles.sectionTitle}>Help</Text>
               <Text style={styles.sectionDescription}>Help center, contact us, privacy policy</Text>
@@ -136,26 +136,15 @@ const SettingsScreen = () => {
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.section}>
-          <Ionicons name="person-add-outline" size={24} color="black" />
+            <Ionicons name="person-add-outline" size={24} color="black" />
             <Text style={styles.optionText}>Invite a friend</Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.section} onPress={handleNavigateToAppUpdate}>
-          <MaterialIcons name="system-update-tv" size={24} color="black" />
+            <MaterialIcons name="system-update-tv" size={24} color="black" />
             <Text style={styles.optionText}>App updates</Text>
           </TouchableOpacity>
 
-          <Text style={styles.footerTitle}>Also from Meta</Text>
-
-          <TouchableOpacity style={styles.section}>
-          <Ionicons name="logo-instagram" size={24} color="#000" />
-            <Text style={styles.optionText}>Open Instagram</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.section}>
-          <Ionicons name="logo-facebook" size={24} color="black" />
-            <Text style={styles.optionText}>Open Facebook</Text>
-          </TouchableOpacity>
         </View>
         </ScrollView>
     </SafeAreaView>
