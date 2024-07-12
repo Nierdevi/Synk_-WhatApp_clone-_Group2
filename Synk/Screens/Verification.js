@@ -1,29 +1,30 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { View, TextInput, StyleSheet, TouchableOpacity, Text, Alert,Modal } from 'react-native';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 // import {} from ''
 import { useTheme } from '../constants/themeContext'
 import {primaryColors} from '../constants/colors';
-import Countdown from '../components/Timer';
+
 
 import {verifyUser} from '../backend/verificationService';
-import {addUserToDatabase} from '../backend/userService'
+import {addUserToDatabase} from '../backend/userService';
+import { createUser } from '../backend/verificationService';
 import {getUser} from '../constants/userContext';
 
 
  const Verification = ({navigation,route}) => {
   const [otp, setOtp] = useState(new Array(6).fill(''));
-  const [isResendDisabled, setIsResendDisabled] = useState(true);
-  const [countdownKey, setCountdownKey] = useState(0);
   const [modalVisible, setModalVisible] = useState(false);
-  const [verifiedUser, setVerifiedUser] = useState(null);
+  // const [verifiedUser, setVerifiedUser] = useState(null);
   const inputs = useRef([]);
   const { theme, toggleTheme } = useTheme();
-  const {session,setSession}=getUser();
+  const {setSession}=getUser();
 
-  const { countryCode, phoneNumber, token } = route.params;
+  const { countryCode, phoneNumber, token,Number } = route.params;
 
-
+  // const countryCode='+233'
+  // const phoneNumber='746487373'
   
   const handleChangeText = (text, index) => {
     const newOtp = [...otp];
@@ -51,16 +52,9 @@ import {getUser} from '../constants/userContext';
     }
   };
 
-
-
-  const handleResendComplete = () => {
-    setIsResendDisabled(false);
-  };
-
   const handleResend = () => {
-    setIsResendDisabled(true);
-    setCountdownKey(prevKey => prevKey + 1); // Change key to force remount
     // Logic to resend the OTP goes here
+
 };
 
   // Function to censor the phone number
@@ -71,7 +65,7 @@ import {getUser} from '../constants/userContext';
 
   const verifyNumber = async()=>{
     const otpCode = otp.join('');
-    console.log(otpCode);
+    // console.log(otpCode);
     if (otpCode.length !== 6) {
       Alert.alert('Incomplete OTP', 'Please enter all 6 digits of the OTP.');
       return;
@@ -83,6 +77,7 @@ import {getUser} from '../constants/userContext';
           const userId = session.userId;
           await addUserToDatabase(userId, countryCode + phoneNumber);
           setSession(session)
+          await AsyncStorage.setItem('session', JSON.stringify(session));
           console.log(session)
           Alert.alert('Verification Successful', 'You have been successfully verified.', [
               { text: 'OK', 
@@ -98,6 +93,18 @@ import {getUser} from '../constants/userContext';
   }
 
  }
+
+
+ const resendCode = async () => {
+  try {
+    const newToken = await createUser(Number);
+    // Alert.alert('OTP Resent', 'A new OTP has been sent to your phone number.');
+    route.params.token = newToken; // Update the token parameter
+  } catch (error) {
+    console.log(error);
+    Alert.alert('Resend Failed', 'Failed to resend the OTP. Please try again.');
+  }
+};
 
   useEffect(() => {
     inputs.current[0].focus();
@@ -127,13 +134,8 @@ import {getUser} from '../constants/userContext';
         ))}
       </View>
 
-      <TouchableOpacity style={{paddingLeft:125,flexDirection:'row'}}
-        onPress={handleResend}
-        disabled={isResendDisabled}
-        >
-        <Text style={{fontSize:15,alignItems:'center',justifyContent:'center'}}>Resend code in </Text>
-        <Countdown key={countdownKey} start={120} onComplete={handleResendComplete}/>
-        <Text> seconds</Text>
+      <TouchableOpacity style={styles.ResendButtom} onPress={resendCode}>
+        <Text style={{fontSize:wp('3.5%'),fontWeight:'500'}}>Resend code </Text>
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.submitButton} onPress={verifyNumber}>
@@ -214,6 +216,11 @@ const styles = StyleSheet.create({
     textAlign:'center',
     fontWeight:'bold',
   },
+  ResendButtom:{
+    paddingHorizontal:20,
+    width:wp('90%'),
+    alignItems:'flex-end',
+  }
 });
 
 
