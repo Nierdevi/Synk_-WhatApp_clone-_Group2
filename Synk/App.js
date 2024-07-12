@@ -23,7 +23,7 @@ const Stack = createStackNavigator();
 const MainLayout = () => {
   const navigationRef = useRef(null);
   const {session,setSession}=getUser();
-  const [isLoading, setIsLoading] = useState(true);
+  // const [isLoading, setIsLoading] = useState(true);
 
 
   useEffect(() => {
@@ -32,22 +32,22 @@ const MainLayout = () => {
       if (storedSession || session) {
         const session = JSON.parse(storedSession);
         setSession(session);
-        // console.log(session)
+        console.log(session)
         navigationRef.current?.navigate('Tabs');
       } else {
         navigationRef.current?.navigate('welcome');
       }
-      setIsLoading(false);
+      // setIsLoading(false);
     };
 
     checkSession();
   }, [setSession]);
 
 
-  if (isLoading) {
-    // Optionally, return a loading screen while checking session
-    return <LoadingScreen />;
-  }
+  // if (isLoading) {
+  //   // Optionally, return a loading screen while checking session
+  //   // return <LoadingScreen />;
+  // }
 
 
 
