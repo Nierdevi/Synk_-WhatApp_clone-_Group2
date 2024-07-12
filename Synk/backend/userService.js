@@ -3,7 +3,7 @@ import {databases,ID} from './appwrite'
 
 const addUserToDatabase = async (userId, phoneNumber) => {
     try {
-        await databases.createDocument('6685cbc40036f4c6a5ad','6685cc6600212adefdbf', 'users',  {
+        await databases.createDocument('6685cbc40036f4c6a5ad','6685cc6600212adefdbf', ID.unique(),  {
             userId,
             phoneNumber,
             // username,

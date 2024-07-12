@@ -48,17 +48,19 @@ const PhoneNumScreen = ({ navigation }) => {
                 Alert.alert('Phone Number Exists', 'The phone number you entered already exists.');
                 return;
             }else{
+                const u = await createUser(Number);
+                setSentToken(u);
+                console.log(u)
                 Alert.alert(
-                    "Request sent", "You will receive a token",
+                    "Resent sent", "Verify OTP",
                     [{
                         text: "OK",
-                        onPress: () => navigation.navigate('Verification', { token: sentToken, countryCode, phoneNumber })
+                        onPress: () => navigation.navigate('Verification', { token: u, countryCode, phoneNumber,Number })
                     }],
                     { cancelable: false }
                 );
 
-                const u = await createUser(Number);
-                setSentToken(u);
+                
             }
         } catch (error) {
             console.log(error);
