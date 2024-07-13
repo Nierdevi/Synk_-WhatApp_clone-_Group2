@@ -15,8 +15,6 @@ import WelcomeScreen from './Screens/WelcomeScreen';
 // import Tabs from './src/navigation/Tabs';
 import MainTabs from './Screens/tabs/_tabLayout';
 import { getUser } from './constants/userContext';
-import LoadingScreen from './components/LoadingScreen';
-
 
 const Stack = createStackNavigator();
 
@@ -34,22 +32,17 @@ const MainLayout = () => {
       if (storedSession || session) {
         const session = JSON.parse(storedSession);
         setSession(session);
-        console.log(session)
-        setIsLoading(false);
+        // console.log(session)
         navigationRef.current?.navigate('Tabs');
       } else {
         navigationRef.current?.navigate('welcome');
       }
-      
+      setIsLoading(false);
     };
 
     checkSession();
   }, [setSession]);
 
-
-  if (isLoading) {
-   return   <LoadingScreen />;
-  }
 
 
 

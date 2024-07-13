@@ -62,7 +62,6 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     paddingTop: 10,
     paddingBottom: 10,
-    paddingHorizontal:10,
   },
   message: {
     maxWidth: '80%',

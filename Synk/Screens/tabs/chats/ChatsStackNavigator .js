@@ -6,16 +6,17 @@ import ChatRoom from './ChatRoom';
 import ChatInfo from './ChatInfo';
 import { useTheme } from '../../../constants/themeContext';
 import UpdatesHeader from '../../../components/CusTabsHeaders/ChatsHeader';
-import SettingsScreen from '../../SettingsScreen';
-import NotificationsScreen from '../../NotificationsScreen';
-import AccountScreen from '../../AccountScreen';
-import StorageScreen from '../../StorageScreen';
-import ProfileScreen from '../../ProfileScreen';
-import PrivacyScreen from '../../PrivacyScreen';
-import SChatScreen from '../../SChatScreen';
-import HelpScreen from '../../HelpScreen';
-import AppUpdatesScreen from '../../AppUpdatesScreen';
-import AvatarScreen from '../../AvatarScreen';
+import SettingsScreen from '../Settings/SettingsScreen';
+import NotificationsScreen from '../../../Screens/tabs/Settings/NotificationsScreen';
+import AccountScreen from '../Settings/AccountScreen';
+import ProfileScreen from '../Settings/ProfileScreen';
+import PrivacyScreen from '../Settings/PrivacyScreen';
+import SChatScreen from '../Settings/SChatScreen';
+import HelpScreen from '../Settings/HelpScreen';
+import AppUpdatesScreen from '../Settings/AppUpdatesScreen';
+import AvatarScreen from '../Settings/AvatarScreen';
+import SecurityNotificationsScreen from '../Settings/SecurityNotificationsScreen';
+import StorageScreen from '../Settings/StorageScreen';
 
 const ChatsStack = createStackNavigator();
 
@@ -35,7 +36,7 @@ const ChatsStackNavigator = ({ navigation, route }) => {
   return (
     <ChatsStack.Navigator initialRouteName="ChatsScreen">
       <ChatsStack.Screen name="ChatsScreen" component={ChatsScreen} options={{ headerShown: false }} />
-      <ChatsStack.Screen name="ChatRoom" component={ChatRoom} options={{ headerShown: false}} />
+      <ChatsStack.Screen name="ChatRoom" component={ChatRoom} options={{ headerShown: true}} />
       <ChatsStack.Screen name="ChatInfo" component={ChatInfo} options={{ headerShown: true }} />
       <ChatsStack.Screen name="UpdatesHeader" component={UpdatesHeader} options={{ headerShown: false }} />
       <ChatsStack.Screen name="SettingsScreen" component={SettingsScreen} options={{ headerShown: false }} />
@@ -48,6 +49,7 @@ const ChatsStackNavigator = ({ navigation, route }) => {
       <ChatsStack.Screen name="Help" component={HelpScreen} options={{ headerShown: false }}/>
       <ChatsStack.Screen name="AppUpdate" component={AppUpdatesScreen} options={{ headerShown: false }}/>
       <ChatsStack.Screen name="Avatar" component={AvatarScreen} options={{ headerShown: false }}/>
+      <ChatsStack.Screen name="Security" component={SecurityNotificationsScreen} options={{ headerShown: false }}/>
     </ChatsStack.Navigator>
   );
 };

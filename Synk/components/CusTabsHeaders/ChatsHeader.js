@@ -22,7 +22,7 @@ export default function ChatsHeader() {
     { label: 'Starred messages', onPress: () => {} },
     { label: 'Settings', onPress: () => handleNavigateToSettings() }, // Navigate to SettingsScreen
     { label: 'Switch accounts', onPress: () => {} },
-  ];
+  ]; 
 
   const handleNavigateToSettings = () => {
     navigation.navigate('SettingsScreen'); // Navigate to SettingsScreen

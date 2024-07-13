@@ -154,6 +154,7 @@ const ChatsScreen = ({ navigation }) => {
     );
   };
 
+
   const filteredContacts = contacts.filter(contact =>
     contact.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -202,7 +203,6 @@ const styles = StyleSheet.create({
     // backgroundColor: 'red',
     width:wp('100%'),
     paddingRight:10,
-    marginTop:20,
 
   },
   contactItem: {

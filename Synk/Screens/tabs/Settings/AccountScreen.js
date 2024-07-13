@@ -6,6 +6,10 @@ import { useNavigation } from '@react-navigation/native';
 const AccountScreen = () => {
   const navigation = useNavigation();
 
+  const handleNavigationToSecurity =() =>{
+    navigation.navigate('Security');
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -16,7 +20,7 @@ const AccountScreen = () => {
       </View>
 
       <View style={{padding:20 }}>
-        <TouchableOpacity style={styles.item}>
+        <TouchableOpacity style={styles.item} onPress={handleNavigationToSecurity}>
           <MaterialIcons name="security" size={24} color="#000" />
           <Text style={styles.itemText}>Security notifications</Text>
         </TouchableOpacity>
