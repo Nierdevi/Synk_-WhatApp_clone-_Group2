@@ -88,7 +88,7 @@ const handleImageSelect = async () => {
   console.log('ImagePicker result:', result);
 
   console.log("not canceled",!result.canceled)
-  console.log(result.assets)
+  // console.log(result.assets)
   if (result && !result.canceled && result.assets && result.assets.length > 0) {
     const uri = result.assets[0].uri;
     console.log('Image URI:', uri);
@@ -97,6 +97,7 @@ const handleImageSelect = async () => {
       try {
           const newImageUrl = await uploadProfilePicture(currentUserId, uri);
           setProfilePicture(newImageUrl);
+          console.log(newImageUrl);
       } catch (error) {
           console.error("Failed to upload profile picture:", error);
       }
@@ -163,7 +164,7 @@ const handleStatusSavePress = async () => {
             />
         </Pressable>
         <Pressable style={styles.iconContainer} onPress={handleImageSelect}>
-            <Ionicons name="camera-outline" size={24} color="black" />
+            <Ionicons name="camera-outline" size={24} color="white" />
         </Pressable>
       </View>
 
@@ -277,23 +278,25 @@ const styles = StyleSheet.create({
         paddingBottom: 10,
     },
     headerImage: {
-        width: 170,
-        height: 170,
+        width: wp("40%"),
+        height: hp("18%"),
         borderRadius: 100,
     },
     head: {
         alignItems: 'center',
+        // backgroundColor:'red',
+        flexDirection:'row',
+        justifyContent:'center',
+        // gap:-500
     },
     iconContainer: {
-        backgroundColor: '#82f060',
-        height: 50,
-        width: 50,
+        backgroundColor:primaryColors.purple,
+        height: hp('5%'),
+        width: wp('10%'),
         borderRadius: 100,
         justifyContent: 'center',
         alignItems: 'center',
-        position: 'absolute',
-        bottom: 1, // Adjust the position as needed
-        right: 95,  // Adjust the position as needed
+        alignSelf:'flex-end'
     },
     cont: {
       flex: 1,

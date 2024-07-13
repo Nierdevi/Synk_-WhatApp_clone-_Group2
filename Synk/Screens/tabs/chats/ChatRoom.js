@@ -1,17 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, KeyboardAvoidingView, Platform, View, Text } from 'react-native';
 import { sendMessage, fetchMessages, getExistingChat } from '../../../backend/chatService';
+import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import InputBox from '../../../components/InputBox';
 import ChatList from '../../../components/ChatListItem';
 import { fetchLastMessage } from '../../../backend/chatService'; // Import fetchLastMessage function
 import DateTime from '../../../components/DateTime';
+import { getUserData } from '../../../backend/userService';
 
-const ChatRoom = ({ route }) => {
+const ChatRoom = ({ route,navigation }) => {
   const { contact, currentUserPhoneNumber } = route.params;
   const [messages, setMessages] = useState([]);
   const [lastMessage, setLastMessage] = useState(null);
 
+
   const recipientPhoneNumber = contact.normalizedPhoneNumbers[0]; // Use the first normalized phone number
+  const userdata=getUserData(recipientPhoneNumber)
   console.log(currentUserPhoneNumber)
   console.log(recipientPhoneNumber)
   // console.log(messages)

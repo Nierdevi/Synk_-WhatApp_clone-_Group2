@@ -105,31 +105,46 @@ const uploadProfilePicture = async (userId, uri) => {
         const userDocument = await getUserDocument(userId);
         const documentId = userDocument.$id;
         const currentProfilePictureUrl = await getUserProfilePicture(userId);
+
         // Step 2: Delete the existing profile picture if it exists
         if (currentProfilePictureUrl) {
             const fileName = currentProfilePictureUrl.split('/').pop(); // Extract filename from URL
+            console.log("Deleting existing file:", fileName);
             await storage.deleteFile('669270af0034381c55c3', fileName); // Delete the file from storage
         }
+
         // Step 3: Create a file object from the selected image
         const response = await fetch(uri);
+        if (!response.ok) {
+            throw new Error(`Failed to fetch image: ${response.statusText}`);
+        }
         const blob = await response.blob();
-        console.log("blob:",blob)
+        console.log("Blob created:", blob);
 
-         // Convert blob to file
+        // Use FileSystem to convert URI to file
+        const fileUri = uri;
+        const fileInfo = await FileSystem.getInfoAsync(fileUri);
+        if (!fileInfo.exists) {
+            throw new Error("File does not exist.");
+        }
+        const fileBase64 = await FileSystem.readAsStringAsync(fileUri, {
+            encoding: FileSystem.EncodingType.Base64,
+        });
         const file = new File([blob], `userProfile_${userId}.jpg`, { type: blob.type });
         console.log("File created:", file);
 
-        // Upload the new image to storage
+        // Step 4: Upload the new image to storage
         const uploadResponse = await storage.createFile(
             '669270af0034381c55c3', // Your storage bucket ID
             ID.unique(), // Unique ID for the file
             file // The file object to upload
         );
         console.log("Upload Response:", uploadResponse);
-        // Get the URL of the uploaded image
+
+        // Step 5: Get the URL of the uploaded image
         const newImageUrl = `https://cloud.appwrite.io/v1/storage/files/${uploadResponse.$id}/view?66795f4000158aa9d802`;
 
-        // Update the user's profile picture URL in the database
+        // Step 6: Update the user's profile picture URL in the database
         await databases.updateDocument(
             '6685cbc40036f4c6a5ad', // Your database ID
             '6685cc6600212adefdbf', // Your collection ID
@@ -149,7 +164,7 @@ const uploadProfilePicture = async (userId, uri) => {
 const getUserData = async (userId) => {
     try {
         const response = await databases.listDocuments('6685cbc40036f4c6a5ad', '6685cc6600212adefdbf', [
-            Query.equal('userId', userId)
+            (Query.equal('userId', userId))
         ]);
 
         if (response.documents.length === 0) {

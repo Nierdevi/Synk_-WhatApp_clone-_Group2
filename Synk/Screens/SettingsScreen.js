@@ -9,6 +9,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useFocusEffect } from '@react-navigation/native';
 import { getUser } from '../constants/userContext';
 import { getUserData } from '../backend/userService';
+import { SecondaryColors } from '../constants/colors';
 
 
 const SettingsScreen = () => {
@@ -86,8 +87,8 @@ const SettingsScreen = () => {
             <Image source={AppLogo} style={styles.headerImage} />
             <View style={{flexDirection: 'row',justifyContent:'space-between',flex:1}}>
               <View style={styles.headerContainer}>
-                <Text style={styles.username}>{username}</Text>
-                <Text style={styles.status}>{about}</Text>
+                <Text style={styles.username}>{username} </Text>
+                <Text style={styles.status} numberOfLines={1} ellipsizeMode='tail' >{about} </Text>
               </View>
               <View style={{flexDirection:'row',alignItems:'center',gap:10}}>
                 <Pressable style={{width:wp('7')}}>
@@ -184,7 +185,7 @@ const SettingsScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'yellow',
+    backgroundColor: SecondaryColors.secPurple,
     paddingTop: -40,
   },
   head: {
