@@ -1,12 +1,142 @@
-import { StyleSheet, Text, View, Pressable, Image,} from 'react-native';
-import React from 'react';
-import { useNavigation } from '@react-navigation/native';
+import { StyleSheet, Text, View, Pressable,TextInput} from 'react-native';
+import React,{useState,useEffect} from 'react';
+import {Image} from 'expo-image';
+import * as ImagePicker from 'expo-image-picker';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { Ionicons, MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import AppLogo from '../assets/AppLogo.png';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { addUsernameToDatabase, getUserData,addAboutToDatabase,getUserProfilePicture,uploadProfilePicture } from '../backend/userService';
+import { getUser } from '../constants/userContext';
+import { primaryColors } from '../constants/colors';
 
 const ProfileScreen = () => {
   const navigation = useNavigation();
+  const[about,setAbout]= useState(' ')
+  const [username, setUsername] = useState(' '); // Initial username
+  const [newAbout, setnewAbout ]= useState(about); // Initial username
+  const [isUserEditing, setIsUserEditing] = useState(false);
+  const [isAboutEditing, setIsAboutEditing] = useState(false);
+  const [newUsername, setNewUsername] = useState(username);
+  const [profilePicture, setProfilePicture] = useState(null);
+  const { session } = getUser();
+
+  const currentUserId=session.userId;
+  const currentUserPhoneNumber=session.phoneNumber;
+
+  const formatPhoneNumber = (phoneNumber) => {
+    // Remove any non-digit characters
+    const cleaned = ('' + phoneNumber).replace(/\D/g, '');
+    // Check if the number starts with a country code
+    const match = cleaned.match(/^(\d{3})(\d{2})(\d{3})(\d{4})$/);
+    if (match) {
+        return `+${match[1]} ${match[2]} ${match[3]} ${match[4]}`;
+    }
+    return phoneNumber; 
+};
+
+  useFocusEffect(
+    React.useCallback(() => {
+        const fetchUserData = async () => {
+            try {
+                const userData = await getUserData(currentUserId);
+                // console.log(userData);
+                setUsername(userData.username);
+                setNewUsername(userData.username);
+                setAbout(userData.about)
+                setnewAbout(userData.about)
+            } catch (error) {
+                console.error("Failed to fetch user data:", error);
+            }
+        };
+
+        fetchUserData();
+    }, [currentUserId])
+);
+
+useFocusEffect(
+  React.useCallback(() => {
+      const fetchProfilePicture = async () => {
+          try {
+              const url = await getUserProfilePicture(currentUserId);
+              setProfilePicture(url);
+          } catch (error) {
+              console.error("Failed to fetch profile picture:", error);
+          }
+      };
+
+      fetchProfilePicture();
+  }, [currentUserId])
+);
+
+const handleImageSelect = async () => {
+  const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+  if (permissionResult.granted === false) {
+      alert("Permission to access camera roll is required!");
+      return;
+  }
+  console.log('Permissions granted:', permissionResult.granted);
+
+  const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+  });
+  console.log('ImagePicker result:', result);
+
+  console.log("not canceled",!result.canceled)
+  console.log(result.assets)
+  if (result && !result.canceled && result.assets && result.assets.length > 0) {
+    const uri = result.assets[0].uri;
+    console.log('Image URI:', uri);
+
+
+      try {
+          const newImageUrl = await uploadProfilePicture(currentUserId, uri);
+          setProfilePicture(newImageUrl);
+      } catch (error) {
+          console.error("Failed to upload profile picture:", error);
+      }
+  }
+};
+
+  const handleUsernameEdit = () => {
+    setIsUserEditing(true);
+};
+  const handleAboutEdit = () => {
+    setIsAboutEditing(true);
+};
+
+//set username...
+const handleSavePress = async () => {
+        // console.log(currentUserId)
+    try {
+        await addUsernameToDatabase(currentUserId, newUsername);
+        setUsername(newUsername);
+    } catch (error) {
+        console.error("Failed to update username:", error);
+    } finally {
+        setIsUserEditing(false);
+    }
+};
+
+//set about
+const handleStatusSavePress = async () => {
+        // console.log(currentUserId)
+    try {
+        await addAboutToDatabase(currentUserId, newAbout);
+        setAbout(newAbout);
+    } catch (error) {
+        console.error("Failed to update about:", error);
+    } finally {
+        setIsAboutEditing(false);
+    }
+};
+
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -16,57 +146,102 @@ const ProfileScreen = () => {
         <Text style={styles.headerTitle}>Profile</Text>
       </View>
       
-      <View style={styles.head}>
+      {/* <View style={styles.head}>
         <Pressable>
           <Image source={AppLogo} style={styles.headerImage} />
         </Pressable>
         <Pressable style={styles.iconContainer}>
           <Ionicons name="camera-outline" size={24} color="black" />
         </Pressable>
+      </View> */}
+
+      <View style={styles.head}>
+        <Pressable onPress={handleImageSelect}>
+            <Image 
+                source={profilePicture ? { uri: profilePicture } : AppLogo} 
+                style={styles.headerImage} 
+            />
+        </Pressable>
+        <Pressable style={styles.iconContainer} onPress={handleImageSelect}>
+            <Ionicons name="camera-outline" size={24} color="black" />
+        </Pressable>
       </View>
 
       <View style={styles.cont}>
-        <TouchableOpacity style={styles.profileInfo}>
-          <View style={styles.profileIcon}>
+
+      {/*handle username */}
+      <TouchableOpacity style={styles.profileInfo} onPress={handleUsernameEdit} onLongPress={()=>{setIsUserEditing(false)}}>
+        <View style={styles.profileIcon}>
             <Ionicons name="person-outline" size={30} color="black" />
-          </View>
-          <View style={styles.profileText}>
-            <View style={{flexDirection: 'row',}}>
-              <View>
-                <Text style={styles.profileTitle}>Name</Text>
-                <Text style={styles.profileValue}>~Katyal</Text>
-              </View>
-              <MaterialCommunityIcons name="draw-pen" size={24} color="black" style={styles.pen} />
+        </View>
+        <View style={styles.profileText}>
+            <View style={{ flexDirection: 'row', alignItems: 'center',justifyContent:'space-between' }}>
+                <View style={{flex:1}}>
+                    <Text style={styles.profileTitle}>Username</Text>
+                    {isUserEditing ? (
+                        <TextInput
+                            style={styles.profileValueInput}
+                            value={newUsername}
+                            onChangeText={setNewUsername}
+                            onSubmitEditing={handleSavePress}
+                        />
+                    ) : (
+                        <Text style={styles.profileValue}>{username}</Text>
+                    )}
+                </View>
+                {isUserEditing ? (
+                    <TouchableOpacity onPress={handleSavePress} style={{padding:5,backgroundColor:primaryColors.purple,borderRadius:20}}>
+                        <Text style={{color:'white'}}>Save </Text>
+                    </TouchableOpacity>
+                ) : (
+                    <MaterialCommunityIcons name="pencil-outline" size={24} color="black" />
+                )}
             </View>
             <Text style={styles.profileTitle1}>
-              This  is not your username or pin. This name will be visible to
+                This is not your username or pin. This name will be visible to your WhatsApp contacts.
             </Text>
-            <Text style={styles.profileTitle2}>
-              your WhatsApp contacts.
-            </Text>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.profileInfo}>
-          <View style={styles.profileIcon}>
-          <Ionicons name="alert-circle-outline" size={30} color="black" />
-          </View>
-          <View style={[styles.profileText1, {borderBottomWidth: StyleSheet.hairlineWidth,borderBottomColor: 'Lightgray',}]}>
-            <View>
-              <Text style={styles.profileTitle}>About</Text>
-              <Text style={styles.profileValue}>
-                si wis pacem, para bellum
-              </Text>
+        </View>
+      </TouchableOpacity>
+
+          {/*handle about */}
+
+          <TouchableOpacity style={styles.profileInfo} onPress={handleAboutEdit} onLongPress={()=>{setIsAboutEditing(false)}}>
+        <View style={styles.profileIcon}>
+            <Ionicons name="alert-circle-outline" size={30} color="black" />
+        </View>
+        <View style={[styles.profileText,{borderBottomWidth: StyleSheet.hairlineWidth,borderBottomColor: 'Lightgray',}]}>
+            <View style={{ flexDirection: 'row', alignItems: 'center',justifyContent:'space-between' }}>
+                <View style={{flex:1}}>
+                    <Text style={styles.profileTitle}>About</Text>
+                    {isAboutEditing ? (
+                        <TextInput
+                            style={styles.profileValueInput}
+                            value={newAbout}
+                            onChangeText={setnewAbout}
+                            onSubmitEditing={handleStatusSavePress}
+                        />
+                    ) : (
+                        <Text style={styles.profileValue}>{about}</Text>
+                    )}
+                </View>
+                {isAboutEditing ? (
+                    <TouchableOpacity onPress={handleStatusSavePress} style={{padding:5,backgroundColor:primaryColors.purple,borderRadius:20}}>
+                        <Text style={{color:'white'}}>Save </Text>
+                    </TouchableOpacity>
+                ) : (
+                    <MaterialCommunityIcons name="pencil-outline" size={24} color="black" />
+                )}
             </View>
-            <MaterialCommunityIcons name="draw-pen" size={24} color="black" style={styles.pen1} />
-          </View>
-        </TouchableOpacity>
+        </View>
+      </TouchableOpacity>
+
         <TouchableOpacity style={styles.profileInfo}>
           <View style={styles.profileIcon}>
             <Ionicons name="call-outline" size={30} color="black" />
           </View>
           <View style={styles.profileText}>
             <Text style={styles.profileTitle}>Phone</Text>
-            <Text style={styles.profileValue}>+233 50 343 4750</Text>
+            <Text style={styles.profileValue}>{formatPhoneNumber(currentUserPhoneNumber)}</Text>
           </View>
         </TouchableOpacity>
       </View>
@@ -74,12 +249,16 @@ const ProfileScreen = () => {
   );
 };
 
+
+
 export default ProfileScreen;
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: 'yellow',
+        width:wp("100%"),
+        // paddingHorizontal:20,
     },
     header: {
         flexDirection: "row",
@@ -119,9 +298,11 @@ const styles = StyleSheet.create({
     cont: {
       flex: 1,
       //backgroundColor: '#000',
-      paddingLeft: 16,
-      paddingTop: 16,
-      paddingBottom: 16,
+      paddingHorizontal:20,
+      width:wp('95'),
+      // backgroundColor:'blue',
+      alignSelf:'center',
+      marginTop:20
     },
     profileInfo: {
       flexDirection: 'row',
@@ -140,7 +321,7 @@ const styles = StyleSheet.create({
       flexDirection: 'row',
     },
     profileTitle: {
-      fontSize: 12,
+      fontSize: wp('3.5%'),
       color: 'grey',
       fontWeight: "bold",
     },
@@ -162,13 +343,19 @@ const styles = StyleSheet.create({
       paddingBottom: 5,
     },
     pen:{
-      height: 22,
-      right: -200,
-      bottom: -8,
+      aligItems:'flex-end',
+      left:0
     },
     pen1:{
       height: 22,
       right: -85,
       bottom: -6,
     },
+    profileValueInput:{
+      backgroundColor:'red',
+      paddingHorizontal:4,
+      alignSelf:'center',
+      // flex:1
+      fontSize:wp('4%')
+    }
 });
