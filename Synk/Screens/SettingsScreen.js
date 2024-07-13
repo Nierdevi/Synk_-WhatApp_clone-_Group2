@@ -1,13 +1,40 @@
-import React from 'react';
+import React,{useState} from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, Pressable } from 'react-native';
+import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import { MaterialIcons, Ionicons } from '@expo/vector-icons';
 import { ScrollView } from 'react-native-gesture-handler';
 import AppLogo from '../assets/AppLogo.png';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect } from '@react-navigation/native';
+import { getUser } from '../constants/userContext';
+import { getUserData } from '../backend/userService';
+import { SecondaryColors } from '../constants/colors';
+
 
 const SettingsScreen = () => {
   const navigation = useNavigation();
+  const [username, setUsername] = useState('');
+  const[about,setAbout]= useState(' ')
+  const { session } = getUser();
+
+  const currentUserId=session.userId;
+
+    useFocusEffect(
+        React.useCallback(() => {
+            const fetchUserData = async () => {
+                try {
+                    const userData = await getUserData(currentUserId);
+                    setUsername(userData.username);
+                    setAbout(userData.about)
+                } catch (error) {
+                    console.error("Failed to fetch user data:", error);
+                }
+            };
+
+            fetchUserData();
+        }, [currentUserId])
+    );
 
   const handleNavigateToNotification = () => {
     navigation.navigate('Notifications');
@@ -55,21 +82,25 @@ const SettingsScreen = () => {
       </View>   
 
       <ScrollView style={styles.container}>
+
           <TouchableOpacity style={styles.head} onPress={handleNavigateToProfile}>
             <Image source={AppLogo} style={styles.headerImage} />
-            <View style={{flexDirection: 'row'}}>
+            <View style={{flexDirection: 'row',justifyContent:'space-between',flex:1}}>
               <View style={styles.headerContainer}>
-                <Text style={styles.username}>Synk_User</Text>
-                <Text style={styles.status}>我从不松懈型</Text>
+                <Text style={styles.username}>{username} </Text>
+                <Text style={styles.status} numberOfLines={1} ellipsizeMode='tail' >{about} </Text>
               </View>
-              <Pressable style={styles.scan}>
-                <Ionicons name="qr-code" size={24} color="black" />
-              </Pressable>
-              <Pressable style={styles.down}>
-              <Ionicons name="chevron-down-circle" size={24} color="black" />  
-              </Pressable>	
+              <View style={{flexDirection:'row',alignItems:'center',gap:10}}>
+                <Pressable style={{width:wp('7')}}>
+                  <Ionicons name="qr-code" size={24} color="black" />
+                </Pressable>
+                <Pressable style={{width:wp('7')}}>
+                <Ionicons name="chevron-down-circle" size={24} color="black" />  
+                </Pressable>	
+              </View>
             </View>
           </TouchableOpacity>
+
         <View style={{paddingLeft: 20, paddingRight: 20}}>
           <TouchableOpacity style={styles.section} onPress={handleNavigateToAccount}>
             <Ionicons name="person-outline" size={24} color="black" />
@@ -154,7 +185,7 @@ const SettingsScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'yellow',
+    backgroundColor: SecondaryColors.secPurple,
     paddingTop: -40,
   },
   head: {
@@ -163,15 +194,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderTopWidth: StyleSheet.hairlineWidth,
-     borderBottomColor: 'Lightgray',
-     paddingTop: 5,
-     paddingBottom: 10,
-     paddingRight: 20,
-     paddingLeft: 20,
+    borderBottomColor: 'Lightgray',
+    width:wp('100%'),
+    paddingVertical: 10,
+    paddingHorizontal:15,
   },
   headerImage: {
-    width: 70,
-    height: 70,
+    width: wp('15%'),
+    height: hp('7%'),
     borderRadius: 50,
     marginRight: 15,
   },
@@ -179,11 +209,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   username: {
-    fontSize: 18,
+    fontSize: wp('6%'),
     color: '#000',
+    fontWeight:'500'
   },
   status: {
-    fontSize: 14,
+    fontSize: wp('4%'),
     color: '#000',
   },
   section: {
@@ -226,20 +257,13 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     paddingTop: 50,
     paddingLeft: 10,
+    width:wp('100%'),
+
   },
   headerTitle: {
     fontSize: 28,
     fontWeight: "bold",
     marginLeft: 10,
-  },
-  scan:{
-    left: 80,
-    top: 8,
-    
-  },
-  down:{
-    left: 100,
-    top: 8,
   },
 });
 
