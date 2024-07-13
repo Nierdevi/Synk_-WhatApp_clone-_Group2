@@ -108,19 +108,24 @@ const uploadProfilePicture = async (userId, uri) => {
         // Step 2: Delete the existing profile picture if it exists
         if (currentProfilePictureUrl) {
             const fileName = currentProfilePictureUrl.split('/').pop(); // Extract filename from URL
-            await storage.deleteFile('6682d6370023ed485ca8', fileName); // Delete the file from storage
+            await storage.deleteFile('669270af0034381c55c3', fileName); // Delete the file from storage
         }
         // Step 3: Create a file object from the selected image
         const response = await fetch(uri);
         const blob = await response.blob();
         console.log("blob:",blob)
 
-        // Create a unique filename for the new profile picture
-        const newFileName = `userProfile_${userId}.jpg`;
-        console.log('filename',newFileName)
+         // Convert blob to file
+        const file = new File([blob], `userProfile_${userId}.jpg`, { type: blob.type });
+        console.log("File created:", file);
+
         // Upload the new image to storage
-        const uploadResponse = await storage.createFile('6682d6370023ed485ca8', newFileName, blob);
-        console.log("Upload response",uploadResponse)
+        const uploadResponse = await storage.createFile(
+            '669270af0034381c55c3', // Your storage bucket ID
+            ID.unique(), // Unique ID for the file
+            file // The file object to upload
+        );
+        console.log("Upload Response:", uploadResponse);
         // Get the URL of the uploaded image
         const newImageUrl = `https://cloud.appwrite.io/v1/storage/files/${uploadResponse.$id}/view?66795f4000158aa9d802`;
 
