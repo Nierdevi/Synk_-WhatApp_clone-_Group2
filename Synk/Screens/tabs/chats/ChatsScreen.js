@@ -202,6 +202,7 @@ const styles = StyleSheet.create({
     // backgroundColor: 'red',
     width:wp('100%'),
     paddingRight:10,
+    marginTop:20,
 
   },
   contactItem: {

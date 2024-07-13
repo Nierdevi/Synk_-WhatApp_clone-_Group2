@@ -12,7 +12,8 @@ const ChatRoom = ({ route }) => {
   const [lastMessage, setLastMessage] = useState(null);
 
   const recipientPhoneNumber = contact.normalizedPhoneNumbers[0]; // Use the first normalized phone number
-
+  console.log(currentUserPhoneNumber)
+  console.log(recipientPhoneNumber)
   // console.log(messages)
   useEffect(() => {
     const loadMessages = async () => {
