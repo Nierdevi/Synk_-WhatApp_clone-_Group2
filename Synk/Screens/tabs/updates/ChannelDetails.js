@@ -1,31 +1,47 @@
 import React, { useState } from 'react';
-import { Button, Image, ScrollView, Share, StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Divider, Menu, Provider } from 'react-native-paper'; // Importing Menu and other components from react-native-paper
+import Ionicons from 'react-native-vector-icons/Ionicons'; // Importing Ionicons for icons
 
 const ChannelDetails = ({ route }) => {
     const { channel } = route.params;
-    const [isFollowing, setIsFollowing] = useState(channel.isFollowing);
+    const [menuVisible, setMenuVisible] = useState(false);
 
-    const handleFollowToggle = () => {
-        // Implement the follow/unfollow logic here
-        setIsFollowing(!isFollowing);
-    };
-
-    const handleShare = async () => {
-        try {
-            await Share.share({
-                message: `Check out this channel: ${channel.name}`,
-                url: channel.link,
-            });
-        } catch (error) {
-            alert(error.message);
-        }
-    };
+    const openMenu = () => setMenuVisible(true);
+    const closeMenu = () => setMenuVisible(false);
 
     return (
-        <ScrollView style={styles.container}>
-            <View style={styles.header}>
-                <Image source={{ uri: channel.img }} style={styles.channelImg} />
-                <Text style={styles.channelName}>{channel.name}</Text>
+        <Provider>
+            <View style={styles.container}>
+                {/* Top section with channel logo, name, verified badge, notification bell, and three-dot menu */}
+                <View style={styles.topSection}>
+                    <Image source={{ uri: channel.img }} style={styles.channelImg} />
+                    <View style={styles.channelInfo}>
+                        <Text style={styles.channelName}>{channel.name}</Text>
+                        <Ionicons name="checkmark-circle" size={16} color="blue" style={styles.verifiedBadge} />
+                    </View>
+                    <View style={styles.topIcons}>
+                        <TouchableOpacity style={styles.iconButton}>
+                            <Ionicons name="notifications-outline" size={24} color="black" />
+                        </TouchableOpacity>
+                        <Menu
+                            visible={menuVisible}
+                            onDismiss={closeMenu}
+                            anchor={
+                                <TouchableOpacity onPress={openMenu} style={styles.iconButton}>
+                                    <Ionicons name="ellipsis-vertical" size={24} color="black" />
+                                </TouchableOpacity>
+                            }
+                        >
+                            <Menu.Item onPress={() => {}} title="Channel Info" />
+                            <Menu.Item onPress={() => {}} title="Unfollow" />
+                            <Menu.Item onPress={() => {}} title="Share" />
+                            <Divider />
+                            <Menu.Item onPress={() => {}} title="Report" />
+                        </Menu>
+                    </View>
+                </View>
+                {/* Channel details */}
                 <Text style={styles.channelDescription}>{channel.description}</Text>
                 <View style={styles.channelMeta}>
                     <Text style={styles.channelTime}>{channel.time}</Text>
@@ -33,21 +49,8 @@ const ChannelDetails = ({ route }) => {
                         <Text style={styles.unreadText}>{channel.unread}</Text>
                     </View>
                 </View>
-                <View style={styles.buttonContainer}>
-                    <Button title={isFollowing ? "Unfollow" : "Follow"} onPress={handleFollowToggle} />
-                    <Button title="Share" onPress={handleShare} />
-                </View>
             </View>
-            <View style={styles.updates}>
-                <Text style={styles.updatesTitle}>Recent Updates</Text>
-                {channel.updates.map((update, index) => (
-                    <View key={index} style={styles.update}>
-                        <Text style={styles.updateText}>{update.text}</Text>
-                        {update.image && <Image source={{ uri: update.image }} style={styles.updateImage} />}
-                    </View>
-                ))}
-            </View>
-        </ScrollView>
+        </Provider>
     );
 };
 
@@ -55,32 +58,47 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#fff',
-        padding: 16,
+        padding: 20
     },
-    header: {
+    topSection: {
+        flexDirection: 'row',
         alignItems: 'center',
-    },
-    channelImg: {
-        width: 100,
-        height: 100,
-        borderRadius: 50,
+        justifyContent: 'space-between',
+        width: '100%',
         marginBottom: 20,
     },
+    channelImg: {
+        width: 50,
+        height: 50,
+        borderRadius: 25,
+    },
+    channelInfo: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        flex: 1,
+        marginLeft: 10,
+    },
     channelName: {
-        fontSize: 24,
+        fontSize: 20,
         fontWeight: 'bold',
-        marginBottom: 10,
+    },
+    verifiedBadge: {
+        marginLeft: 5,
+    },
+    topIcons: {
+        flexDirection: 'row',
+    },
+    iconButton: {
+        marginLeft: 15,
     },
     channelDescription: {
         fontSize: 18,
         color: '#555',
-        marginBottom: 10,
-        textAlign: 'center',
+        marginBottom: 20,
     },
     channelMeta: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: 20,
     },
     channelTime: {
         fontSize: 14,
@@ -97,31 +115,6 @@ const styles = StyleSheet.create({
     unreadText: {
         color: '#fff',
         fontWeight: 'bold',
-    },
-    buttonContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        width: '80%',
-        marginTop: 20,
-    },
-    updates: {
-        marginTop: 30,
-    },
-    updatesTitle: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        marginBottom: 10,
-    },
-    update: {
-        marginBottom: 20,
-    },
-    updateText: {
-        fontSize: 16,
-        marginBottom: 10,
-    },
-    updateImage: {
-        width: '100%',
-        height: 200,
     },
 });
 
