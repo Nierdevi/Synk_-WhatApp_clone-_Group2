@@ -15,7 +15,7 @@ import WelcomeScreen from './Screens/WelcomeScreen';
 // import Tabs from './src/navigation/Tabs';
 import MainTabs from './Screens/tabs/_tabLayout';
 import { getUser } from './constants/userContext';
-
+import LoadingScreen from './components/LoadingScreen';
 const Stack = createStackNavigator();
 
 
@@ -23,7 +23,7 @@ const Stack = createStackNavigator();
 const MainLayout = () => {
   const navigationRef = useRef(null);
   const {session,setSession}=getUser();
-  // const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
 
 
   useEffect(() => {
@@ -32,22 +32,22 @@ const MainLayout = () => {
       if (storedSession || session) {
         const session = JSON.parse(storedSession);
         setSession(session);
+        setIsLoading(false);
         console.log(session)
         navigationRef.current?.navigate('Tabs');
       } else {
         navigationRef.current?.navigate('welcome');
       }
-      // setIsLoading(false);
     };
 
     checkSession();
   }, [setSession]);
 
 
-  // if (isLoading) {
+  if (isLoading) {
    // Optionally, return a loading screen while checking session
-   // return <LoadingScreen />;
-  // }
+   return <LoadingScreen />;
+  }
 
 
 
