@@ -9,7 +9,6 @@ import UpdatesHeader from '../../../components/CusTabsHeaders/ChatsHeader';
 import SettingsScreen from '../Settings/SettingsScreen';
 import NotificationsScreen from '../../../Screens/tabs/Settings/NotificationsScreen';
 import AccountScreen from '../Settings/AccountScreen';
-import StorageScreen from '../Settings/StorageScreen';
 import ProfileScreen from '../Settings/ProfileScreen';
 import PrivacyScreen from '../Settings/PrivacyScreen';
 import SChatScreen from '../Settings/SChatScreen';
@@ -17,6 +16,7 @@ import HelpScreen from '../Settings/HelpScreen';
 import AppUpdatesScreen from '../Settings/AppUpdatesScreen';
 import AvatarScreen from '../Settings/AvatarScreen';
 import SecurityNotificationsScreen from '../Settings/SecurityNotificationsScreen';
+import StorageScreen from '../Settings/StorageScreen';
 
 const ChatsStack = createStackNavigator();
 
