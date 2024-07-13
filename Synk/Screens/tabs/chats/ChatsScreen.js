@@ -4,8 +4,8 @@ import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-nat
 import Fab from '../../../components/fab';
 import { getUser } from '../../../constants/userContext';
 
-import { databases } from '../../../backend/appwrite';
 import { Query } from 'appwrite';
+import { databases } from '../../../backend/appwrite';
 
 import { Entypo, Ionicons } from '@expo/vector-icons';
 import { fetchMessagedContacts } from '../../../backend/chatService';
@@ -153,19 +153,6 @@ const ChatsScreen = ({ navigation }) => {
       </TouchableOpacity>
     );
   };
-
-  // if (!session) {
-  // navigation.replace("welcome");
-  //  return null;
-  //}
-  // if (!session) {
-  //   navigation.replace("welcome");
-  //   return null;
-  // }
-  if (session) {
-    navigation.replace("welcome");
-    return null;
-  }
 
   const filteredContacts = contacts.filter(contact =>
     contact.name.toLowerCase().includes(searchQuery.toLowerCase())

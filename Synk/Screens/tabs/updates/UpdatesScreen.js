@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { FlatList, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Divider, Menu, Provider } from 'react-native-paper';
+import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { primaryColors } from '../../../constants/colors';
 
 const DefaultProfileImg = () => (
     <View style={styles.statusContainer}>
@@ -21,24 +23,7 @@ const UpdatesScreen = ({ navigation }) => {
         { id: 2, user: 'Bob', img: 'https://via.placeholder.com/50', total: 2, viewed: 1 }
     ]);
 
-    const [channels, setChannels] = useState([
-        { 
-            id: 1, 
-            name: 'The New York Times', 
-            description: 'Top stories', 
-            img: 'https://via.placeholder.com/50', 
-            time: '2h ago', 
-            unread: 3 
-        },
-        { 
-            id: 2, 
-            name: 'The New York Post', 
-            description: 'Breaking news', 
-            img: 'https://via.placeholder.com/50', 
-            time: '1h ago', 
-            unread: 5 
-        }
-    ]);
+    const [channels, setChannels] = useState([]);
 
     const suggestedChannels = [
         { id: 3, name: 'CNN', img: 'https://via.placeholder.com/50', followers: '1.2k followers' },
@@ -54,14 +39,18 @@ const UpdatesScreen = ({ navigation }) => {
                 const apiKey = 'xICQ9NoAelPxIAplcKVta3keJdV5y2ur';
                 const responseNYT = await fetch(`https://api.nytimes.com/svc/topstories/v2/home.json?api-key=${apiKey}`);
                 const dataNYT = await responseNYT.json();
+
+                const latestArticle = dataNYT.results[0];
+
                 const nyTimesChannel = {
                     id: 1,
                     name: 'The New York Times',
-                    description: 'Top stories',
+                    description: latestArticle.title.split('.')[0] || 'Top stories',
                     img: 'https://via.placeholder.com/50',
                     time: '2h ago',
                     unread: dataNYT.results.length
                 };
+
                 const nyPostChannel = {
                     id: 2,
                     name: 'The New York Post',
@@ -70,6 +59,7 @@ const UpdatesScreen = ({ navigation }) => {
                     time: '1h ago',
                     unread: 5
                 };
+
                 setChannels([nyTimesChannel, nyPostChannel]);
             } catch (error) {
                 console.error('Error fetching channels:', error);
@@ -77,6 +67,9 @@ const UpdatesScreen = ({ navigation }) => {
         };
 
         fetchChannels();
+        const interval = setInterval(fetchChannels, 60000); // Fetch every minute
+
+        return () => clearInterval(interval); // Clean up on unmount
     }, []);
 
     const handleSelectChannel = (channel) => {
@@ -104,7 +97,7 @@ const UpdatesScreen = ({ navigation }) => {
                                     <View key={item.id} style={styles.statusContainer}>
                                         <View style={[
                                             styles.statusWrapper, 
-                                            { borderColor: item.viewed < item.total ? 'purple' : '#ccc' }
+                                            { borderColor: item.viewed < item.total ? primaryColors.purple : '#ccc' }
                                         ]}>
                                             <Image source={{ uri: item.img }} style={styles.statusImg} />
                                         </View>
@@ -156,7 +149,7 @@ const UpdatesScreen = ({ navigation }) => {
                                     <View style={styles.suggestedChannelInfo}>
                                         <View style={styles.channelHeader}>
                                             <Text style={styles.suggestedChannelName}>{item.name}</Text>
-                                            <Ionicons name="checkmark-circle" size={16} color="purple" style={styles.verifiedIcon} />
+                                            <Ionicons name="checkmark-circle" size={wp('4%')} color={primaryColors.purple} style={styles.verifiedIcon} />
                                         </View>
                                         <Text style={styles.followersCount}>{item.followers}</Text>
                                     </View>
@@ -174,11 +167,11 @@ const UpdatesScreen = ({ navigation }) => {
                     </View>
                 </ScrollView>
                 <View style={styles.bottomRightIcons}>
-                    <TouchableOpacity style={[styles.bottomIcon, { marginBottom: 10 }]}>
-                        <Ionicons name="pencil" size={24} color="#fff" />
+                    <TouchableOpacity style={[styles.bottomIcon, { marginBottom: hp('1%') }]}>
+                        <Ionicons name="pencil" size={wp('6%')} color="#fff" />
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.bottomIcon}>
-                        <Ionicons name="camera" size={24} color="#fff" />
+                        <Ionicons name="camera" size={wp('6%')} color="#fff" />
                     </TouchableOpacity>
                 </View>
                 <Menu
@@ -186,7 +179,7 @@ const UpdatesScreen = ({ navigation }) => {
                     onDismiss={closeMenu}
                     anchor={
                         <TouchableOpacity onPress={openMenu} style={styles.menuButton}>
-                            <Ionicons name="ellipsis-vertical" size={24} color="black" />
+                            <Ionicons name="ellipsis-vertical" size={wp('6%')} color="black" />
                         </TouchableOpacity>
                     }
                 >
@@ -206,42 +199,42 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff'
     },
     section: {
-        padding: 20
+        padding: wp('5%')
     },
     title: {
-        marginBottom: 10,
+        marginBottom: hp('1%'),
         color: '#555',
-        fontSize: 18,
+        fontSize: wp('4.5%'),
         fontWeight: 'bold'
     },
     channelsHeader: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: 10
+        marginBottom: hp('1%')
     },
     exploreText: {
-        color: 'purple',
-        fontSize: 16,
+        color: primaryColors.purple,
+        fontSize: wp('4%'),
         fontWeight: 'bold'
     },
     statusContainer: {
         alignItems: 'center',
-        marginRight: 15
+        marginRight: wp('3.5%')
     },
     statusWrapper: {
-        width: 60,
-        height: 60,
-        borderRadius: 30,
-        borderWidth: 2,
+        width: wp('15%'),
+        height: wp('15%'),
+        borderRadius: wp('7.5%'),
+        borderWidth: wp('0.5%'),
         justifyContent: 'center',
         alignItems: 'center',
         position: 'relative'
     },
     statusWrapperDefault: {
-        width: 60,
-        height: 60,
-        borderRadius: 30,
+        width: wp('15%'),
+        height: wp('15%'),
+        borderRadius: wp('7.5%'),
         justifyContent: 'center',
         alignItems: 'center',
         position: 'relative'
@@ -250,43 +243,43 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: 0,
         right: 0,
-        backgroundColor: 'purple',
-        borderRadius: 12,
-        width: 24,
-        height: 24,
+        backgroundColor: primaryColors.purple,
+        borderRadius: wp('3%'),
+        width: wp('6%'),
+        height: wp('6%'),
         justifyContent: 'center',
         alignItems: 'center',
         zIndex: 2
     },
     plusText: {
         color: '#fff',
-        fontSize: 16,
+        fontSize: wp('4%'),
         fontWeight: 'bold'
     },
     statusImg: {
-        width: 50,
-        height: 50,
-        borderRadius: 25,
+        width: wp('12.5%'),
+        height: wp('12.5%'),
+        borderRadius: wp('6.25%'),
         zIndex: 2
     },
     statusUser: {
-        marginTop: 5,
+        marginTop: hp('0.5%'),
         textAlign: 'center',
         fontWeight: 'bold'
     },
     listItem: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: 10,
-        padding: 10,
+        marginBottom: hp('1%'),
+        padding: wp('2.5%'),
         borderBottomWidth: 1,
         borderBottomColor: '#ddd'
     },
     channelImg: {
-        width: 50,
-        height: 50,
-        borderRadius: 25,
-        marginRight: 10
+        width: wp('12.5%'),
+        height: wp('12.5%'),
+        borderRadius: wp('6.25%'),
+        marginRight: wp('2.5%')
     },
     channelInfo: {
         flex: 1,
@@ -302,43 +295,43 @@ const styles = StyleSheet.create({
         alignItems: 'flex-end'
     },
     channelTime: {
-        fontSize: 12,
+        fontSize: wp('3%'),
         color: '#888'
     },
     unreadBadge: {
-        backgroundColor: 'purple',
-        borderRadius: 12,
-        paddingVertical: 2,
-        paddingHorizontal: 6,
-        marginTop: 2
+        backgroundColor: primaryColors.purple,
+        borderRadius: wp('3%'),
+        paddingVertical: hp('0.2%'),
+        paddingHorizontal: wp('1.5%'),
+        marginTop: hp('0.2%')
     },
     unreadText: {
         color: '#fff',
-        fontSize: 12,
+        fontSize: wp('3%'),
         fontWeight: 'bold'
     },
     findChannelsContainer: {
-        paddingHorizontal: 20,
-        marginTop: 20
+        paddingHorizontal: wp('5%'),
+        marginTop: hp('2%')
     },
     findChannelsText: {
-        fontSize: 18,
+        fontSize: wp('4.5%'),
         fontWeight: 'bold',
-        marginBottom: 10
+        marginBottom: hp('1%')
     },
     suggestedChannelItem: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: 10,
+        marginBottom: hp('1%'),
         justifyContent: 'space-between'
     },
     suggestedChannelImg: {
-        width: 50,
-        height: 50,
-        borderRadius: 25
+        width: wp('12.5%'),
+        height: wp('12.5%'),
+        borderRadius: wp('6.25%')
     },
     suggestedChannelInfo: {
-        marginLeft: 10,
+        marginLeft: wp('2.5%'),
         flex: 1
     },
     channelHeader: {
@@ -347,20 +340,20 @@ const styles = StyleSheet.create({
     },
     suggestedChannelName: {
         fontWeight: 'bold',
-        marginBottom: 5
+        marginBottom: hp('0.5%')
     },
     verifiedIcon: {
-        marginLeft: 5
+        marginLeft: wp('1%')
     },
     followersCount: {
         color: '#888',
-        marginBottom: 5
+        marginBottom: hp('0.5%')
     },
     followButton: {
-        backgroundColor: 'purple',
-        paddingVertical: 5,
-        paddingHorizontal: 10,
-        borderRadius: 5,
+        backgroundColor: primaryColors.purple,
+        paddingVertical: hp('0.5%'),
+        paddingHorizontal: wp('2.5%'),
+        borderRadius: wp('2.5%'),
         alignItems: 'center'
     },
     followButtonText: {
@@ -368,38 +361,39 @@ const styles = StyleSheet.create({
         fontWeight: 'bold'
     },
     exploreMoreButton: {
-        marginTop: 10,
+        marginTop: hp('1%'),
         backgroundColor: '#fff',
-        paddingVertical: 10,
-        paddingHorizontal: 20,
-        borderRadius: 5,
-        borderColor: 'purple',
-        alignItems: 'left'
+        paddingVertical: hp('1%'),
+        paddingHorizontal: wp('2.5%'),
+        borderRadius: wp('3.5%'),
+        borderColor: primaryColors.purple,
+        borderWidth: 1,
+        alignItems: 'center'
     },
     exploreMoreButtonText: {
-        color: 'purple',
-        fontSize: 16,
+        color: primaryColors.purple,
+        fontSize: wp('4%'),
         fontWeight: 'bold'
     },
     bottomRightIcons: {
         position: 'absolute',
-        bottom: 20,
-        right: 20,
+        bottom: hp('2%'),
+        right: wp('2.5%'),
         flexDirection: 'column',
         alignItems: 'flex-end'
     },
     bottomIcon: {
-        backgroundColor: 'purple',
-        borderRadius: 30,
-        width: 60,
-        height: 60,
+        backgroundColor: primaryColors.purple,
+        borderRadius: wp('7.5%'),
+        width: wp('15%'),
+        height: wp('15%'),
         justifyContent: 'center',
         alignItems: 'center'
     },
     menuButton: {
         position: 'absolute',
-        top: 10,
-        right: 10
+        top: hp('1%'),
+        right: wp('2.5%')
     }
 });
 
