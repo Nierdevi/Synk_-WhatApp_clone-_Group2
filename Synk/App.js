@@ -1,13 +1,13 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { useEffect, useRef, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import 'react-native-gesture-handler';
 import { MenuProvider } from 'react-native-popup-menu';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { ThemeProvider } from './constants/themeContext';
 import { UserProvider } from './constants/userContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useState,useRef,useEffect } from 'react';
 
 import PhoneNumScreen from './Screens/PhoneNumScreen';
 import Verification from './Screens/Verification';
@@ -50,10 +50,6 @@ const MainLayout = () => {
   if (isLoading) {
    return   <LoadingScreen />;
   }
-  //if (isLoading) {
-    // Optionally, return a loading screen while checking session
- //   return <LoadingScreen />;
- // }
 
 
 

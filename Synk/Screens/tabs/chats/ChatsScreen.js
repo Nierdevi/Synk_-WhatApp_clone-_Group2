@@ -4,8 +4,8 @@ import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-nat
 import Fab from '../../../components/fab';
 import { getUser } from '../../../constants/userContext';
 
-import { Query } from 'appwrite';
 import { databases } from '../../../backend/appwrite';
+import { Query } from 'appwrite';
 
 import { Entypo, Ionicons } from '@expo/vector-icons';
 import { fetchMessagedContacts } from '../../../backend/chatService';

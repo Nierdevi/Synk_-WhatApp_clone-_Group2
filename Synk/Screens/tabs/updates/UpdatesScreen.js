@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { FlatList, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Divider, Menu, Provider } from 'react-native-paper';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { primaryColors } from '../../../constants/colors';
 
 const DefaultProfileImg = () => (
     <View style={styles.statusContainer}>
@@ -22,7 +21,24 @@ const UpdatesScreen = ({ navigation }) => {
         { id: 2, user: 'Bob', img: 'https://via.placeholder.com/50', total: 2, viewed: 1 }
     ]);
 
-    const [channels, setChannels] = useState([]);
+    const [channels, setChannels] = useState([
+        { 
+            id: 1, 
+            name: 'The New York Times', 
+            description: 'Top stories', 
+            img: 'https://via.placeholder.com/50', 
+            time: '2h ago', 
+            unread: 3 
+        },
+        { 
+            id: 2, 
+            name: 'The New York Post', 
+            description: 'Breaking news', 
+            img: 'https://via.placeholder.com/50', 
+            time: '1h ago', 
+            unread: 5 
+        }
+    ]);
 
     const suggestedChannels = [
         { id: 3, name: 'CNN', img: 'https://via.placeholder.com/50', followers: '1.2k followers' },
@@ -38,18 +54,14 @@ const UpdatesScreen = ({ navigation }) => {
                 const apiKey = 'xICQ9NoAelPxIAplcKVta3keJdV5y2ur';
                 const responseNYT = await fetch(`https://api.nytimes.com/svc/topstories/v2/home.json?api-key=${apiKey}`);
                 const dataNYT = await responseNYT.json();
-
-                const latestArticle = dataNYT.results[0];
-
                 const nyTimesChannel = {
                     id: 1,
                     name: 'The New York Times',
-                    description: latestArticle.title.split('.')[0] || 'Top stories', // Use the first sentence of the title
+                    description: 'Top stories',
                     img: 'https://via.placeholder.com/50',
                     time: '2h ago',
                     unread: dataNYT.results.length
                 };
-
                 const nyPostChannel = {
                     id: 2,
                     name: 'The New York Post',
@@ -58,7 +70,6 @@ const UpdatesScreen = ({ navigation }) => {
                     time: '1h ago',
                     unread: 5
                 };
-
                 setChannels([nyTimesChannel, nyPostChannel]);
             } catch (error) {
                 console.error('Error fetching channels:', error);
@@ -93,7 +104,7 @@ const UpdatesScreen = ({ navigation }) => {
                                     <View key={item.id} style={styles.statusContainer}>
                                         <View style={[
                                             styles.statusWrapper, 
-                                            { borderColor: item.viewed < item.total ? primaryColors.purple : '#ccc' }
+                                            { borderColor: item.viewed < item.total ? 'purple' : '#ccc' }
                                         ]}>
                                             <Image source={{ uri: item.img }} style={styles.statusImg} />
                                         </View>
@@ -210,7 +221,7 @@ const styles = StyleSheet.create({
         marginBottom: 10
     },
     exploreText: {
-        color: primaryColors.purple,
+        color: 'purple',
         fontSize: 16,
         fontWeight: 'bold'
     },
@@ -239,7 +250,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: 0,
         right: 0,
-        backgroundColor: primaryColors.purple,
+        backgroundColor: 'purple',
         borderRadius: 12,
         width: 24,
         height: 24,
@@ -295,7 +306,7 @@ const styles = StyleSheet.create({
         color: '#888'
     },
     unreadBadge: {
-        backgroundColor: primaryColors.purple,
+        backgroundColor: 'purple',
         borderRadius: 12,
         paddingVertical: 2,
         paddingHorizontal: 6,
@@ -346,7 +357,7 @@ const styles = StyleSheet.create({
         marginBottom: 5
     },
     followButton: {
-        backgroundColor: primaryColors.purple,
+        backgroundColor: 'purple',
         paddingVertical: 5,
         paddingHorizontal: 10,
         borderRadius: 5,
@@ -360,14 +371,13 @@ const styles = StyleSheet.create({
         marginTop: 10,
         backgroundColor: '#fff',
         paddingVertical: 10,
-        paddingHorizontal: 15,
-        borderRadius: 20,
-        borderColor: primaryColors.purple,
-        borderWidth: 1,
-        alignItems: 'center'
+        paddingHorizontal: 20,
+        borderRadius: 5,
+        borderColor: 'purple',
+        alignItems: 'left'
     },
     exploreMoreButtonText: {
-        color: primaryColors.purple,
+        color: 'purple',
         fontSize: 16,
         fontWeight: 'bold'
     },
@@ -379,7 +389,7 @@ const styles = StyleSheet.create({
         alignItems: 'flex-end'
     },
     bottomIcon: {
-        backgroundColor: primaryColors.purple,
+        backgroundColor: 'purple',
         borderRadius: 30,
         width: 60,
         height: 60,
