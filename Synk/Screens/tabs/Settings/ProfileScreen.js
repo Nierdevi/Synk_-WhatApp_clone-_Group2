@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, Pressable, Image,} from 'react-native';
 import React from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons, MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
-import AppLogo from '../assets/AppLogo.png';
+import AppLogo from '../../../assets/AppLogo.png';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const ProfileScreen = () => {
@@ -89,13 +89,13 @@ const styles = StyleSheet.create({
         borderBottomColor: 'Lightgray',
         backgroundColor: 'white',
         paddingTop: 50,
+        paddingLeft: 10,
     },
     headerTitle: {
         fontSize: 28,
         fontWeight: "bold",
         marginLeft: 10,
         paddingRight: 250,
-        paddingBottom: 10,
     },
     headerImage: {
         width: 170,
