@@ -44,6 +44,11 @@ const MainLayout = () => {
   }, [setSession]);
 
 
+  if (isLoading) {
+    // Optionally, return a loading screen while checking session
+    return <LoadingScreen />;
+  }
+
 
 
   return (
