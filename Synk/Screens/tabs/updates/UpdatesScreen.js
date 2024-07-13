@@ -1,17 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { FlatList, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Divider, Menu, Provider } from 'react-native-paper';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-// Define DefaultProfileImg as a separate named component
 const DefaultProfileImg = () => (
     <View style={styles.statusContainer}>
         <View style={styles.statusWrapperDefault}>
             <Image source={{ uri: 'https://via.placeholder.com/50' }} style={styles.statusImg} />
             <View style={styles.plusSign}>
                 <Text style={styles.plusText}>+</Text>
-            </View>
-            <View style={styles.pencilIcon}>
-                <Ionicons name="pencil" size={16} color="#fff" />
             </View>
         </View>
         <Text style={styles.statusUser}>My Status</Text>
@@ -25,7 +22,6 @@ const UpdatesScreen = ({ navigation }) => {
     ]);
 
     const [channels, setChannels] = useState([
-        // Initial state with placeholder data
         { 
             id: 1, 
             name: 'The New York Times', 
@@ -45,19 +41,17 @@ const UpdatesScreen = ({ navigation }) => {
     ]);
 
     const suggestedChannels = [
-        { id: 3, name: 'CNN', img: 'https://via.placeholder.com/50' },
-        { id: 4, name: 'BBC News', img: 'https://via.placeholder.com/50' },
-        { id: 5, name: 'TechCrunch', img: 'https://via.placeholder.com/50' },
-        { id: 6, name: 'National Geographic', img: 'https://via.placeholder.com/50' },
-        { id: 7, name: 'ESPN', img: 'https://via.placeholder.com/50' }
+        { id: 3, name: 'CNN', img: 'https://via.placeholder.com/50', followers: '1.2k followers' },
+        { id: 4, name: 'BBC News', img: 'https://via.placeholder.com/50', followers: '900 followers' },
+        { id: 5, name: 'TechCrunch', img: 'https://via.placeholder.com/50', followers: '1.5k followers' },
+        { id: 6, name: 'National Geographic', img: 'https://via.placeholder.com/50', followers: '800 followers' },
+        { id: 7, name: 'ESPN', img: 'https://via.placeholder.com/50', followers: '2k followers' }
     ];
 
     useEffect(() => {
         const fetchChannels = async () => {
             try {
                 const apiKey = 'xICQ9NoAelPxIAplcKVta3keJdV5y2ur';
-
-                // Fetch data from API for The New York Times
                 const responseNYT = await fetch(`https://api.nytimes.com/svc/topstories/v2/home.json?api-key=${apiKey}`);
                 const dataNYT = await responseNYT.json();
                 const nyTimesChannel = {
@@ -68,8 +62,6 @@ const UpdatesScreen = ({ navigation }) => {
                     time: '2h ago',
                     unread: dataNYT.results.length
                 };
-
-                // Placeholder data for The New York Post until API key provided
                 const nyPostChannel = {
                     id: 2,
                     name: 'The New York Post',
@@ -78,7 +70,6 @@ const UpdatesScreen = ({ navigation }) => {
                     time: '1h ago',
                     unread: 5
                 };
-
                 setChannels([nyTimesChannel, nyPostChannel]);
             } catch (error) {
                 console.error('Error fetching channels:', error);
@@ -92,98 +83,120 @@ const UpdatesScreen = ({ navigation }) => {
         navigation.navigate('ChannelDetails', { channel });
     };
 
+    const [menuVisible, setMenuVisible] = useState(false);
+
+    const openMenu = () => setMenuVisible(true);
+    const closeMenu = () => setMenuVisible(false);
+
     return (
-        <View style={styles.container}>
-            <ScrollView>
-                <View style={styles.section}>
-                    <Text style={styles.title}>Status</Text>
-                    <FlatList
-                        horizontal
-                        data={[{ id: 'default', user: 'My Status', img: 'https://via.placeholder.com/50' }, ...statuses]}
-                        renderItem={({ item }) => (
-                            item.id === 'default' ? (
-                                <DefaultProfileImg />
-                            ) : (
-                                <View key={item.id} style={styles.statusContainer}>
-                                    <View style={[
-                                        styles.statusWrapper, 
-                                        { borderColor: item.viewed < item.total ? 'purple' : '#ccc' }
-                                    ]}>
-                                        <Image source={{ uri: item.img }} style={styles.statusImg} />
+        <Provider>
+            <View style={styles.container}>
+                <ScrollView>
+                    <View style={styles.section}>
+                        <Text style={styles.title}>Status</Text>
+                        <FlatList
+                            horizontal
+                            data={[{ id: 'default', user: 'My Status', img: 'https://via.placeholder.com/50' }, ...statuses]}
+                            renderItem={({ item }) => (
+                                item.id === 'default' ? (
+                                    <DefaultProfileImg />
+                                ) : (
+                                    <View key={item.id} style={styles.statusContainer}>
+                                        <View style={[
+                                            styles.statusWrapper, 
+                                            { borderColor: item.viewed < item.total ? 'purple' : '#ccc' }
+                                        ]}>
+                                            <Image source={{ uri: item.img }} style={styles.statusImg} />
+                                        </View>
+                                        <Text style={styles.statusUser}>{item.user}</Text>
                                     </View>
-                                    <Text style={styles.statusUser}>{item.user}</Text>
-                                </View>
-                            )
-                        )}
-                        keyExtractor={item => item.id.toString()}
-                        showsHorizontalScrollIndicator={false}
-                    />
-                </View>
-                <View style={styles.section}>
-                    <View style={styles.channelsHeader}>
-                        <Text style={styles.title}>Channels</Text>
-                        <TouchableOpacity onPress={() => navigation.navigate('Explore')}>
-                            <Text style={styles.exploreText}>Explore &gt;</Text>
-                        </TouchableOpacity>
+                                )
+                            )}
+                            keyExtractor={item => item.id.toString()}
+                            showsHorizontalScrollIndicator={false}
+                        />
                     </View>
-                    <FlatList
-                        data={channels}
-                        renderItem={({ item }) => (
-                            <TouchableOpacity key={item.id} onPress={() => handleSelectChannel(item)}>
-                                <View style={styles.listItem}>
-                                    <Image source={{ uri: item.img }} style={styles.channelImg} />
-                                    <View style={styles.channelInfo}>
-                                        <Text style={styles.channelName}>{item.name}</Text>
-                                        <Text style={styles.channelDescription}>{item.description}</Text>
-                                    </View>
-                                    <View style={styles.channelMeta}>
-                                        <Text style={styles.channelTime}>{item.time}</Text>
-                                        <View style={styles.unreadBadge}>
-                                            <Text style={styles.unreadText}>{item.unread}</Text>
+                    <View style={styles.section}>
+                        <View style={styles.channelsHeader}>
+                            <Text style={styles.title}>Channels</Text>
+                            <TouchableOpacity onPress={() => navigation.navigate('Explore')}>
+                                <Text style={styles.exploreText}>Explore &gt;</Text>
+                            </TouchableOpacity>
+                        </View>
+                        <FlatList
+                            data={channels}
+                            renderItem={({ item }) => (
+                                <TouchableOpacity key={item.id} onPress={() => handleSelectChannel(item)}>
+                                    <View style={styles.listItem}>
+                                        <Image source={{ uri: item.img }} style={styles.channelImg} />
+                                        <View style={styles.channelInfo}>
+                                            <Text style={styles.channelName}>{item.name}</Text>
+                                            <Text style={styles.channelDescription}>{item.description}</Text>
+                                        </View>
+                                        <View style={styles.channelMeta}>
+                                            <Text style={styles.channelTime}>{item.time}</Text>
+                                            <View style={styles.unreadBadge}>
+                                                <Text style={styles.unreadText}>{item.unread}</Text>
+                                            </View>
                                         </View>
                                     </View>
-                                </View>
-                            </TouchableOpacity>
-                        )}
-                        keyExtractor={item => item.id.toString()}
-                        showsVerticalScrollIndicator={false}
-                    />
-                </View>
-                <View style={styles.findChannelsContainer}>
-                    <Text style={styles.findChannelsText}>Find Channels to Follow</Text>
-                    <FlatList
-                        data={suggestedChannels}
-                        renderItem={({ item }) => (
-                            <View style={styles.suggestedChannelItem}>
-                                <Image source={{ uri: item.img }} style={styles.suggestedChannelImg} />
-                                <View style={styles.suggestedChannelInfo}>
-                                    <Text style={styles.suggestedChannelName}>{item.name}</Text>
+                                </TouchableOpacity>
+                            )}
+                            keyExtractor={item => item.id.toString()}
+                            showsVerticalScrollIndicator={false}
+                        />
+                    </View>
+                    <View style={styles.findChannelsContainer}>
+                        <Text style={styles.findChannelsText}>Find Channels to Follow</Text>
+                        <FlatList
+                            data={suggestedChannels}
+                            renderItem={({ item }) => (
+                                <View style={styles.suggestedChannelItem}>
+                                    <Image source={{ uri: item.img }} style={styles.suggestedChannelImg} />
+                                    <View style={styles.suggestedChannelInfo}>
+                                        <View style={styles.channelHeader}>
+                                            <Text style={styles.suggestedChannelName}>{item.name}</Text>
+                                            <Ionicons name="checkmark-circle" size={16} color="purple" style={styles.verifiedIcon} />
+                                        </View>
+                                        <Text style={styles.followersCount}>{item.followers}</Text>
+                                    </View>
                                     <TouchableOpacity style={styles.followButton}>
                                         <Text style={styles.followButtonText}>Follow</Text>
                                     </TouchableOpacity>
                                 </View>
-                            </View>
-                        )}
-                        keyExtractor={item => item.id.toString()}
-                        horizontal
-                        showsHorizontalScrollIndicator={false}
-                    />
-                    <TouchableOpacity style={styles.exploreMoreButton} onPress={() => navigation.navigate('Explore')}>
-                        <Text style={styles.exploreMoreButtonText}>Explore More</Text>
+                            )}
+                            keyExtractor={item => item.id.toString()}
+                            showsVerticalScrollIndicator={false}
+                        />
+                        <TouchableOpacity style={styles.exploreMoreButton} onPress={() => navigation.navigate('Explore')}>
+                            <Text style={styles.exploreMoreButtonText}>Explore More</Text>
+                        </TouchableOpacity>
+                    </View>
+                </ScrollView>
+                <View style={styles.bottomRightIcons}>
+                    <TouchableOpacity style={[styles.bottomIcon, { marginBottom: 10 }]}>
+                        <Ionicons name="pencil" size={24} color="#fff" />
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.bottomIcon}>
+                        <Ionicons name="camera" size={24} color="#fff" />
                     </TouchableOpacity>
                 </View>
-            </ScrollView>
-            <View style={styles.bottomRightIcons}>
-                {/* Pencil icon on top */}
-                <TouchableOpacity style={[styles.bottomIcon, { marginBottom: 10 }]}>
-                    <Ionicons name="pencil" size={24} color="#fff" />
-                </TouchableOpacity>
-                {/* Camera icon below */}
-                <TouchableOpacity style={styles.bottomIcon}>
-                    <Ionicons name="camera" size={24} color="#fff" />
-                </TouchableOpacity>
+                <Menu
+                    visible={menuVisible}
+                    onDismiss={closeMenu}
+                    anchor={
+                        <TouchableOpacity onPress={openMenu} style={styles.menuButton}>
+                            <Ionicons name="ellipsis-vertical" size={24} color="black" />
+                        </TouchableOpacity>
+                    }
+                >
+                    <Menu.Item onPress={() => {}} title="Status privacy" />
+                    <Menu.Item onPress={() => {}} title="Create channel" />
+                    <Divider />
+                    <Menu.Item onPress={() => {}} title="Settings" />
+                </Menu>
             </View>
-        </View>
+        </Provider>
     );
 };
 
@@ -249,18 +262,6 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontSize: 16,
         fontWeight: 'bold'
-    },
-    pencilIcon: {
-        position: 'absolute',
-        bottom: 0,
-        right: 30,
-        backgroundColor: 'purple',
-        borderRadius: 12,
-        width: 24,
-        height: 24,
-        justifyContent: 'center',
-        alignItems: 'center',
-        zIndex: 2
     },
     statusImg: {
         width: 50,
@@ -328,7 +329,8 @@ const styles = StyleSheet.create({
     suggestedChannelItem: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginRight: 20
+        marginBottom: 10,
+        justifyContent: 'space-between'
     },
     suggestedChannelImg: {
         width: 50,
@@ -336,10 +338,22 @@ const styles = StyleSheet.create({
         borderRadius: 25
     },
     suggestedChannelInfo: {
-        marginLeft: 10
+        marginLeft: 10,
+        flex: 1
+    },
+    channelHeader: {
+        flexDirection: 'row',
+        alignItems: 'center'
     },
     suggestedChannelName: {
         fontWeight: 'bold',
+        marginBottom: 5
+    },
+    verifiedIcon: {
+        marginLeft: 5
+    },
+    followersCount: {
+        color: '#888',
         marginBottom: 5
     },
     followButton: {
@@ -359,6 +373,7 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         paddingHorizontal: 20,
         borderRadius: 5,
+        borderColor: 'purple',
         alignItems: 'left'
     },
     exploreMoreButtonText: {
@@ -380,6 +395,11 @@ const styles = StyleSheet.create({
         height: 60,
         justifyContent: 'center',
         alignItems: 'center'
+    },
+    menuButton: {
+        position: 'absolute',
+        top: 10,
+        right: 10
     }
 });
 
