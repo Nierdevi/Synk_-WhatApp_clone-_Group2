@@ -17,6 +17,12 @@ import AppUpdatesScreen from '../Settings/AppUpdatesScreen';
 import AvatarScreen from '../Settings/AvatarScreen';
 import SecurityNotificationsScreen from '../Settings/SecurityNotificationsScreen';
 import StorageScreen from '../Settings/StorageScreen';
+import PassKeysScreen from '../Settings/PassKeysScreen';
+import EmailScreen from '../Settings/EmailScreen';
+import TwoStepVerificationScreen from '../Settings/TwoStepVerificationScreen';
+import ChangeNumberScreen from '../Settings/ChangeNumberScreen';
+import RequestAccountInfoScreen from '../Settings/RequestAccountInfoScreen';
+import DeleteAccountScreen from '../Settings/DeleteAccountScreen';
 
 const ChatsStack = createStackNavigator();
 
@@ -50,6 +56,12 @@ const ChatsStackNavigator = ({ navigation, route }) => {
       <ChatsStack.Screen name="AppUpdate" component={AppUpdatesScreen} options={{ headerShown: false }}/>
       <ChatsStack.Screen name="Avatar" component={AvatarScreen} options={{ headerShown: false }}/>
       <ChatsStack.Screen name="Security" component={SecurityNotificationsScreen} options={{ headerShown: false }}/>
+      <ChatsStack.Screen name="PassKey" component={PassKeysScreen} options={{headerShown:false}}/>
+      <ChatsStack.Screen name="Email" component={EmailScreen} options={{headerShown:false}}/>
+      <ChatsStack.Screen name="TwoStep" component={TwoStepVerificationScreen} options={{headerShown:false}}/>
+      <ChatsStack.Screen name="Change" component={ChangeNumberScreen} options={{headerShown:false}}/>
+      <ChatsStack.Screen name="Request" component={RequestAccountInfoScreen} options={{headerShown:false}}/>
+      <ChatsStack.Screen name="Delete" component={DeleteAccountScreen} options={{headerShown:false}}/>
     </ChatsStack.Navigator>
   );
 };

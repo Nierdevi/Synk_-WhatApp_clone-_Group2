@@ -57,7 +57,7 @@ const ProfileScreen = () => {
                 si wis pacem, para bellum
               </Text>
             </View>
-            <MaterialCommunityIcons name="draw-pen" size={24} color="black" style={styles.pen1} />
+            <MaterialCommunityIcons name="draw-pen" size={24}  style={styles.pen1} />
           </View>
         </TouchableOpacity>
         <TouchableOpacity style={styles.profileInfo}>
@@ -165,10 +165,12 @@ const styles = StyleSheet.create({
       height: 22,
       right: -200,
       bottom: -8,
+      color:"black",
     },
     pen1:{
       height: 22,
       right: -85,
       bottom: -6,
+      color:"black",
     },
 });

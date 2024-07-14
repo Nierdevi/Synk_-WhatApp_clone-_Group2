@@ -3,11 +3,36 @@ import { View, Text, StyleSheet, TouchableOpacity, Pressable } from 'react-nativ
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 
+
 const AccountScreen = () => {
   const navigation = useNavigation();
 
   const handleNavigationToSecurity =() =>{
     navigation.navigate('Security');
+  };
+
+  const handleNavigationToPassKey =() =>{
+    navigation.navigate('PassKey');
+  };
+
+  const handleNavigationToEmail =() =>{
+    navigation.navigate('Email');
+  };
+
+  const handleNavigationToTwoStep =() =>{
+    navigation.navigate('TwoStep');
+  };
+
+  const handleNavigationToChange =() =>{
+    navigation.navigate('Change');
+  };
+
+  const handleNavigationToRequest =() =>{
+    navigation.navigate('Request');
+  };
+
+  const handleNavigationToDelete =() =>{
+    navigation.navigate('Delete');
   };
 
   return (
@@ -24,23 +49,23 @@ const AccountScreen = () => {
           <MaterialIcons name="security" size={24} color="#000" />
           <Text style={styles.itemText}>Security notifications</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.item}>
+        <TouchableOpacity style={styles.item} onPress={handleNavigationToPassKey}>
           <MaterialIcons name="vpn-key" size={24} color="#000" />
           <Text style={styles.itemText}>Passkeys</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.item}>
+        <TouchableOpacity style={styles.item} onPress={handleNavigationToEmail}>
           <MaterialIcons name="email" size={24} color="#000" />
           <Text style={styles.itemText}>Email address</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.item}>
+        <TouchableOpacity style={styles.item} onPress={handleNavigationToTwoStep}>
           <MaterialIcons name="lock" size={24} color="#000" />
           <Text style={styles.itemText}>Two-step verification</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.item}>
+        <TouchableOpacity style={styles.item} onPress={handleNavigationToChange}>
           <MaterialIcons name="sync" size={24} color="#000" />
           <Text style={styles.itemText}>Change number</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.item}>
+        <TouchableOpacity style={styles.item} onPress={handleNavigationToRequest}>
           <MaterialIcons name="description" size={24} color="#000" />
           <Text style={styles.itemText}>Request account info</Text>
         </TouchableOpacity>
@@ -48,7 +73,7 @@ const AccountScreen = () => {
           <MaterialIcons name="person-add" size={24} color="#000" />
           <Text style={styles.itemText}>Add account</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.item}>
+        <TouchableOpacity style={styles.item} onPress={handleNavigationToDelete}>
           <MaterialIcons name="delete" size={24} color="#000" />
           <Text style={styles.itemText}>Delete account</Text>
         </TouchableOpacity>

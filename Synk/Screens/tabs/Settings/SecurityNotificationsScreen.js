@@ -79,6 +79,10 @@ const SecurityNotificationsScreen = ({navigation}) => {
             <Text style={styles.grey1}>chat. If you have multiple devices, this setting</Text>
             <Text style={styles.grey1}>must be enabled on each device where you want</Text>
             <Text style={styles.grey1}>to get notifications.</Text>
+
+            <TouchableOpacity onPress={handlePress}>
+                <Text style={styles.Text2}>Learn more</Text>
+            </TouchableOpacity>
         </View>
     </View>
   );
@@ -137,12 +141,19 @@ const styles = StyleSheet.create({
     },
     Text1:{
         color: 'blue',
-        fontSize: 15,
+        fontSize: 13,
         fontWeight: 'bold',
         top: 3,
-        textDecorationLine: 'underline',
         paddingTop: 5,
-
+    },
+    Text2:{
+        color: 'blue',
+        fontSize: 13,
+        fontWeight: 'bold',
+        top: 3,
+        paddingTop: 5,
+        left: 105,
+        top:-20.5,
     },
     grey:{
         color: 'grey',
