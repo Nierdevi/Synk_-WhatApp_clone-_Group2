@@ -8,7 +8,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { useFocusEffect } from '@react-navigation/native';
 import { getUser } from '../constants/userContext';
-import { getUserData } from '../backend/userService';
+import { getcurrentUserData } from '../backend/userService';
 import { primaryColors, SecondaryColors } from '../constants/colors';
 
 
@@ -24,7 +24,7 @@ const SettingsScreen = () => {
         React.useCallback(() => {
             const fetchUserData = async () => {
                 try {
-                    const userData = await getUserData(currentUserId);
+                    const userData = await getcurrentUserData(currentUserId);
                     // console.log(userData)
                     setUsername(userData.username);
                     setAbout(userData.about)

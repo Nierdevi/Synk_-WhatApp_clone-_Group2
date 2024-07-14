@@ -1,7 +1,9 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {databases,storage,ID} from './appwrite';
 import { Query } from 'appwrite';
 import * as FileSystem from 'expo-file-system';
 import FormData from 'form-data';
+
 
 const addUserToDatabase = async (userId, phoneNumber) => {
     try {
@@ -121,11 +123,11 @@ const uploadProfilePicture = async (userId, uri) => {
         console.log("currentProfilePictureUrl: ",currentProfilePictureUrl)
         
         // Step 2: Delete the existing profile picture if it exists
-        if (currentProfilePictureUrl) {
-            const fileId= await extractIdsFromUrl(currentProfilePictureUrl)
-            console.log("fileId: ",fileId)
-            await storage.deleteFile('669270af0034381c55c3',); // Delete the file from storage
-        }
+        // if (currentProfilePictureUrl) {
+        //     const fileId= await extractIdsFromUrl(currentProfilePictureUrl)
+        //     console.log("fileId: ",fileId)
+        //     await storage.deleteFile('669270af0034381c55c3',); // Delete the file from storage
+        // }
 
         const formData = new FormData();
         formData.append('fileId', ID.unique());
@@ -171,7 +173,16 @@ const uploadProfilePicture = async (userId, uri) => {
 };
 
 
-const getUserData = async (userId) => {
+const getcurrentUserData = async (userId) => {
+
+
+    let userData = await AsyncStorage.getItem('userData');
+    if (userData) {
+        console.log('Loading user data from local storage...');
+        console.log('user daya from local',userData)
+        return JSON.parse(userData);
+    }
+
     try {
         const response = await databases.listDocuments('6685cbc40036f4c6a5ad', '6685cc6600212adefdbf', [
             Query.equal('userId', userId)
@@ -181,12 +192,41 @@ const getUserData = async (userId) => {
             throw new Error('User document not found');
         }
 
-        // Assuming userId is unique, return the first document
-        return response.documents[0];
+        userData = response.documents[0];
+        await AsyncStorage.setItem('userData', JSON.stringify(userData));
+        return userData;
+
     } catch (error) {
         console.error("Failed to fetch user data:", error);
         throw error;
     }
 };
 
-export { addUserToDatabase,uploadProfilePicture,addUsernameToDatabase,addAboutToDatabase,getUserData,getUserProfilePicture };
+
+const getUserData = async (phoneNumber) => {
+    let otherUserData = await AsyncStorage.getItem(`userData_${phoneNumber}`);
+    if (otherUserData) {
+        console.log('Loading other user data from local storage...');
+        console.log('Other user data from local storage:', otherUserData);
+        return JSON.parse(otherUserData);
+    }
+
+    try {
+    const response = await databases.listDocuments('6685cbc40036f4c6a5ad', '6685cc6600212adefdbf', [
+        Query.equal('phoneNumber', phoneNumber)
+    ]);
+
+    if (response.documents.length === 0) {
+        throw new Error('User document not found');
+    }
+
+    otherUserData = response.documents[0];
+        await AsyncStorage.setItem(`userData_${phoneNumber}`, JSON.stringify(otherUserData));
+        return otherUserData;
+    } catch (error) {
+    console.error("Failed to fetch other user data:", error);
+        throw error;
+    }
+};
+
+export { addUserToDatabase,uploadProfilePicture,addUsernameToDatabase,addAboutToDatabase,getcurrentUserData,getUserProfilePicture,getUserData };

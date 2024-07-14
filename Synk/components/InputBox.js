@@ -2,13 +2,14 @@
 import React, { useState } from 'react';
 import { View, TextInput, Button, StyleSheet, TouchableOpacity } from 'react-native';
 import { MaterialCommunityIcons, Ionicons  } from '@expo/vector-icons';
-import { primaryColors } from '../constants/colors';
+import { primaryColors, SecondaryColors } from '../constants/colors';
 import { widthPercentageToDP  as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import { PopupMenu } from './PopupMenu';
 
 const InputBox = ({ onSendMessage }) => {
   const [messageText, setMessageText] = useState('');
   const [menuVisible, setMenuVisible] = useState(false);
+  const [inputHeight, setInputHeight] = useState(40); 
 
   const attachmentItem=[
     { label: 'New broadcast', onPress: () => {} },
@@ -40,6 +41,11 @@ const InputBox = ({ onSendMessage }) => {
         onChangeText={setMessageText}
         placeholder="message"
         cursorColor={primaryColors.purple}
+        selectionColor={SecondaryColors.secPurple}
+        multiline
+        onContentSizeChange={(event) => {
+                    setInputHeight(event.nativeEvent.contentSize.height);
+                }}
       />
       <TouchableOpacity style={styles.attachement} onPress={() => setMenuVisible(true)}>
         <PopupMenu visible={menuVisible} onClose={() => setMenuVisible(false)} menuItems={attachmentItem} style={styles.popupMenu} />

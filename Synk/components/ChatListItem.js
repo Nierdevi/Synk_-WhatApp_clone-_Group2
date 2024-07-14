@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect ,useState} from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableWithoutFeedback  } from 'react-native';
 import { primaryColors } from '../constants/colors';
 import DateTime from './DateTime';
@@ -7,6 +7,7 @@ import { LongPressGestureHandler, State } from 'react-native-gesture-handler';
 
 const ChatList = ({ messages, currentUserPhoneNumber }) => {
   const flatListRef = useRef(null);
+  const [isAutoScrolling, setIsAutoScrolling] = useState(true);
 
   useEffect(() => {
     if (flatListRef.current) {
@@ -53,6 +54,13 @@ const ChatList = ({ messages, currentUserPhoneNumber }) => {
       keyExtractor={(item) => item.$id}
       inverted
       contentContainerStyle={styles.flatListContainer}
+      onContentSizeChange={() => {
+        if (isAutoScrolling && flatListRef.current) {
+          flatListRef.current.scrollToEnd({ animated: true });
+        }
+      }}
+      onScrollBeginDrag={() => setIsAutoScrolling(false)}
+      onMomentumScrollEnd={() => setIsAutoScrolling(true)}
     />
   );
 };

@@ -1,13 +1,13 @@
-import { StyleSheet, Text, View, Pressable,TextInput} from 'react-native';
+import { StyleSheet, Text, View, Pressable,TextInput,Image} from 'react-native';
 import React,{useState,useEffect} from 'react';
-import {Image} from 'expo-image';
+// import {Image} from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { Ionicons, MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import AppLogo from '../assets/AppLogo.png';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { addUsernameToDatabase, getUserData,addAboutToDatabase,getUserProfilePicture,uploadProfilePicture } from '../backend/userService';
+import { addUsernameToDatabase, getcurrentUserData,addAboutToDatabase,getUserProfilePicture,uploadProfilePicture } from '../backend/userService';
 import { getUser } from '../constants/userContext';
 import { primaryColors, SecondaryColors } from '../constants/colors';
 
@@ -40,7 +40,7 @@ const ProfileScreen = () => {
     React.useCallback(() => {
         const fetchUserData = async () => {
             try {
-                const userData = await getUserData(currentUserId);
+                const userData = await getcurrentUserData(currentUserId);
                 // console.log(userData);
                 setUsername(userData.username);
                 setNewUsername(userData.username);
@@ -161,6 +161,8 @@ const handleStatusSavePress = async () => {
             <Image 
                 source={profilePicture ? { uri: profilePicture } : AppLogo} 
                 style={styles.headerImage} 
+                cachePolicy='memory-disk'
+                // resizeMode='cover'
             />
         </Pressable>
         <Pressable style={styles.iconContainer} onPress={handleImageSelect}>
