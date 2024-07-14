@@ -3,44 +3,49 @@ import { createStackNavigator } from '@react-navigation/stack';
 import React from 'react';
 import { useTheme } from '../../../constants/themeContext';
 import ChannelsScreen from './ChannelDetails';
+import ChannelInfo from './ChannelInfo';
 import StatusView from './StatusView';
 import UpdatesScreen from './UpdatesScreen';
 
 const ChatsStack = createStackNavigator();
 
-  
-const UpdatesStackNavigator = ({navigation,route}) => {
-
-  const {theme}=useTheme();
+const UpdatesStackNavigator = ({ navigation, route }) => {
+  const { theme } = useTheme();
 
   React.useLayoutEffect(() => {
     const routeName = getFocusedRouteNameFromRoute(route) ?? 'UpdatesScreen';
     if (routeName === 'UpdatesScreen') {
-      navigation.setOptions({ tabBarStyle: { display: 'flex',height:70,  } });
-      navigation.setOptions({ tabBarStyle: { display: 'flex',height:80,  },headerShown:true,color:theme ==='dark'? "black" : "white" });
+      navigation.setOptions({ tabBarStyle: { display: 'flex', height: 80 }, headerShown: true });
     } else {
-      navigation.setOptions({ tabBarStyle: { display: 'none' },headerShown:false });
+      navigation.setOptions({ tabBarStyle: { display: 'none' }, headerShown: false });
     }
   }, [navigation, route]);
 
-
   return (
-    <ChatsStack.Navigator >
-        <ChatsStack.Screen name="UpdatesScreen" component={UpdatesScreen} options={{ headerShown: false}} />
-        <ChatsStack.Screen name="Status" component={StatusView} 
-        options={()=>({ 
-            headerShown: true,
-            // tabBarVisible:false
-            })} 
-
-            />
-        <ChatsStack.Screen name="ChannelDetails" component={ChannelsScreen} 
-        options={()=>({ 
-            headerShown: true,
-            // tabBarVisible:false
-            })} 
-
-            />
+    <ChatsStack.Navigator>
+      <ChatsStack.Screen 
+        name="UpdatesScreen" 
+        component={UpdatesScreen} 
+        options={{ headerShown: false }} 
+      />
+      <ChatsStack.Screen 
+        name="Status" 
+        component={StatusView} 
+        options={{ headerShown: true }} 
+      />
+      <ChatsStack.Screen 
+        name="ChannelDetails" 
+        component={ChannelsScreen} 
+        options={({ route }) => ({
+          headerShown: true,
+          title: route.params.channel.name, // Set channel name as title
+        })} 
+      />
+      <ChatsStack.Screen 
+        name="ChannelInfo" 
+        component={ChannelInfo} 
+        options={{ headerShown: true }} 
+      />
     </ChatsStack.Navigator>
   );
 };

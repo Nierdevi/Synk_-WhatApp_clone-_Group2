@@ -61,6 +61,7 @@ const ChannelDetails = ({ route }) => {
                         </Menu>
                     </View>
                 </View>
+
                 <FlatList
                     data={articles}
                     renderItem={({ item }) => (

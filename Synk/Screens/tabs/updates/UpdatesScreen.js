@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { FlatList, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Divider, Menu, Provider } from 'react-native-paper';
-import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { primaryColors } from '../../../constants/colors';
 
@@ -45,7 +44,7 @@ const UpdatesScreen = ({ navigation }) => {
                 const nyTimesChannel = {
                     id: 1,
                     name: 'The New York Times',
-                    description: latestArticle.title.split('.')[0] || 'Top stories',
+                    description: latestArticle.title.split('.')[0] || 'Top stories', // Use the first sentence of the title
                     img: 'https://via.placeholder.com/50',
                     time: '2h ago',
                     unread: dataNYT.results.length
@@ -67,9 +66,6 @@ const UpdatesScreen = ({ navigation }) => {
         };
 
         fetchChannels();
-        const interval = setInterval(fetchChannels, 60000); // Fetch every minute
-
-        return () => clearInterval(interval); // Clean up on unmount
     }, []);
 
     const handleSelectChannel = (channel) => {
@@ -149,7 +145,7 @@ const UpdatesScreen = ({ navigation }) => {
                                     <View style={styles.suggestedChannelInfo}>
                                         <View style={styles.channelHeader}>
                                             <Text style={styles.suggestedChannelName}>{item.name}</Text>
-                                            <Ionicons name="checkmark-circle" size={wp('4%')} color={primaryColors.purple} style={styles.verifiedIcon} />
+                                            <Ionicons name="checkmark-circle" size={16} color="purple" style={styles.verifiedIcon} />
                                         </View>
                                         <Text style={styles.followersCount}>{item.followers}</Text>
                                     </View>
@@ -167,11 +163,11 @@ const UpdatesScreen = ({ navigation }) => {
                     </View>
                 </ScrollView>
                 <View style={styles.bottomRightIcons}>
-                    <TouchableOpacity style={[styles.bottomIcon, { marginBottom: hp('1%') }]}>
-                        <Ionicons name="pencil" size={wp('6%')} color="#fff" />
+                    <TouchableOpacity style={[styles.bottomIcon, { marginBottom: 10 }]}>
+                        <Ionicons name="pencil" size={24} color="#fff" />
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.bottomIcon}>
-                        <Ionicons name="camera" size={wp('6%')} color="#fff" />
+                        <Ionicons name="camera" size={24} color="#fff" />
                     </TouchableOpacity>
                 </View>
                 <Menu
@@ -179,7 +175,7 @@ const UpdatesScreen = ({ navigation }) => {
                     onDismiss={closeMenu}
                     anchor={
                         <TouchableOpacity onPress={openMenu} style={styles.menuButton}>
-                            <Ionicons name="ellipsis-vertical" size={wp('6%')} color="black" />
+                            <Ionicons name="ellipsis-vertical" size={24} color="black" />
                         </TouchableOpacity>
                     }
                 >
@@ -199,42 +195,42 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff'
     },
     section: {
-        padding: wp('5%')
+        padding: 20
     },
     title: {
-        marginBottom: hp('1%'),
+        marginBottom: 10,
         color: '#555',
-        fontSize: wp('4.5%'),
+        fontSize: 18,
         fontWeight: 'bold'
     },
     channelsHeader: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: hp('1%')
+        marginBottom: 10
     },
     exploreText: {
         color: primaryColors.purple,
-        fontSize: wp('4%'),
+        fontSize: 16,
         fontWeight: 'bold'
     },
     statusContainer: {
         alignItems: 'center',
-        marginRight: wp('3.5%')
+        marginRight: 15
     },
     statusWrapper: {
-        width: wp('15%'),
-        height: wp('15%'),
-        borderRadius: wp('7.5%'),
-        borderWidth: wp('0.5%'),
+        width: 60,
+        height: 60,
+        borderRadius: 30,
+        borderWidth: 2,
         justifyContent: 'center',
         alignItems: 'center',
         position: 'relative'
     },
     statusWrapperDefault: {
-        width: wp('15%'),
-        height: wp('15%'),
-        borderRadius: wp('7.5%'),
+        width: 60,
+        height: 60,
+        borderRadius: 30,
         justifyContent: 'center',
         alignItems: 'center',
         position: 'relative'
@@ -244,42 +240,42 @@ const styles = StyleSheet.create({
         bottom: 0,
         right: 0,
         backgroundColor: primaryColors.purple,
-        borderRadius: wp('3%'),
-        width: wp('6%'),
-        height: wp('6%'),
+        borderRadius: 12,
+        width: 24,
+        height: 24,
         justifyContent: 'center',
         alignItems: 'center',
         zIndex: 2
     },
     plusText: {
         color: '#fff',
-        fontSize: wp('4%'),
+        fontSize: 16,
         fontWeight: 'bold'
     },
     statusImg: {
-        width: wp('12.5%'),
-        height: wp('12.5%'),
-        borderRadius: wp('6.25%'),
+        width: 50,
+        height: 50,
+        borderRadius: 25,
         zIndex: 2
     },
     statusUser: {
-        marginTop: hp('0.5%'),
+        marginTop: 5,
         textAlign: 'center',
         fontWeight: 'bold'
     },
     listItem: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: hp('1%'),
-        padding: wp('2.5%'),
+        marginBottom: 10,
+        padding: 10,
         borderBottomWidth: 1,
         borderBottomColor: '#ddd'
     },
     channelImg: {
-        width: wp('12.5%'),
-        height: wp('12.5%'),
-        borderRadius: wp('6.25%'),
-        marginRight: wp('2.5%')
+        width: 50,
+        height: 50,
+        borderRadius: 25,
+        marginRight: 10
     },
     channelInfo: {
         flex: 1,
@@ -295,43 +291,43 @@ const styles = StyleSheet.create({
         alignItems: 'flex-end'
     },
     channelTime: {
-        fontSize: wp('3%'),
+        fontSize: 12,
         color: '#888'
     },
     unreadBadge: {
         backgroundColor: primaryColors.purple,
-        borderRadius: wp('3%'),
-        paddingVertical: hp('0.2%'),
-        paddingHorizontal: wp('1.5%'),
-        marginTop: hp('0.2%')
+        borderRadius: 12,
+        paddingVertical: 2,
+        paddingHorizontal: 6,
+        marginTop: 2
     },
     unreadText: {
         color: '#fff',
-        fontSize: wp('3%'),
+        fontSize: 12,
         fontWeight: 'bold'
     },
     findChannelsContainer: {
-        paddingHorizontal: wp('5%'),
-        marginTop: hp('2%')
+        paddingHorizontal: 20,
+        marginTop: 20
     },
     findChannelsText: {
-        fontSize: wp('4.5%'),
+        fontSize: 18,
         fontWeight: 'bold',
-        marginBottom: hp('1%')
+        marginBottom: 10
     },
     suggestedChannelItem: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: hp('1%'),
+        marginBottom: 10,
         justifyContent: 'space-between'
     },
     suggestedChannelImg: {
-        width: wp('12.5%'),
-        height: wp('12.5%'),
-        borderRadius: wp('6.25%')
+        width: 50,
+        height: 50,
+        borderRadius: 25
     },
     suggestedChannelInfo: {
-        marginLeft: wp('2.5%'),
+        marginLeft: 10,
         flex: 1
     },
     channelHeader: {
@@ -340,20 +336,20 @@ const styles = StyleSheet.create({
     },
     suggestedChannelName: {
         fontWeight: 'bold',
-        marginBottom: hp('0.5%')
+        marginBottom: 5
     },
     verifiedIcon: {
-        marginLeft: wp('1%')
+        marginLeft: 5
     },
     followersCount: {
         color: '#888',
-        marginBottom: hp('0.5%')
+        marginBottom: 5
     },
     followButton: {
         backgroundColor: primaryColors.purple,
-        paddingVertical: hp('0.5%'),
-        paddingHorizontal: wp('2.5%'),
-        borderRadius: wp('2.5%'),
+        paddingVertical: 5,
+        paddingHorizontal: 10,
+        borderRadius: 5,
         alignItems: 'center'
     },
     followButtonText: {
@@ -361,39 +357,39 @@ const styles = StyleSheet.create({
         fontWeight: 'bold'
     },
     exploreMoreButton: {
-        marginTop: hp('1%'),
+        marginTop: 10,
         backgroundColor: '#fff',
-        paddingVertical: hp('1%'),
-        paddingHorizontal: wp('2.5%'),
-        borderRadius: wp('3.5%'),
+        paddingVertical: 10,
+        paddingHorizontal: 15,
+        borderRadius: 20,
         borderColor: primaryColors.purple,
         borderWidth: 1,
         alignItems: 'center'
     },
     exploreMoreButtonText: {
         color: primaryColors.purple,
-        fontSize: wp('4%'),
+        fontSize: 16,
         fontWeight: 'bold'
     },
     bottomRightIcons: {
         position: 'absolute',
-        bottom: hp('2%'),
-        right: wp('2.5%'),
+        bottom: 20,
+        right: 20,
         flexDirection: 'column',
         alignItems: 'flex-end'
     },
     bottomIcon: {
         backgroundColor: primaryColors.purple,
-        borderRadius: wp('7.5%'),
-        width: wp('15%'),
-        height: wp('15%'),
+        borderRadius: 30,
+        width: 60,
+        height: 60,
         justifyContent: 'center',
         alignItems: 'center'
     },
     menuButton: {
         position: 'absolute',
-        top: hp('1%'),
-        right: wp('2.5%')
+        top: 10,
+        right: 10
     }
 });
 
