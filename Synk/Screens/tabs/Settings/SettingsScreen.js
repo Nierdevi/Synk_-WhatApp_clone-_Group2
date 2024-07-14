@@ -1,13 +1,15 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, Pressable } from 'react-native';
-import { MaterialIcons, Ionicons } from '@expo/vector-icons';
+import { View, Text, StyleSheet, TouchableOpacity, Image, Pressable, Modal } from 'react-native';
+import { MaterialIcons, Ionicons, Feather, FontAwesome6 } from '@expo/vector-icons';
 import { ScrollView } from 'react-native-gesture-handler';
+import { useState } from 'react';
 import AppLogo from '../../../assets/AppLogo.png';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 
 const SettingsScreen = () => {
   const navigation = useNavigation();
+  const [isDrawerVisible, setIsDrawerVisible] = useState(false); // State for drawer visibility
 
   const handleNavigateToNotification = () => {
     navigation.navigate('Notifications');
@@ -45,6 +47,20 @@ const SettingsScreen = () => {
     navigation.navigate('Avatar');
   };
 
+
+  const toggleDrawer = () => {
+    setIsDrawerVisible(!isDrawerVisible);
+  };
+
+  const closeModal = () => {
+    setIsDrawerVisible(false);
+  };
+
+  // Prevent propagation of press events to the parent elements
+  const stopPropagation = event => {
+    event.stopPropagation();
+  };
+
   return (  
     <SafeAreaView style={styles.container}>  
       <View style={styles.header}>
@@ -65,7 +81,7 @@ const SettingsScreen = () => {
               <Pressable style={styles.scan}>
                 <Ionicons name="qr-code" size={24} color="black" />
               </Pressable>
-              <Pressable style={styles.down}>
+              <Pressable style={styles.down} onPress={toggleDrawer}>
               <Ionicons name="chevron-down-circle" size={24} color="black" />  
               </Pressable>	
             </View>
@@ -144,9 +160,34 @@ const SettingsScreen = () => {
             <MaterialIcons name="system-update-tv" size={24} color="black" />
             <Text style={styles.optionText}>App updates</Text>
           </TouchableOpacity>
-
         </View>
-        </ScrollView>
+        {/* Drawer */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={isDrawerVisible}
+        onRequestClose={() => {
+          setIsDrawerVisible(false);
+        }}
+      >
+        <Pressable style={styles.modalContainer} onPress={closeModal}>
+          <Pressable style={styles.drawerContent} onPress={stopPropagation}>
+            <View style={{flexDirection: 'row', alignItems: 'center',}}>
+              <Image source={AppLogo} style={styles.headerImage1} />
+                <View style={styles.me}>
+                  <Text style={styles.drawerText}>Synk_User</Text>
+                  <Text style={styles.drawerText1}>+233 50 343 4750</Text>
+                </View>
+                <FontAwesome6 name="circle-check" size={24} style={styles.check}/>
+            </View>
+            <TouchableOpacity style={styles.plus}>
+              <Feather name="plus-circle" size={34} color="black" />
+              <Text style={styles.drawerText}>Add account</Text>
+            </TouchableOpacity>
+          </Pressable>
+        </Pressable>
+      </Modal>
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -241,6 +282,56 @@ const styles = StyleSheet.create({
     left: 100,
     top: 8,
   },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  drawerContent: {
+    backgroundColor: 'white',
+    padding: 20,
+    width: '100%',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+  },
+  drawerText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    paddingLeft: 15,
+    
+  },
+  drawerText1: {
+    fontSize: 13,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    paddingLeft: 15,
+    color: 'grey',
+    lineHeight: 14,
+  },
+  closeButton: {
+    alignItems: 'flex-end',
+    marginTop: 10,
+  },
+  headerImage1: {
+    width: 40,
+    height: 40,
+    borderRadius: 100,
+  },
+  me:{
+    
+  },
+  plus:{
+    paddingTop: 40,
+    paddingLeft:6,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  check:{
+    left: 150,
+    backgroundColor: '#59c96b', 
+    borderRadius: 100,
+    color: "black",
+  }
 });
 
 export default SettingsScreen;

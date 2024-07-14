@@ -35,7 +35,7 @@ const PassKeysScreen = ({navigation}) => {
         <View>
           <View style ={styles.tab}>
             <View style={styles.icon}>
-              <MaterialIcons name="key" size={24} />
+              <MaterialIcons name="vpn-key" size={24} color="#000" />
             </View>
             <View style={{paddingBottom:15,}}>
             <Text style={{fontSize: 20, fontWeight:'bold',}}>Passkey</Text>

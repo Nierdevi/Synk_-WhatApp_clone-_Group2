@@ -34,7 +34,7 @@ const ProfileScreen = () => {
             <View style={{flexDirection: 'row',}}>
               <View>
                 <Text style={styles.profileTitle}>Name</Text>
-                <Text style={styles.profileValue}>~Katyal</Text>
+                <Text style={styles.profileValue}>Synk_User</Text>
               </View>
               <MaterialCommunityIcons name="draw-pen" size={24} color="black" style={styles.pen} />
             </View>
@@ -54,7 +54,7 @@ const ProfileScreen = () => {
             <View>
               <Text style={styles.profileTitle}>About</Text>
               <Text style={styles.profileValue}>
-                si wis pacem, para bellum
+                我从不松懈型
               </Text>
             </View>
             <MaterialCommunityIcons name="draw-pen" size={24}  style={styles.pen1} />
@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
     },
     pen1:{
       height: 22,
-      right: -85,
+      right: -180,
       bottom: -6,
       color:"black",
     },
