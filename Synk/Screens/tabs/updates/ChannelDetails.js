@@ -1,6 +1,6 @@
 import moment from 'moment';
-import React, { useEffect, useState } from 'react';
-import { FlatList, Image, Linking, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { Image, Linking, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Menu, Provider } from 'react-native-paper';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { primaryColors } from '../../../constants/colors';
@@ -9,6 +9,10 @@ const ChannelDetails = ({ route }) => {
     const { channel } = route.params;
     const [menuVisible, setMenuVisible] = useState(false);
     const [articles, setArticles] = useState([]);
+    const [articleReactions, setArticleReactions] = useState({});
+    const scrollViewRef = useRef();
+
+    const reactions = ['👍', '❤️', '😂', '😮', '😢', '😡'];
 
     const openMenu = () => setMenuVisible(true);
     const closeMenu = () => setMenuVisible(false);
@@ -19,7 +23,14 @@ const ChannelDetails = ({ route }) => {
                 const apiKey = 'xICQ9NoAelPxIAplcKVta3keJdV5y2ur';
                 const response = await fetch(`https://api.nytimes.com/svc/topstories/v2/home.json?api-key=${apiKey}`);
                 const data = await response.json();
+
+                const reactionsMap = data.results.reduce((acc, item) => {
+                    acc[item.url] = reactions[Math.floor(Math.random() * reactions.length)];
+                    return acc;
+                }, {});
+
                 setArticles(data.results);
+                setArticleReactions(reactionsMap);
             } catch (error) {
                 console.error('Error fetching NYT articles:', error);
             }
@@ -27,6 +38,10 @@ const ChannelDetails = ({ route }) => {
 
         fetchNYTArticles();
     }, []);
+
+    const scrollToBottom = () => {
+        scrollViewRef.current.scrollToEnd({ animated: true });
+    };
 
     return (
         <Provider>
@@ -62,15 +77,15 @@ const ChannelDetails = ({ route }) => {
                     </View>
                 </View>
 
-                <FlatList
-                    data={articles}
-                    renderItem={({ item }) => (
-                        <View style={styles.articleContainer}>
+                <ScrollView ref={scrollViewRef} style={styles.articlesList}>
+                    {articles.map((item) => (
+                        <View key={item.url} style={styles.articleContainer}>
                             {item.multimedia && item.multimedia.length > 0 && (
                                 <Image source={{ uri: item.multimedia[0].url }} style={styles.articleImage} />
                             )}
                             <Text style={styles.articleTitle}>{item.title}</Text>
                             <Text style={styles.articleAbstract}>{item.abstract}</Text>
+                            <Text style={styles.reactionText}>{articleReactions[item.url]}</Text>
                             <TouchableOpacity onPress={() => Linking.openURL(item.url)} style={styles.linkButton}>
                                 <Text style={styles.linkText}>
                                     Check here <Ionicons name="chevron-forward" size={16} color="blue" />
@@ -83,10 +98,12 @@ const ChannelDetails = ({ route }) => {
                                 </View>
                             </TouchableOpacity>
                         </View>
-                    )}
-                    keyExtractor={item => item.url}
-                    style={styles.articlesList}
-                />
+                    ))}
+                </ScrollView>
+
+                <TouchableOpacity onPress={scrollToBottom} style={styles.scrollToBottomButton}>
+                    <Ionicons name="arrow-down" size={30} color="white" />
+                </TouchableOpacity>
             </View>
         </Provider>
     );
@@ -172,6 +189,10 @@ const styles = StyleSheet.create({
         color: '#555',
         marginBottom: 10,
     },
+    reactionText: {
+        fontSize: 24,
+        marginBottom: 10,
+    },
     linkButton: {
         marginTop: 10,
     },
@@ -202,6 +223,16 @@ const styles = StyleSheet.create({
         borderColor: primaryColors.purple,
         alignItems: 'center',
         justifyContent: 'center',
+    },
+    scrollToBottomButton: {
+        position: 'absolute',
+        bottom: 20,
+        right: 20,
+        backgroundColor: primaryColors.purple,
+        borderRadius: 25,
+        padding: 10,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
 });
 
