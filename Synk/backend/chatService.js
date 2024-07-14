@@ -50,6 +50,8 @@ const createChat = async (senderPhoneNumber, recipientPhoneNumber) => {
         createdAt: new Date().toISOString(),
       }
     );
+    // console.log(senderPhoneNumber)
+    // console.log(recipientPhoneNumber)
 
     return response;
   } catch (error) {
@@ -177,7 +179,7 @@ const fetchMessagedContacts = async (currentUserPhoneNumber) => {
         Query.or(
           [Query.equal('userPhoneNumber', currentUserPhoneNumber), Query.equal('contactPhoneNumber', currentUserPhoneNumber)]
         ),
-        Query.orderAsc('updatedAt'),
+        Query.orderDesc('updatedAt'),
       ]
     );
 

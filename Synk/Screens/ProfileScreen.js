@@ -9,7 +9,7 @@ import AppLogo from '../assets/AppLogo.png';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { addUsernameToDatabase, getUserData,addAboutToDatabase,getUserProfilePicture,uploadProfilePicture } from '../backend/userService';
 import { getUser } from '../constants/userContext';
-import { primaryColors } from '../constants/colors';
+import { primaryColors, SecondaryColors } from '../constants/colors';
 
 const ProfileScreen = () => {
   const navigation = useNavigation();
@@ -60,6 +60,7 @@ useFocusEffect(
       const fetchProfilePicture = async () => {
           try {
               const url = await getUserProfilePicture(currentUserId);
+              // console.log("url: ",url)
               setProfilePicture(url);
           } catch (error) {
               console.error("Failed to fetch profile picture:", error);
@@ -256,7 +257,7 @@ export default ProfileScreen;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: 'yellow',
+        backgroundColor:SecondaryColors.secPurple,
         width:wp("100%"),
         // paddingHorizontal:20,
     },

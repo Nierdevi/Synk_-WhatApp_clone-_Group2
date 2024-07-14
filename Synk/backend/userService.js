@@ -1,6 +1,7 @@
 import {databases,storage,ID} from './appwrite';
 import { Query } from 'appwrite';
-
+import * as FileSystem from 'expo-file-system';
+import FormData from 'form-data';
 
 const addUserToDatabase = async (userId, phoneNumber) => {
     try {
@@ -37,6 +38,7 @@ const addUsernameToDatabase = async (userId, username) => {
         console.error("Failed to add username to the database:", error);
     }
 };
+
 const addAboutToDatabase = async (userId, about) => {
     try {
         // Query the database to find the document by userId
@@ -100,50 +102,73 @@ const getUserProfilePicture = async (userId) => {
     }
 };
 
+const extractIdsFromUrl = async(url) => {
+    const urlParts = url.split('/');
+    const fileId = urlParts[7];   // Extract file ID
+    console.log("fileId: ",fileId)
+    return { fileId };
+};
+
+
 const uploadProfilePicture = async (userId, uri) => {
     try {
+
         const userDocument = await getUserDocument(userId);
         const documentId = userDocument.$id;
-        const currentProfilePictureUrl = await getUserProfilePicture(userId);
+        console.log("documentId: ",documentId)
+
+        const currentProfilePictureUrl = userDocument.profilePicture;
+        console.log("currentProfilePictureUrl: ",currentProfilePictureUrl)
+        
         // Step 2: Delete the existing profile picture if it exists
         if (currentProfilePictureUrl) {
-            const fileName = currentProfilePictureUrl.split('/').pop(); // Extract filename from URL
-            await storage.deleteFile('669270af0034381c55c3', fileName); // Delete the file from storage
+            const fileId= await extractIdsFromUrl(currentProfilePictureUrl)
+            console.log("fileId: ",fileId)
+            await storage.deleteFile('669270af0034381c55c3',); // Delete the file from storage
         }
-        // Step 3: Create a file object from the selected image
-        const response = await fetch(uri);
-        const blob = await response.blob();
-        console.log("blob:",blob)
 
-         // Convert blob to file
-        const file = new File([blob], `userProfile_${userId}.jpg`, { type: blob.type });
-        console.log("File created:", file);
+        const formData = new FormData();
+        formData.append('fileId', ID.unique());
+        formData.append('file', {
+            uri,
+            name: `userProfile_${userId}.jpg`,
+            type: 'image/jpeg',
+        });
 
-        // Upload the new image to storage
-        const uploadResponse = await storage.createFile(
-            '669270af0034381c55c3', // Your storage bucket ID
-            ID.unique(), // Unique ID for the file
-            file // The file object to upload
+        const uploadResponse = await fetch(
+            'https://cloud.appwrite.io/v1/storage/buckets/669270af0034381c55c3/files',
+            {
+                method: 'POST',
+                headers: {
+                    'X-Appwrite-Project': '66795f4000158aa9d802',
+                    'Content-Type': 'multipart/form-data',
+                },
+                body: formData,
+            }
         );
-        console.log("Upload Response:", uploadResponse);
-        // Get the URL of the uploaded image
-        const newImageUrl = `https://cloud.appwrite.io/v1/storage/files/${uploadResponse.$id}/view?66795f4000158aa9d802`;
 
-        // Update the user's profile picture URL in the database
+        const uploadData = await uploadResponse.json();
+        console.log(uploadData)
+
+        if (!uploadResponse.ok) {
+            throw new Error(uploadData.message || 'Failed to upload file');
+        }
+
+        const newImageUrl = `https://cloud.appwrite.io/v1/storage/buckets/669270af0034381c55c3/files/${uploadData.$id}/view?project=66795f4000158aa9d802`;
+
         await databases.updateDocument(
-            '6685cbc40036f4c6a5ad', // Your database ID
-            '6685cc6600212adefdbf', // Your collection ID
-            documentId, // Document ID
-            { profilePicture: newImageUrl } // Assuming you have a profilePicture field in your document
+            '6685cbc40036f4c6a5ad', 
+            '6685cc6600212adefdbf', 
+            documentId, 
+            { profilePicture: newImageUrl }
         );
 
-        return newImageUrl; // Return the URL if needed
+        return newImageUrl;
     } catch (error) {
-        console.error("Failed to upload profile picture:", error);
+        console.error('Failed to upload profile picture:', error);
         throw error;
     }
 };
-
 
 
 const getUserData = async (userId) => {

@@ -100,6 +100,7 @@ const ChatsScreen = ({ navigation }) => {
       const recipientPhoneNumber = item.normalizedPhoneNumbers[0];
       const currentPhoneNumber = session.phoneNumber; // Assuming session contains the current user's phone number
       console.log(currentPhoneNumber)
+      console.log(recipientPhoneNumber)
 
       const isInDatabase = await checkPhoneNumberExists(recipientPhoneNumber);
 

@@ -70,6 +70,7 @@ const UpdatesScreen = ({ navigation }) => {
 
     const handleSelectChannel = (channel) => {
         navigation.navigate('ChannelDetails', { channel });
+        navigation.setOptions({headerShown:false})
     };
 
     const [menuVisible, setMenuVisible] = useState(false);

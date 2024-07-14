@@ -9,6 +9,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useFocusEffect } from '@react-navigation/native';
 import { getUser } from '../constants/userContext';
 import { getUserData } from '../backend/userService';
+import { primaryColors, SecondaryColors } from '../constants/colors';
 
 
 const SettingsScreen = () => {
@@ -24,8 +25,11 @@ const SettingsScreen = () => {
             const fetchUserData = async () => {
                 try {
                     const userData = await getUserData(currentUserId);
+                    // console.log(userData)
                     setUsername(userData.username);
                     setAbout(userData.about)
+                    console.log("username: ",userData.username);
+                    console.log("about: ",userData.about)
                 } catch (error) {
                     console.error("Failed to fetch user data:", error);
                 }
@@ -184,7 +188,7 @@ const SettingsScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'yellow',
+    backgroundColor:SecondaryColors.secPurple,
     paddingTop: -40,
   },
   head: {
