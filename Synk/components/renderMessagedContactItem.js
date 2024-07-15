@@ -118,10 +118,11 @@ contactDetails: {
 upperContactdetails: {
     justifyContent: "space-between",
     flexDirection: "row",
-    width: "90%",
+    // backgroundColor:'red'
 },
 contactName: {
     fontSize: hp("2.5%"),
+    // backgroundColor:'pink'
 },
 lastMessageText: {
     fontSize: hp("2%"),

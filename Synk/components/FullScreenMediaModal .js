@@ -3,7 +3,7 @@ import { Modal, View, StyleSheet, Image, TouchableOpacity, Text,StatusBar } from
 import { Video } from 'expo-av';
 import { Ionicons } from '@expo/vector-icons';
 
-const FullScreenMediaModal = ({ visible, mediaUri, mediaType, onClose,onRequestClose }) => {
+const FullScreenMediaModal = ({ visible, mediaUri, mediaType, onClose,onRequestClose, }) => {
   return (
     
     <Modal visible={visible} transparent={true} animationType="slide" onRequestClose={onRequestClose}>
@@ -14,7 +14,7 @@ const FullScreenMediaModal = ({ visible, mediaUri, mediaType, onClose,onRequestC
         </TouchableOpacity>
         {mediaType === 'image' ? (
           <Image source={{ uri: mediaUri }} style={styles.media} resizeMode="contain" />
-        ) : mediaType === 'video' ? (
+        ) : mediaType === 'video' ? (   
           <Video
             source={{ uri: mediaUri }}
             style={styles.media}
