@@ -17,32 +17,16 @@ import { useFocusEffect } from '@react-navigation/native';
 
 
 const ChatRoom = ({ route,navigation }) => {
-  const { contact, currentUserPhoneNumber } = route.params;
+  const { contact, currentUserPhoneNumber, profilePicture } = route.params;
   const [messages, setMessages] = useState([]);
   const [lastMessage, setLastMessage] = useState(null);
-  const [profilePicture, setProfilePicture] = useState(null);
   const [userData, setUserData] = useState(null);
 
   const recipientPhoneNumber = contact.normalizedPhoneNumbers[0];
 
-  useFocusEffect(
-    React.useCallback(() => {
-        const fetchProfilePicture = async () => {
-            try {
-                const data = await getUserData(recipientPhoneNumber);
-                console.log("data: ",data)
-                setProfilePicture(data.profilePicture);
-            } catch (error) {
-                console.error("Failed to fetch profile picture:", error);
-            }
-        };
-  
-        fetchProfilePicture();
-    }, [recipientPhoneNumber])
-  );
 
 // console.log("user data: ",userData)
-console.log("user data: ",profilePicture)
+// console.log("user data: ",profilePicture)
   useLayoutEffect(() => {
     navigation.setOptions({
       headerShown: true,
@@ -54,12 +38,12 @@ console.log("user data: ",profilePicture)
           <Ionicons name="arrow-back-outline" size={24} color="black" style={{marginRight:6}}/>
           </TouchableOpacity>
             <Image
-                source={profilePicture ? { uri: profilePicture } : { uri: 'https://via.placeholder.com/50' }} 
+                source={profilePicture ? { uri: profilePicture } : require('../../../assets/Avator.jpg')} 
                 style={styles.profilePicture}
                 cachePolicy='disk'
             />
           <TouchableOpacity style={styles.usenameContainer} onPress={()=>{navigation.navigate('ChatInfo',{})}}>
-            <Text style={styles.name}>{contact.name} </Text>
+            <Text style={styles.name}>{contact.name}  </Text>
           </TouchableOpacity>
         </View>
       ),
@@ -109,13 +93,25 @@ console.log("user data: ",profilePicture)
     // return () => clearInterval(intervalId);
   }, [currentUserPhoneNumber, recipientPhoneNumber]);
 
-  const handleSendMessage = async (messageText) => {
-    if (messageText.trim()) {
-      const response = await sendMessage(currentUserPhoneNumber, recipientPhoneNumber, messageText);
-      if (response) {
-        setMessages((prevMessages) => [response, ...prevMessages]);
-        setLastMessage(response); // Update last message after sending new message
-      }
+  // const handleSendMessage = async (messageText) => {
+  //   if (messageText.trim()) {
+  //     const response = await sendMessage(currentUserPhoneNumber, recipientPhoneNumber, messageText);
+  //     if (response) {
+  //       setMessages((prevMessages) => [response, ...prevMessages]);
+  //       setLastMessage(response); // Update last message after sending new message
+  //     }
+  //   }
+  // };
+
+// console.log(messages)
+
+  const handleSendMessage = async ({ text, mediaUri }) => {
+    console.log(mediaUri)
+    const response = await sendMessage(currentUserPhoneNumber, recipientPhoneNumber, text, mediaUri, mediaUri ? 'media' : 'text');
+    
+    if (response) {
+      setMessages((prevMessages) => [response, ...prevMessages]);
+      setLastMessage(response);
     }
   };
 

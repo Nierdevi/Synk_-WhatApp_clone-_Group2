@@ -158,6 +158,7 @@ const uploadProfilePicture = async (userId, uri) => {
 
         const newImageUrl = `https://cloud.appwrite.io/v1/storage/buckets/669270af0034381c55c3/files/${uploadData.$id}/view?project=66795f4000158aa9d802`;
 
+
         await databases.updateDocument(
             '6685cbc40036f4c6a5ad', 
             '6685cc6600212adefdbf', 
@@ -165,10 +166,26 @@ const uploadProfilePicture = async (userId, uri) => {
             { profilePicture: newImageUrl }
         );
 
+        const localPath = await downloadAndCacheProfilePicture(newImageUrl);
+
+        await AsyncStorage.setItem('profilePicturePath', localPath);
+
         return newImageUrl;
     } catch (error) {
         console.error('Failed to upload profile picture:', error);
         throw error;
+    }
+};
+
+// Function to download and cache the profile picture locally
+const downloadAndCacheProfilePicture = async (url) => {
+    try {
+        const fileUri = FileSystem.documentDirectory + 'profile-picture.jpg';
+        await FileSystem.downloadAsync(url, fileUri);
+        return fileUri;
+    } catch (error) {
+        console.error('Failed to download and cache profile picture:', error);
+        return null;
     }
 };
 

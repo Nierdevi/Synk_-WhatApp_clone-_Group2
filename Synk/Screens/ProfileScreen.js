@@ -159,7 +159,7 @@ const handleStatusSavePress = async () => {
       <View style={styles.head}>
         <Pressable onPress={handleImageSelect}>
             <Image 
-                source={profilePicture ? { uri: profilePicture } : AppLogo} 
+                source={profilePicture ? { uri: profilePicture } : { uri: 'https://via.placeholder.com/50' }} 
                 style={styles.headerImage} 
                 cachePolicy='memory-disk'
                 // resizeMode='cover'

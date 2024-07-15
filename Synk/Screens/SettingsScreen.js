@@ -8,7 +8,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { useFocusEffect } from '@react-navigation/native';
 import { getUser } from '../constants/userContext';
-import { getcurrentUserData } from '../backend/userService';
+import { getcurrentUserData,getUserProfilePicture } from '../backend/userService';
 import { primaryColors, SecondaryColors } from '../constants/colors';
 
 
@@ -16,6 +16,7 @@ const SettingsScreen = () => {
   const navigation = useNavigation();
   const [username, setUsername] = useState('');
   const[about,setAbout]= useState(' ')
+  const [profilePicture, setProfilePicture] = useState(null);
   const { session } = getUser();
 
   const currentUserId=session.userId;
@@ -37,6 +38,22 @@ const SettingsScreen = () => {
 
             fetchUserData();
         }, [currentUserId])
+    );
+
+    useFocusEffect(
+      React.useCallback(() => {
+          const fetchProfilePicture = async () => {
+              try {
+                  const url = await getUserProfilePicture(currentUserId);
+                  // console.log("url: ",url)
+                  setProfilePicture(url);
+              } catch (error) {
+                  console.error("Failed to fetch profile picture:", error);
+              }
+          };
+    
+          fetchProfilePicture();
+      }, [currentUserId])
     );
 
   const handleNavigateToNotification = () => {
@@ -87,7 +104,12 @@ const SettingsScreen = () => {
       <ScrollView style={styles.container}>
 
           <TouchableOpacity style={styles.head} onPress={handleNavigateToProfile}>
-            <Image source={AppLogo} style={styles.headerImage} />
+          <Image 
+                source={profilePicture ? { uri: profilePicture } : { uri: 'https://via.placeholder.com/50' }} 
+                style={styles.headerImage} 
+                cachePolicy='memory-disk'
+                // resizeMode='contain'
+            />
             <View style={{flexDirection: 'row',justifyContent:'space-between',flex:1}}>
               <View style={styles.headerContainer}>
                 <Text style={styles.username}>{username}</Text>

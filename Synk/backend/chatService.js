@@ -60,7 +60,7 @@ const createChat = async (senderPhoneNumber, recipientPhoneNumber) => {
   }
 };
 
-const sendMessage = async (senderId, receiverId, messageText = '', mediaUrl = '', type = 'text') => {
+const sendMessage = async (senderId, receiverId, messageText = '', mediaUri = '', type = 'text') => {
   try {
     let chatRoom = await getExistingChat(senderId, receiverId);
     if (!chatRoom) {
@@ -68,6 +68,40 @@ const sendMessage = async (senderId, receiverId, messageText = '', mediaUrl = ''
     }
     const chatId = chatRoom.$id;
 
+    let mediaUrl = '';
+
+    // If there's a mediaUri, upload the media and get the URL
+    if (mediaUri) {
+      console.log("media uri: ",mediaUri)
+      const formData = new FormData();
+      formData.append('fileId', ID.unique());
+      formData.append('file', {
+        uri: mediaUri,
+        name: `chatMedia_${senderId}_${new Date().getTime()}.jpg`,
+        type: 'image/jpeg', // Adjust MIME type according to your media type
+      });
+      // console.log("formData: ",formData)
+
+      const uploadResponse = await fetch(
+        'https://cloud.appwrite.io/v1/storage/buckets/669270af0034381c55c3/files',
+        {
+          method: 'POST',
+          headers: {
+            'X-Appwrite-Project': '66795f4000158aa9d802',
+            'Content-Type': 'multipart/form-data',
+          },
+          body: formData,
+        }
+      );
+      console.log("uploaded response: ",uploadResponse)
+      const uploadData = await uploadResponse.json();
+      if (!uploadResponse.ok) {
+        throw new Error(uploadData.message || 'Failed to upload media');
+      }
+
+      mediaUrl = `https://cloud.appwrite.io/v1/storage/buckets/669270af0034381c55c3/files/${uploadData.$id}/view?project=66795f4000158aa9d802`;
+    }
+    console.log("mediaUrl uploaded: ",mediaUrl)
     const response = await databases.createDocument(
       '6685cbc40036f4c6a5ad',
       '6685e691003e5ceef040',
@@ -87,6 +121,7 @@ const sendMessage = async (senderId, receiverId, messageText = '', mediaUrl = ''
 
     return response;
   } catch (error) {
+    console.log(error)
     handleNetworkError(error);
     return null;
   }
@@ -148,7 +183,8 @@ const addMessagedContact = async (userPhoneNumber, contactPhoneNumber) => {
       );
     }
   } catch (error) {
-    handleNetworkError(error);
+    console.log(error)
+    // handleNetworkError(error);
   }
 };
 
@@ -208,7 +244,7 @@ const fetchMessagedContacts = async (currentUserPhoneNumber) => {
   } catch (error) {
     console.error('Failed to fetch messaged contacts:', error);
     if (error.message.includes('Network request failed')) {
-      Alert.alert('Network Error', 'Please check your network connection.');
+      // Alert.alert('Network Error', 'Please check your network connection.');
     }
     return [];
   }

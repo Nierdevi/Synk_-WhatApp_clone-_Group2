@@ -13,6 +13,8 @@ import { fetchAndNormalizeContacts, loadCachedContacts } from '../../../backend/
 import DateTime from '../../../components/DateTime';
 import { primaryColors } from '../../../constants/colors';
 import { Image } from 'expo-image';
+import { getUserData } from '../../../backend/userService';
+import RenderMessagedContactItem from '../../../components/renderMessagedContactItem';
 
 
 const useContacts = (session) => {
@@ -82,11 +84,15 @@ const ChatsScreen = ({ navigation }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [profilePicture, setProfilePicture] = useState('https://via.placeholder.com/50');
+
+
+ 
 
   // console.log(session.phoneNumber)
   const onRefresh = async () => {
     setRefreshing(true);
-    await fetchMessagedContacts(session.phoneNumber);
+    // await fetchMessagedContacts(session.phoneNumber);
     setRefreshing(false);
   };
 // console.log(contacts)
@@ -150,31 +156,7 @@ const ChatsScreen = ({ navigation }) => {
     );
   };
 
-  const renderMessagedContactItem = ({ item }) => {
-    const contact = contacts.find(contact =>
-      contact.normalizedPhoneNumbers?.includes(item.contactPhoneNumber)
-    );
 
-    if (!contact) return null;
-    
-
-    return (
-      <TouchableOpacity style={styles.contactItem} onPress={() => navigation.navigate('ChatRoom', { contact, currentUserPhoneNumber: session.phoneNumber })}>
-          <Image
-              source={{ uri: 'https://via.placeholder.com/50'} }
-              style={styles.profilePicture}
-              cachePolicy='disk'
-            />
-        <View style={styles.contactDetails}>
-          <View style={styles.upperContactdetails}>
-            <Text style={styles.contactName}>{contact.name} </Text>
-            {item.lastMessage && <Text style={styles.lastMessageTime}>{DateTime(item.lastMessage.$createdAt)} </Text>}
-          </View>
-          {item.lastMessage && <Text style={styles.lastMessageText} numberOfLines={1} ellipsizeMode='tail'>{item.lastMessage.messageText} </Text>}
-        </View>
-      </TouchableOpacity>
-    );
-  };
 
   const filteredContacts = contacts.filter(contact =>
     contact.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -186,7 +168,15 @@ const ChatsScreen = ({ navigation }) => {
     <View style={styles.container}>
       <FlatList
         data={messagedContacts}
-        renderItem={renderMessagedContactItem}
+        renderItem={({ item }) => (
+          <RenderMessagedContactItem
+            item={item}
+            contacts={contacts}
+            navigation={navigation}
+            session={session}
+          />
+        )}
+
         keyExtractor={(item) => item.contactPhoneNumber}
         refreshing={refreshing}
         onRefresh={onRefresh}

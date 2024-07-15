@@ -7,6 +7,8 @@ const UserContext = createContext();
 export const UserProvider = ({ children }) => {
     const [userId, setUserId] = useState(null);
     const [session, setSession] = useState(null);
+    const [currentUserId, setCurrentUserId] = useState(null);
+    const [profilePicture, setProfilePicture] = useState(null);
 
     const [isLoggedIn, setIsLoggedIn] = useState(false)
         const [user, setUser] = useState(null)
