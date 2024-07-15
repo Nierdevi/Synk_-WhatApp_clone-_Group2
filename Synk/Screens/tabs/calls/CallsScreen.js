@@ -83,11 +83,11 @@ export default function CallsScreen({ navigation, route }) {
   const addDummyCall = async () => {
     const newCall = {
       id: Date.now(),
-      type: 'video', // 'voice' or 'video'
-      status: 'answered', // 'answered', 'missed', 'declined'
-      direction: 'incoming', // 'incoming' or 'outgoing'
+      type: 'voice', // 'voice' or 'video'
+      status: 'missed', // 'answered', 'missed', 'declined'
+      direction: 'outgoing', // 'incoming' or 'outgoing'
       timestamp: new Date().toISOString(),
-      name: 'Star Rex', // Dummy name
+      name: 'Akuffo Addo', // Dummy name
       profilePicture: 'https://via.placeholder.com/150', // Dummy profile picture URL
     };
     const updatedCallHistory = [...callHistory, newCall];
