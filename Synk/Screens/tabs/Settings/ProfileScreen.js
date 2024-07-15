@@ -5,11 +5,10 @@ import * as ImagePicker from 'expo-image-picker';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { Ionicons, MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
-import AppLogo from '../assets/AppLogo.png';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { addUsernameToDatabase, getcurrentUserData,addAboutToDatabase,getUserProfilePicture,uploadProfilePicture } from '../backend/userService';
-import { getUser } from '../constants/userContext';
-import { primaryColors, SecondaryColors } from '../constants/colors';
+import { addUsernameToDatabase, getcurrentUserData,addAboutToDatabase,getUserProfilePicture,uploadProfilePicture } from '../../../backend/userService';
+import { primaryColors,SecondaryColors } from '../../../constants/colors';
+import { getUser } from '../../../constants/userContext';
 
 const ProfileScreen = () => {
   const navigation = useNavigation();

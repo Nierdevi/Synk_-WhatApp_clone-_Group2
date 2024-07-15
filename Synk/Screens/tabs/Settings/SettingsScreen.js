@@ -1,20 +1,15 @@
-import React,{useState} from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, Pressable } from 'react-native';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
-import { MaterialIcons, Ionicons } from '@expo/vector-icons';
 import { View, Text, StyleSheet, TouchableOpacity, Image, Pressable, Modal } from 'react-native';
 import { MaterialIcons, Ionicons, Feather, FontAwesome6 } from '@expo/vector-icons';
 import { ScrollView } from 'react-native-gesture-handler';
-import { useState } from 'react';
-import AppLogo from '../../../assets/AppLogo.png';
+import React,{ useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { useFocusEffect } from '@react-navigation/native';
-import { getUser } from '../constants/userContext';
-import { getcurrentUserData,getUserProfilePicture } from '../backend/userService';
-import { primaryColors, SecondaryColors } from '../constants/colors';
-
-
+import { getUser } from '../../../constants/userContext';
+import { getcurrentUserData,getUserProfilePicture } from '../../../backend/userService';
+import { SecondaryColors } from '../../../constants/colors';
+import AppLogo from '../../../assets/AppLogo.png'
 const SettingsScreen = () => {
   const navigation = useNavigation();
   const [username, setUsername] = useState('');
