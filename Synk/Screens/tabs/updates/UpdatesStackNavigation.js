@@ -4,6 +4,7 @@ import React from 'react';
 import { useTheme } from '../../../constants/themeContext';
 import ChannelsScreen from './ChannelDetails';
 import ChannelInfo from './ChannelInfo';
+import ExploreMore from './ExploreMore';
 import StatusView from './StatusView';
 import UpdatesScreen from './UpdatesScreen';
 
@@ -44,6 +45,11 @@ const UpdatesStackNavigator = ({ navigation, route }) => {
       <ChatsStack.Screen 
         name="ChannelInfo" 
         component={ChannelInfo} 
+        options={{ headerShown: true }} 
+      />
+      <ChatsStack.Screen 
+        name="Explore" 
+        component={ExploreMore} 
         options={{ headerShown: true }} 
       />
     </ChatsStack.Navigator>
