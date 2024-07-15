@@ -2,7 +2,6 @@ import React,{useState} from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, Pressable } from 'react-native';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import { MaterialIcons, Ionicons } from '@expo/vector-icons';
-import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, Pressable, Modal } from 'react-native';
 import { MaterialIcons, Ionicons, Feather, FontAwesome6 } from '@expo/vector-icons';
 import { ScrollView } from 'react-native-gesture-handler';
