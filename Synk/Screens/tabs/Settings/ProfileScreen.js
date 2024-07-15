@@ -271,13 +271,13 @@ const styles = StyleSheet.create({
         borderBottomColor: 'Lightgray',
         backgroundColor: 'white',
         paddingTop: 50,
+        paddingLeft: 10,
     },
     headerTitle: {
         fontSize: 28,
         fontWeight: "bold",
         marginLeft: 10,
         paddingRight: 250,
-        paddingBottom: 10,
     },
     headerImage: {
         width: 170,
@@ -351,8 +351,9 @@ const styles = StyleSheet.create({
     },
     pen1:{
       height: 22,
-      right: -85,
+      right: -180,
       bottom: -6,
+      color:"black",
     },
     profileValueInput:{
       backgroundColor:'red',
