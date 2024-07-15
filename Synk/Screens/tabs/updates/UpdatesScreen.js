@@ -23,6 +23,7 @@ const UpdatesScreen = ({ navigation }) => {
     ]);
 
     const [channels, setChannels] = useState([]);
+    const [followedChannels, setFollowedChannels] = useState([]);
 
     const suggestedChannels = [
         { id: 3, name: 'CNN', img: 'https://via.placeholder.com/50', followers: '1.2k followers' },
@@ -71,6 +72,10 @@ const UpdatesScreen = ({ navigation }) => {
     const handleSelectChannel = (channel) => {
         navigation.navigate('ChannelDetails', { channel });
         navigation.setOptions({headerShown:false})
+    };
+
+    const handleFollowChannel = (channelId) => {
+        setFollowedChannels(prevState => [...prevState, channelId]);
     };
 
     const [menuVisible, setMenuVisible] = useState(false);
@@ -150,9 +155,13 @@ const UpdatesScreen = ({ navigation }) => {
                                         </View>
                                         <Text style={styles.followersCount}>{item.followers}</Text>
                                     </View>
-                                    <TouchableOpacity style={styles.followButton}>
-                                        <Text style={styles.followButtonText}>Follow</Text>
-                                    </TouchableOpacity>
+                                    {followedChannels.includes(item.id) ? (
+                                        <Text style={styles.followingText}>Following</Text>
+                                    ) : (
+                                        <TouchableOpacity style={styles.followButton} onPress={() => handleFollowChannel(item.id)}>
+                                            <Text style={styles.followButtonText}>Follow</Text>
+                                        </TouchableOpacity>
+                                    )}
                                 </View>
                             )}
                             keyExtractor={item => item.id.toString()}
@@ -346,6 +355,10 @@ const styles = StyleSheet.create({
         color: '#888',
         marginBottom: 5
     },
+    followingText: {
+        color: '#888',
+        fontWeight: 'bold'
+    },
     followButton: {
         backgroundColor: primaryColors.purple,
         paddingVertical: 5,
@@ -360,16 +373,17 @@ const styles = StyleSheet.create({
     exploreMoreButton: {
         marginTop: 10,
         backgroundColor: '#fff',
-        paddingVertical: 10,
-        paddingHorizontal: 15,
+        paddingVertical: 8, // Reduced padding
+        paddingHorizontal: 12, // Reduced padding
         borderRadius: 20,
         borderColor: primaryColors.purple,
         borderWidth: 1,
-        alignItems: 'center'
+        alignItems: 'center',
+        alignSelf: 'flex-start' // Align button to the left
     },
     exploreMoreButtonText: {
         color: primaryColors.purple,
-        fontSize: 16,
+        fontSize: 14, // Reduced font size
         fontWeight: 'bold'
     },
     bottomRightIcons: {
