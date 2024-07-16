@@ -6,6 +6,7 @@ import { Ionicons, MaterialIcons, Entypo } from '@expo/vector-icons';
 import { ScrollView } from 'react-native-gesture-handler';
 import { PopupMenu} from '../components/PopupMenu';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import { SecondaryColors } from '../constants/colors';
 
 
 const NotificationsScreen = () => {
@@ -176,7 +177,7 @@ export default NotificationsScreen
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'yellow',
+    backgroundColor: SecondaryColors.secPurple,
   },
   header: {
     flexDirection: "row",

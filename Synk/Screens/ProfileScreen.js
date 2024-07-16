@@ -1,15 +1,15 @@
-import { StyleSheet, Text, View, Pressable,TextInput} from 'react-native';
+import { StyleSheet, Text, View, Pressable,TextInput,Image} from 'react-native';
 import React,{useState,useEffect} from 'react';
-import {Image} from 'expo-image';
+// import {Image} from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { Ionicons, MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import AppLogo from '../assets/AppLogo.png';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { addUsernameToDatabase, getUserData,addAboutToDatabase,getUserProfilePicture,uploadProfilePicture } from '../backend/userService';
+import { addUsernameToDatabase, getcurrentUserData,addAboutToDatabase,getUserProfilePicture,uploadProfilePicture } from '../backend/userService';
 import { getUser } from '../constants/userContext';
-import { primaryColors } from '../constants/colors';
+import { primaryColors, SecondaryColors } from '../constants/colors';
 
 const ProfileScreen = () => {
   const navigation = useNavigation();
@@ -40,7 +40,7 @@ const ProfileScreen = () => {
     React.useCallback(() => {
         const fetchUserData = async () => {
             try {
-                const userData = await getUserData(currentUserId);
+                const userData = await getcurrentUserData(currentUserId);
                 // console.log(userData);
                 setUsername(userData.username);
                 setNewUsername(userData.username);
@@ -60,6 +60,7 @@ useFocusEffect(
       const fetchProfilePicture = async () => {
           try {
               const url = await getUserProfilePicture(currentUserId);
+              // console.log("url: ",url)
               setProfilePicture(url);
           } catch (error) {
               console.error("Failed to fetch profile picture:", error);
@@ -158,8 +159,10 @@ const handleStatusSavePress = async () => {
       <View style={styles.head}>
         <Pressable onPress={handleImageSelect}>
             <Image 
-                source={profilePicture ? { uri: profilePicture } : AppLogo} 
+                source={profilePicture ? { uri: profilePicture } : { uri: 'https://via.placeholder.com/50' }} 
                 style={styles.headerImage} 
+                cachePolicy='memory-disk'
+                // resizeMode='cover'
             />
         </Pressable>
         <Pressable style={styles.iconContainer} onPress={handleImageSelect}>
@@ -256,7 +259,7 @@ export default ProfileScreen;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: 'yellow',
+        backgroundColor:SecondaryColors.secPurple,
         width:wp("100%"),
         // paddingHorizontal:20,
     },

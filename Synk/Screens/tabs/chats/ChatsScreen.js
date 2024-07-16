@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Alert, FlatList, Modal, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Alert, FlatList, Modal, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View  } from 'react-native';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import Fab from '../../../components/fab';
 import { getUser } from '../../../constants/userContext';
@@ -12,6 +12,10 @@ import { fetchMessagedContacts } from '../../../backend/chatService';
 import { fetchAndNormalizeContacts, loadCachedContacts } from '../../../backend/contacts ';
 import DateTime from '../../../components/DateTime';
 import { primaryColors } from '../../../constants/colors';
+import { Image } from 'expo-image';
+import { getUserData } from '../../../backend/userService';
+import RenderMessagedContactItem from '../../../components/renderMessagedContactItem';
+
 
 const useContacts = (session) => {
   const [contacts, setContacts] = useState([]);
@@ -62,10 +66,16 @@ const useMessagedContacts = (session) => {
     };
 
     fetchMessagedContactsData();
+    const intervalId = setInterval(fetchMessagedContactsData, 1000); // 1000ms = 1 seconds
+
+    // Clean up interval on component unmount
+    return () => clearInterval(intervalId);
   }, [session]);
 
   return messagedContacts;
 };
+
+
 
 const ChatsScreen = ({ navigation }) => {
   const { session } = getUser();
@@ -73,6 +83,20 @@ const ChatsScreen = ({ navigation }) => {
   const messagedContacts = useMessagedContacts(session);
   const [searchQuery, setSearchQuery] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+  const [profilePicture, setProfilePicture] = useState('https://via.placeholder.com/50');
+
+
+ 
+
+  // console.log(session.phoneNumber)
+  const onRefresh = async () => {
+    setRefreshing(true);
+    // await fetchMessagedContacts(session.phoneNumber);
+    setRefreshing(false);
+  };
+// console.log(contacts)
+
 
   useEffect(() => {
     if (!modalVisible) setSearchQuery('');
@@ -100,6 +124,7 @@ const ChatsScreen = ({ navigation }) => {
       const recipientPhoneNumber = item.normalizedPhoneNumbers[0];
       const currentPhoneNumber = session.phoneNumber; // Assuming session contains the current user's phone number
       console.log(currentPhoneNumber)
+      console.log(recipientPhoneNumber)
 
       const isInDatabase = await checkPhoneNumberExists(recipientPhoneNumber);
 
@@ -131,39 +156,30 @@ const ChatsScreen = ({ navigation }) => {
     );
   };
 
-  const renderMessagedContactItem = ({ item }) => {
-    const contact = contacts.find(contact =>
-      contact.normalizedPhoneNumbers?.includes(item.contactPhoneNumber)
-    );
 
-    if (!contact) return null;
-
-    return (
-      <TouchableOpacity style={styles.contactItem} onPress={() => navigation.navigate('ChatRoom', { contact, currentUserPhoneNumber: session.phoneNumber })}>
-        <View style={styles.avatarContainer}>
-          <Text style={styles.avatarText}>{contact.name[0]}</Text>
-        </View>
-        <View style={styles.contactDetails}>
-          <View style={styles.upperContactdetails}>
-            <Text style={styles.contactName}>{contact.name} </Text>
-            {item.lastMessage && <Text style={styles.lastMessageTime}>{DateTime(item.lastMessage.$createdAt)} </Text>}
-          </View>
-          {item.lastMessage && <Text style={styles.lastMessageText} numberOfLines={1} ellipsizeMode='tail'>{item.lastMessage.messageText} </Text>}
-        </View>
-      </TouchableOpacity>
-    );
-  };
 
   const filteredContacts = contacts.filter(contact =>
     contact.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  //main return funtction
+
   return (
     <View style={styles.container}>
       <FlatList
         data={messagedContacts}
-        renderItem={renderMessagedContactItem}
+        renderItem={({ item }) => (
+          <RenderMessagedContactItem
+            item={item}
+            contacts={contacts}
+            navigation={navigation}
+            session={session}
+          />
+        )}
+
         keyExtractor={(item) => item.contactPhoneNumber}
+        refreshing={refreshing}
+        onRefresh={onRefresh}
       />
       <Fab type="chats" handlePress={handleFetchContacts} />
 
@@ -201,21 +217,21 @@ const styles = StyleSheet.create({
     flex: 1,
     // backgroundColor: 'red',
     width:wp('100%'),
-    paddingRight:10,
+    // paddingHorizontal:10,
     marginTop:20,
 
   },
   contactItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 10,
+    // paddingHorizontal: 9,
     borderBottomWidth: 1,
     borderBottomColor: '#f2f2f2',
     // backgroundColor:'yellow',
   },
   avatarContainer: {
-    width: wp('13%'),
-    height: hp('6.5%'),
+    width: wp('15.5%'),
+    height: hp('8%'),
     borderRadius: 30,
     backgroundColor: primaryColors.purple,
     justifyContent: 'center',
@@ -228,6 +244,7 @@ const styles = StyleSheet.create({
   },
   contactDetails: {
     justifyContent: 'center',
+    gap:5
   },
   upperContactdetails:{
     justifyContent:'space-between',
@@ -296,6 +313,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     fontSize: wp('4%'),
   },
+  profilePicture: {
+    width: wp('15.5%'),
+    height: hp('7%'),
+    borderRadius: 50,
+    marginRight: 10,
+  }
 });
 
 export default ChatsScreen;

@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Pressable } from 'react-native';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import { SecondaryColors } from '../constants/colors';
 
 const AccountScreen = () => {
   const navigation = useNavigation();
@@ -56,7 +57,7 @@ const AccountScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'yellow',
+    backgroundColor: SecondaryColors.secPurple,
     marginTop: 30,
   },
   item: {

@@ -1,5 +1,8 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {databases,storage,ID} from './appwrite';
 import { Query } from 'appwrite';
+import * as FileSystem from 'expo-file-system';
+import FormData from 'form-data';
 
 
 const addUserToDatabase = async (userId, phoneNumber) => {
@@ -37,6 +40,7 @@ const addUsernameToDatabase = async (userId, username) => {
         console.error("Failed to add username to the database:", error);
     }
 };
+
 const addAboutToDatabase = async (userId, about) => {
     try {
         // Query the database to find the document by userId
@@ -100,53 +104,102 @@ const getUserProfilePicture = async (userId) => {
     }
 };
 
+const extractIdsFromUrl = async(url) => {
+    const urlParts = url.split('/');
+    const fileId = urlParts[7];   // Extract file ID
+    console.log("fileId: ",fileId)
+    return { fileId };
+};
+
+
 const uploadProfilePicture = async (userId, uri) => {
     try {
+
         const userDocument = await getUserDocument(userId);
         const documentId = userDocument.$id;
-        const currentProfilePictureUrl = await getUserProfilePicture(userId);
+        console.log("documentId: ",documentId)
+
+        const currentProfilePictureUrl = userDocument.profilePicture;
+        console.log("currentProfilePictureUrl: ",currentProfilePictureUrl)
+        
         // Step 2: Delete the existing profile picture if it exists
-        if (currentProfilePictureUrl) {
-            const fileName = currentProfilePictureUrl.split('/').pop(); // Extract filename from URL
-            await storage.deleteFile('669270af0034381c55c3', fileName); // Delete the file from storage
+        // if (currentProfilePictureUrl) {
+        //     const fileId= await extractIdsFromUrl(currentProfilePictureUrl)
+        //     console.log("fileId: ",fileId)
+        //     await storage.deleteFile('669270af0034381c55c3',); // Delete the file from storage
+        // }
+
+        const formData = new FormData();
+        formData.append('fileId', ID.unique());
+        formData.append('file', {
+            uri,
+            name: `userProfile_${userId}.jpg`,
+            type: 'image/jpeg',
+        });
+
+        const uploadResponse = await fetch(
+            'https://cloud.appwrite.io/v1/storage/buckets/669270af0034381c55c3/files',
+            {
+                method: 'POST',
+                headers: {
+                    'X-Appwrite-Project': '66795f4000158aa9d802',
+                    'Content-Type': 'multipart/form-data',
+                },
+                body: formData,
+            }
+        );
+
+        const uploadData = await uploadResponse.json();
+        console.log(uploadData)
+
+        if (!uploadResponse.ok) {
+            throw new Error(uploadData.message || 'Failed to upload file');
         }
-        // Step 3: Create a file object from the selected image
-        const response = await fetch(uri);
-        const blob = await response.blob();
-        console.log("blob:",blob)
 
-         // Convert blob to file
-        const file = new File([blob], `userProfile_${userId}.jpg`, { type: blob.type });
-        console.log("File created:", file);
+        const newImageUrl = `https://cloud.appwrite.io/v1/storage/buckets/669270af0034381c55c3/files/${uploadData.$id}/view?project=66795f4000158aa9d802`;
 
-        // Upload the new image to storage
-        const uploadResponse = await storage.createFile(
-            '669270af0034381c55c3', // Your storage bucket ID
-            ID.unique(), // Unique ID for the file
-            file // The file object to upload
-        );
-        console.log("Upload Response:", uploadResponse);
-        // Get the URL of the uploaded image
-        const newImageUrl = `https://cloud.appwrite.io/v1/storage/files/${uploadResponse.$id}/view?66795f4000158aa9d802`;
 
-        // Update the user's profile picture URL in the database
         await databases.updateDocument(
-            '6685cbc40036f4c6a5ad', // Your database ID
-            '6685cc6600212adefdbf', // Your collection ID
-            documentId, // Document ID
-            { profilePicture: newImageUrl } // Assuming you have a profilePicture field in your document
+            '6685cbc40036f4c6a5ad', 
+            '6685cc6600212adefdbf', 
+            documentId, 
+            { profilePicture: newImageUrl }
         );
 
-        return newImageUrl; // Return the URL if needed
+        const localPath = await downloadAndCacheProfilePicture(newImageUrl);
+
+        await AsyncStorage.setItem('profilePicturePath', localPath);
+
+        return newImageUrl;
     } catch (error) {
-        console.error("Failed to upload profile picture:", error);
+        console.error('Failed to upload profile picture:', error);
         throw error;
     }
 };
 
+// Function to download and cache the profile picture locally
+const downloadAndCacheProfilePicture = async (url) => {
+    try {
+        const fileUri = FileSystem.documentDirectory + 'profile-picture.jpg';
+        await FileSystem.downloadAsync(url, fileUri);
+        return fileUri;
+    } catch (error) {
+        console.error('Failed to download and cache profile picture:', error);
+        return null;
+    }
+};
 
 
-const getUserData = async (userId) => {
+const getcurrentUserData = async (userId) => {
+
+
+    let userData = await AsyncStorage.getItem('userData');
+    if (userData) {
+        console.log('Loading user data from local storage...');
+        console.log('user daya from local',userData)
+        return JSON.parse(userData);
+    }
+
     try {
         const response = await databases.listDocuments('6685cbc40036f4c6a5ad', '6685cc6600212adefdbf', [
             Query.equal('userId', userId)
@@ -156,12 +209,41 @@ const getUserData = async (userId) => {
             throw new Error('User document not found');
         }
 
-        // Assuming userId is unique, return the first document
-        return response.documents[0];
+        userData = response.documents[0];
+        await AsyncStorage.setItem('userData', JSON.stringify(userData));
+        return userData;
+
     } catch (error) {
         console.error("Failed to fetch user data:", error);
         throw error;
     }
 };
 
-export { addUserToDatabase,uploadProfilePicture,addUsernameToDatabase,addAboutToDatabase,getUserData,getUserProfilePicture };
+
+const getUserData = async (phoneNumber) => {
+    let otherUserData = await AsyncStorage.getItem(`userData_${phoneNumber}`);
+    if (otherUserData) {
+        console.log('Loading other user data from local storage...');
+        console.log('Other user data from local storage:', otherUserData);
+        return JSON.parse(otherUserData);
+    }
+
+    try {
+    const response = await databases.listDocuments('6685cbc40036f4c6a5ad', '6685cc6600212adefdbf', [
+        Query.equal('phoneNumber', phoneNumber)
+    ]);
+
+    if (response.documents.length === 0) {
+        throw new Error('User document not found');
+    }
+
+    otherUserData = response.documents[0];
+        await AsyncStorage.setItem(`userData_${phoneNumber}`, JSON.stringify(otherUserData));
+        return otherUserData;
+    } catch (error) {
+    console.error("Failed to fetch other user data:", error);
+        throw error;
+    }
+};
+
+export { addUserToDatabase,uploadProfilePicture,addUsernameToDatabase,addAboutToDatabase,getcurrentUserData,getUserProfilePicture,getUserData };

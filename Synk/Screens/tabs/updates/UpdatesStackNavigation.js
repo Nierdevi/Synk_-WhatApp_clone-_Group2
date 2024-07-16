@@ -38,7 +38,7 @@ const UpdatesStackNavigator = ({ navigation, route }) => {
         name="ChannelDetails" 
         component={ChannelsScreen} 
         options={({ route }) => ({
-          headerShown: true,
+          headerShown: false,
           title: route.params.channel.name, // Set channel name as title
         })} 
       />
