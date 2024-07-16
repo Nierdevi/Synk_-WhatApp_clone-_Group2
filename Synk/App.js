@@ -24,18 +24,18 @@ const MainLayout = () => {
   const navigationRef = useRef(null);
   const {session,setSession}=getUser();
   const [isLoading, setIsLoading] = useState(true);
-
+  const [initialRoute, setInitialRoute] = useState('welcome');
 
   useEffect(() => {
     const checkSession = async () => {
       try {
         const storedSession = await AsyncStorage.getItem('session');
-        if (storedSession) {
+        console.log('Stored session:', storedSession);
+
+        if (storedSession || session) {
           const sessionData = JSON.parse(storedSession);
           setSession(sessionData);
-          navigationRef.current?.navigate('Tabs');
-        } else {
-          navigationRef.current?.navigate('welcome');
+          setInitialRoute('Tabs');
         }
       } catch (error) {
         console.error('Failed to check session:', error);
@@ -57,7 +57,7 @@ const MainLayout = () => {
 
   return (
     <NavigationContainer ref={navigationRef}>
-      <Stack.Navigator >
+      <Stack.Navigator initialRouteName={initialRoute} >
         <Stack.Screen name='welcome' component={WelcomeScreen} options={{headerShown:false}}/>
         <Stack.Screen name='Verification' component={Verification} options={{headerShown:false}}/>
         <Stack.Screen name='PhoneNumber' component={PhoneNumScreen} options={{headerShown:false}} />
