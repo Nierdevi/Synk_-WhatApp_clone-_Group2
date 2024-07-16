@@ -1,18 +1,18 @@
+import { Ionicons } from '@expo/vector-icons';
 import React, { useEffect, useState } from 'react';
 import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import { primaryColors } from '../../../constants/colors';
 
 const ExploreMore = ({ route }) => {
-    const { channel } = route.params;
+    const { channels } = route.params;
     const [articles, setArticles] = useState([]);
 
     useEffect(() => {
-        // Fetch articles or updates for the channel
+        // Fetch articles or updates for the channels
         // This is a placeholder for your data fetching logic
         const fetchArticles = async () => {
             try {
-                const response = await fetch(`https://api.example.com/channel/${channel.id}/articles`);
+                const response = await fetch(`https://api.example.com/channels/${channels.id}/articles`);
                 const data = await response.json();
                 setArticles(data);
             } catch (error) {
@@ -21,25 +21,25 @@ const ExploreMore = ({ route }) => {
         };
 
         fetchArticles();
-    }, [channel.id]);
+    }, [channels.id]);
 
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <Image source={{ uri: channel.img }} style={styles.channelImg} />
-                <View style={styles.channelInfo}>
-                    <Text style={styles.channelName}>{channel.name}</Text>
-                    {channel.verified && (
+                <Image source={{ uri: channels.img }} style={styles.channelsImg} />
+                <View style={styles.channelsInfo}>
+                    <Text style={styles.channelsName}>{channels.name}</Text>
+                    {channels.verified && (
                         <Ionicons name="checkmark-circle" size={16} color="blue" style={styles.verifiedBadge} />
                     )}
-                    <Text style={styles.followersCount}>{channel.followers} followers</Text>
+                    <Text style={styles.followersCount}>{channels.followers} followers</Text>
                 </View>
                 <TouchableOpacity style={styles.followButton}>
                     <Text style={styles.followButtonText}>Follow</Text>
                 </TouchableOpacity>
             </View>
 
-            <Text style={styles.description}>{channel.description}</Text>
+            <Text style={styles.description}>{channels.description}</Text>
 
             <Text style={styles.sectionTitle}>Latest Updates</Text>
             <FlatList
@@ -54,8 +54,8 @@ const ExploreMore = ({ route }) => {
                 keyExtractor={item => item.id.toString()}
             />
 
-            <Text style={styles.sectionTitle}>Related Channels</Text>
-            {/* Implement a list of related channels */}
+            <Text style={styles.sectionTitle}>Related channelss</Text>
+            {/* Implement a list of related channelss */}
         </View>
     );
 };
@@ -71,16 +71,16 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginBottom: 20,
     },
-    channelImg: {
+    channelsImg: {
         width: 50,
         height: 50,
         borderRadius: 25,
     },
-    channelInfo: {
+    channelsInfo: {
         flex: 1,
         marginLeft: 10,
     },
-    channelName: {
+    channelsName: {
         fontSize: 20,
         fontWeight: 'bold',
     },
