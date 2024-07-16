@@ -26,7 +26,7 @@ const ChatRoom = ({ route,navigation }) => {
 
   const recipientPhoneNumber = contact.normalizedPhoneNumbers[0];
 
-
+console.log(contact.name)
   const menuItems = [
     { label: 'Report or Block', onPress: () => {} },
     { label: 'Search', onPress: () => {} },
@@ -147,7 +147,7 @@ const ChatRoom = ({ route,navigation }) => {
         backgroundColor="transparent"
         translucent={true}
           />
-      <ChatList messages={messages} currentUserPhoneNumber={currentUserPhoneNumber} />
+      <ChatList messages={messages} currentUserPhoneNumber={currentUserPhoneNumber} contactName={contact}/>
       <InputBox onSendMessage={handleSendMessage} />
     </KeyboardAvoidingView>
   );
