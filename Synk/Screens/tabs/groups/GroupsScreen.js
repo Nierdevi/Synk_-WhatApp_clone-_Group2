@@ -5,11 +5,14 @@ import { MaterialIcons, Ionicons } from '@expo/vector-icons';
 import { primaryColors } from '../../../constants/colors';
 
 export default function GroupsScreen({ navigation }) {
+  const handleNavigateToGroupRoom = () =>{
+    navigation.navigate('GroupRoom')
+  };
   return (
     <View style={{flex:1,}}>
       <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
         <View style={styles.mo1}>
-              <TouchableOpacity style={styles.man1}>
+              <TouchableOpacity style={styles.man1} onPress={handleNavigateToGroupRoom}>
                 <View style={styles.fab}>
                   <MaterialIcons name="groups" size={44} color="black" />
                 </View>
@@ -22,7 +25,7 @@ export default function GroupsScreen({ navigation }) {
                   <Text style={styles.message}>Announcements ~ Dr. Joy-Philippe Bruce: https://udn...</Text>
                   <Text style={styles.time}>10:48 AM</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.messageContainer}>
+              <TouchableOpacity style={styles.messageContainer} onPress={handleNavigateToGroupRoom}>
                   <View style={styles.icon}>
                     <MaterialIcons name="groups" size={24} color="black" />
                   </View>
@@ -36,7 +39,7 @@ export default function GroupsScreen({ navigation }) {
         </View>
 
         <View style={styles.mo1}>
-              <TouchableOpacity style={styles.man1}>
+              <TouchableOpacity style={styles.man1} onPress={handleNavigateToGroupRoom}>
                 <View style={styles.fab}>
                   <MaterialIcons name="groups" size={44} color="black" />
                 </View>
@@ -49,7 +52,7 @@ export default function GroupsScreen({ navigation }) {
                   <Text style={styles.message}>Announcements ~ Dr. Joy-Philippe Bruce: https://udn...</Text>
                   <Text style={styles.time}>10:48 AM</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.messageContainer}>
+              <TouchableOpacity style={styles.messageContainer} onPress={handleNavigateToGroupRoom}>
                   <View style={styles.icon}>
                     <MaterialIcons name="groups" size={24} color="black" />
                   </View>
@@ -63,7 +66,7 @@ export default function GroupsScreen({ navigation }) {
         </View>
 
         <View style={styles.mo1}>
-              <TouchableOpacity style={styles.man1}>
+              <TouchableOpacity style={styles.man1} onPress={handleNavigateToGroupRoom}>
                 <View style={styles.fab}>
                   <MaterialIcons name="groups" size={44} color="black" />
                 </View>
@@ -76,7 +79,7 @@ export default function GroupsScreen({ navigation }) {
                   <Text style={styles.message}>Announcements ~ Dr. Joy-Philippe Bruce: https://udn...</Text>
                   <Text style={styles.time}>10:48 AM</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.messageContainer}>
+              <TouchableOpacity style={styles.messageContainer} onPress={handleNavigateToGroupRoom}>
                   <View style={styles.icon}>
                     <MaterialIcons name="groups" size={24} color="black" />
                   </View>
@@ -90,7 +93,7 @@ export default function GroupsScreen({ navigation }) {
         </View>
 
         <View style={styles.mo1}>
-              <TouchableOpacity style={styles.man1}>
+              <TouchableOpacity style={styles.man1} onPress={handleNavigateToGroupRoom}>
                 <View style={styles.fab}>
                   <MaterialIcons name="groups" size={44} color="black" />
                 </View>
@@ -103,7 +106,7 @@ export default function GroupsScreen({ navigation }) {
                   <Text style={styles.message}>Announcements ~ Dr. Joy-Philippe Bruce: https://udn...</Text>
                   <Text style={styles.time}>10:48 AM</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.messageContainer}>
+              <TouchableOpacity style={styles.messageContainer} onPress={handleNavigateToGroupRoom}>
                   <View style={styles.icon}>
                     <MaterialIcons name="groups" size={24} color="black" />
                   </View>
@@ -126,8 +129,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'yellow',
   },
-  contentContainer: {
-    alignItems: 'center',
+  contentContainer: {    alignItems: 'center',
   },
   mo: {
     backgroundColor: 'white',

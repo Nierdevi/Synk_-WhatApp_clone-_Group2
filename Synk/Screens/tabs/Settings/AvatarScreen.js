@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, Pressable, Image, Button, Alert } from 'react-n
 import React from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
-import avatar from '../assets/images/avatar.png';
+import avatar from '../../../assets/images/avatar.png';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 

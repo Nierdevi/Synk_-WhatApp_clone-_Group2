@@ -20,24 +20,12 @@ const GroupStackNavigator=({navigation,route})=>{
   }, [navigation, route]);
 
   return (
-  <GroupStack.Navigator initialRouteName="GroupsScreen">
-      <GroupStack.Screen name="GroupsScreen" component={GroupsScreen} options={{ headerShown: false}} />
-      <GroupStack.Screen name="GroupRoom" component={GroupRoom} 
-      options={()=>({ 
-          headerShown: true,
-          // tabBarVisible:false
-          })} 
-
-          />
-      <GroupStack.Screen name="GroupInfo" component={GroupInfo} 
-      options={()=>({ 
-          headerShown: true,
-          // tabBarVisible:false
-          })} 
-
-          />
-  </GroupStack.Navigator>
-);
+    <GroupStack.Navigator initialRouteName="GroupsScreen">
+        <GroupStack.Screen name="GroupsScreen" component={GroupsScreen} options={{ headerShown: false}} />
+        <GroupStack.Screen name="GroupRoom" component={GroupRoom} options={{ headerShown: true}} />
+        <GroupStack.Screen name="GroupInfo" component={GroupInfo} options={{ headerShown: true}} />
+    </GroupStack.Navigator>
+  );
 };
 
 export default GroupStackNavigator;
