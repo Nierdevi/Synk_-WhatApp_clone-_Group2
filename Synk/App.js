@@ -28,15 +28,19 @@ const MainLayout = () => {
 
   useEffect(() => {
     const checkSession = async () => {
-      const storedSession = await AsyncStorage.getItem('session');
-      if (storedSession || session) {
-        const session = JSON.parse(storedSession);
-        setSession(session);
+      try {
+        const storedSession = await AsyncStorage.getItem('session');
+        if (storedSession) {
+          const sessionData = JSON.parse(storedSession);
+          setSession(sessionData);
+          navigationRef.current?.navigate('Tabs');
+        } else {
+          navigationRef.current?.navigate('welcome');
+        }
+      } catch (error) {
+        console.error('Failed to check session:', error);
+      } finally {
         setIsLoading(false);
-        console.log(session)
-        navigationRef.current?.navigate('Tabs');
-      } else {
-        navigationRef.current?.navigate('welcome');
       }
     };
 
