@@ -3,6 +3,7 @@ import React from 'react';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { SecondaryColors } from '../../../constants/colors';
 
 const HelpScreen = () => {
   const navigation = useNavigation();
@@ -50,7 +51,7 @@ export default HelpScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "yellow",
+    backgroundColor: SecondaryColors.secPurple,
   },
   header: {
     flexDirection: "row",

@@ -2,7 +2,7 @@ import { StyleSheet, Text, View,Pressable,ScrollView } from 'react-native';
 import React, {useState} from 'react';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { Switch, TouchableOpacity } from 'react-native-gesture-handler';
-
+import { SecondaryColors } from '../../../constants/colors';
 
 const PrivacyScreen = ({navigation}) => {
     const [isEnabled, setIsEnabled] = useState(false);
@@ -160,7 +160,7 @@ export default PrivacyScreen
 const styles = StyleSheet.create({
     container:{
         flex: 1,
-        backgroundColor: 'yellow',
+        backgroundColor: SecondaryColors.secPurple,
     },
     header: {
         flexDirection: "row",

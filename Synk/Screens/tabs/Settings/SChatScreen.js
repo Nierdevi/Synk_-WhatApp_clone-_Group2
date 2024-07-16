@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { ScrollView, Switch, TouchableOpacity } from 'react-native-gesture-handler';
+import { SecondaryColors } from '../../../constants/colors';
 
 
 const SChatScreen = () => {
@@ -157,7 +158,7 @@ export default SChatScreen;
 const styles = StyleSheet.create({
     container:{
         flex: 1,
-        backgroundColor: 'yellow',
+        backgroundColor:SecondaryColors.secPurple,
     },
     header: {
         flexDirection: "row",

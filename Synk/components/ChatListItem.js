@@ -1,12 +1,21 @@
-import React, { useRef, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableWithoutFeedback  } from 'react-native';
+import React, { useRef, useEffect, useState } from 'react';
+import { View, Text, StyleSheet, FlatList, Image, TouchableWithoutFeedback } from 'react-native';
+import { Video } from 'expo-av';
 import { primaryColors } from '../constants/colors';
 import DateTime from './DateTime';
-import { widthPercentageToDP as wp} from 'react-native-responsive-screen';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import { LongPressGestureHandler, State } from 'react-native-gesture-handler';
+import FullScreenMediaModal from './FullScreenMediaModal ';
+import { PopupMenu } from './PopupMenu';
 
-const ChatList = ({ messages, currentUserPhoneNumber }) => {
+
+const ChatList = ({ messages, currentUserPhoneNumber}) => {
   const flatListRef = useRef(null);
+  const [isAutoScrolling, setIsAutoScrolling] = useState(true);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedMediaUri, setSelectedMediaUri] = useState('');
+  const [selectedMediaType, setSelectedMediaType] = useState('');
+  const [selectedText, setSelectedText] = useState('');
 
   useEffect(() => {
     if (flatListRef.current) {
@@ -15,12 +24,22 @@ const ChatList = ({ messages, currentUserPhoneNumber }) => {
   }, [messages]);
 
   const handleLongPress = (message) => {
-    // Implement your logic for handling long press (e.g., show options like copy, pin, forward)
     console.log('Long press detected on message:', message.messageText);
   };
 
+  const handleMediaPress = (uri, type,messageText) => {
+    setSelectedMediaUri(uri);
+    setSelectedMediaType(type);
+    setSelectedText(messageText)
+    setModalVisible(true);
+    // console.log("selected Text:, ",messageText)
+  };
+
+  // console.log("selectedText: ",selectedText)
   const renderItem = ({ item }) => {
     const isCurrentUser = item.senderId === currentUserPhoneNumber;
+
+    // console.log('Rendering item:', item.mediaUrl);
 
     return (
       <LongPressGestureHandler
@@ -30,6 +49,8 @@ const ChatList = ({ messages, currentUserPhoneNumber }) => {
           }
         }}
       >
+        
+        {/* <PopupMenu visible={menuVisible} onClose={close} menuItems={menuItems} style={styles.popupMenu} /> */}
         <TouchableWithoutFeedback>
           <View
             style={[
@@ -37,8 +58,31 @@ const ChatList = ({ messages, currentUserPhoneNumber }) => {
               isCurrentUser ? styles.currentUserMessage : styles.recipientMessage,
             ]}
           >
-            <Text style={styles.messageText}>{item.messageText}</Text>
-            <Text style={styles.timeText}>{DateTime(item.$createdAt)}</Text>
+            {item.mediaUrl ? (
+              <>
+                {item.type === 'image' ? (
+                  <TouchableWithoutFeedback onPress={() => handleMediaPress(item.mediaUrl, 'image',item.messageText)}>
+                    <Image source={{ uri: item.mediaUrl }} style={styles.media} />
+                  </TouchableWithoutFeedback>
+                ) : item.type === 'video' ? (
+                  <TouchableWithoutFeedback onPress={() => handleMediaPress(item.mediaUrl, 'video',item.messageText)}>
+                    <View style={styles.mediaContainer}>
+                      <Video
+                        source={{ uri: item.mediaUrl }}
+                        style={styles.media}
+                        resizeMode="contain"
+                        isMuted
+                      />
+                      <Text style={styles.playIcon}>▶</Text>
+                    </View>
+                  </TouchableWithoutFeedback>
+                ) : null}
+              </>
+            ) : null}
+            {item.messageText ? (
+              <Text style={styles.messageText}>{item.messageText} </Text>
+            ) : null}
+            <Text style={styles.timeText}>{DateTime(item.$createdAt)} </Text>
           </View>
         </TouchableWithoutFeedback>
       </LongPressGestureHandler>
@@ -46,14 +90,31 @@ const ChatList = ({ messages, currentUserPhoneNumber }) => {
   };
 
   return (
-    <FlatList
-      ref={flatListRef}
-      data={messages}
-      renderItem={renderItem}
-      keyExtractor={(item) => item.$id}
-      inverted
-      contentContainerStyle={styles.flatListContainer}
-    />
+    <View style={{ flex: 1 }}>
+      <FlatList
+        ref={flatListRef}
+        data={messages}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.$id}
+        inverted
+        contentContainerStyle={styles.flatListContainer}
+        onContentSizeChange={() => {
+          if (isAutoScrolling && flatListRef.current) {
+            flatListRef.current.scrollToEnd({ animated: true });
+          }
+        }}
+        onScrollBeginDrag={() => setIsAutoScrolling(false)}
+        onMomentumScrollEnd={() => setIsAutoScrolling(true)}
+      />
+      <FullScreenMediaModal
+        visible={modalVisible}
+        mediaUri={selectedMediaUri}
+        mediaType={selectedMediaType}
+        onClose={() => setModalVisible(false)}
+        onRequestClose={() => setModalVisible(false)}
+        messageText={selectedText}
+      />
+    </View>
   );
 };
 
@@ -62,16 +123,17 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     paddingTop: 10,
     paddingBottom: 10,
+    paddingHorizontal: 10,
   },
   message: {
     maxWidth: '80%',
-    padding: 10,
+    padding: 7,
     marginBottom: 10,
     borderRadius: 10,
   },
   currentUserMessage: {
     alignSelf: 'flex-end',
-    backgroundColor: primaryColors.purple || '#6A1B9A',
+    backgroundColor: primaryColors.purple,
   },
   recipientMessage: {
     alignSelf: 'flex-start',
@@ -80,11 +142,34 @@ const styles = StyleSheet.create({
   messageText: {
     fontSize: 16,
     color: 'white',
+    marginTop: 5,
+    marginRight:40
   },
   timeText: {
     color: 'white',
     fontSize: wp('3%'),
     alignSelf: 'flex-end',
+  },
+  media: {
+    width: wp("56%"),
+    height:hp('30%'), 
+    borderRadius: 10,
+    marginBottom: 5,
+    overflow:'hidden'
+  },
+  mediaContainer: {
+    position: 'relative',
+    width: wp('80%'),
+    height: wp('80%'),
+    borderRadius: 10,
+    overflow: 'hidden',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  playIcon: {
+    position: 'absolute',
+    fontSize: 30,
+    color: 'white',
   },
 });
 

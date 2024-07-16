@@ -1,13 +1,13 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { useEffect, useRef, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import 'react-native-gesture-handler';
 import { MenuProvider } from 'react-native-popup-menu';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { ThemeProvider } from './constants/themeContext';
 import { UserProvider } from './constants/userContext';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useState,useRef,useEffect } from 'react';
 
 import PhoneNumScreen from './Screens/PhoneNumScreen';
 import Verification from './Screens/Verification';
@@ -15,7 +15,7 @@ import WelcomeScreen from './Screens/WelcomeScreen';
 // import Tabs from './src/navigation/Tabs';
 import MainTabs from './Screens/tabs/_tabLayout';
 import { getUser } from './constants/userContext';
-
+import LoadingScreen from './components/LoadingScreen';
 const Stack = createStackNavigator();
 
 
@@ -32,17 +32,22 @@ const MainLayout = () => {
       if (storedSession || session) {
         const session = JSON.parse(storedSession);
         setSession(session);
-        // console.log(session)
+        setIsLoading(false);
+        console.log(session)
         navigationRef.current?.navigate('Tabs');
       } else {
         navigationRef.current?.navigate('welcome');
       }
-      setIsLoading(false);
     };
 
     checkSession();
   }, [setSession]);
 
+
+  if (isLoading) {
+   // Optionally, return a loading screen while checking session
+   return <LoadingScreen />;
+  }
 
 
 
