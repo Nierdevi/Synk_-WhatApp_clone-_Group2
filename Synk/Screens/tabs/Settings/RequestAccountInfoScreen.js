@@ -9,6 +9,16 @@ const RequestAccountInfoScreen = ({navigation}) => {
   const [autoUpdate, setAutoUpdate] = useState(false);
   const [notifyUpdate, setNotifyUpdate] = useState(true);
 
+  const [isEnabled, setIsEnabled] = useState(false);
+  const [isEnabled1, setIsEnabled1] = useState(false);
+
+  const toggleSwitch = () => {
+    setIsEnabled(previousState => !previousState);
+  };
+  const toggleSwitch1 =() => {
+    setIsEnabled1(previousState => !previousState);
+  };
+
   const handlePress = () => {
     // Handle the link press
     Alert.alert('Learn more pressed');
@@ -38,15 +48,18 @@ const RequestAccountInfoScreen = ({navigation}) => {
             <Text style={styles.Text}>Learn more</Text>
           </TouchableOpacity>
         </View>
-        <View style={styles.pad1}>
+        <TouchableOpacity onPress={toggleSwitch} style={styles.pad1}>
           <Entypo name="back-in-time" size={24} color="black" style={{paddingRight: 20,}} />
           <Text style={styles.bold}>Create reports automatically</Text>
-          <Switch
-            value={autoUpdate}
-            onValueChange={(value) => setAutoUpdate(value)}
-            style={styles.switch}
-          />
-        </View>
+            <Switch
+              trackColor={{ false: '#767577', true: '#ffffff' }}
+              thumbColor={isEnabled ? '#ffffff' : '#f4f3f4'}
+              ios_backgroundColor="#3e3e3e"
+              onValueChange={toggleSwitch}
+              value={isEnabled}
+              style={styles.switch}
+            />
+        </TouchableOpacity>
         <View style={styles.pad}>
           <Text style={styles.pod}>A new report will be created every month.</Text>
           <TouchableOpacity onPress={handlePress}>
@@ -65,15 +78,18 @@ const RequestAccountInfoScreen = ({navigation}) => {
             <Text style={styles.Text2}>Learn more</Text>
           </TouchableOpacity>
         </View>
-        <View style={styles.pad1}>
+        <TouchableOpacity onPress={toggleSwitch1} style={styles.pad1}>
           <Entypo name="back-in-time" size={24} color="black" style={{paddingRight: 20,}} />
           <Text style={styles.bold}>Create reports automatically</Text>
-          <Switch
-            value={autoUpdate}
-            onValueChange={(value) => setAutoUpdate(value)}
-            style={styles.switch}
-          />
-        </View>
+            <Switch
+              trackColor={{ false: '#767577', true: '#ffffff' }}
+              thumbColor={isEnabled ? '#ffffff' : '#f4f3f4'}
+              ios_backgroundColor="#3e3e3e"
+              onValueChange={toggleSwitch}
+              value={isEnabled1}
+              style={styles.switch}
+            />
+        </TouchableOpacity>
         <View>
           <Text style={styles.pod}>A new report will be created every month.</Text>
           <TouchableOpacity onPress={handlePress}>

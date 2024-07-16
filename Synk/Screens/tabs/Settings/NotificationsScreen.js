@@ -18,7 +18,33 @@ const NotificationsScreen = () => {
   const menuItems = [
     { label: 'Reset notification settings', onPress: () => {} },
   ];
+
+  const [isEnabled, setIsEnabled] = useState(false);
+  const [isEnabled1, setIsEnabled1] = useState(false);
+  const [isEnabled2, setIsEnabled2] = useState(false);
+  const [isEnabled3, setIsEnabled3] = useState(false);
+  const [isEnabled4, setIsEnabled4] = useState(false);
+
+  const toggleSwitch = () => {
+    setIsEnabled(previousState => !previousState);
+  };
+
+  const toggleSwitch1 = () => {
+    setIsEnabled1(previousState => !previousState);
+  };
+
+  const toggleSwitch2 = () => {
+    setIsEnabled2(previousState => !previousState);
+  };
+
+  const toggleSwitch3 = () => {
+    setIsEnabled3(previousState => !previousState);
+  };
   
+  const toggleSwitch4 = () => {
+    setIsEnabled4(previousState => !previousState);
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -37,18 +63,21 @@ const NotificationsScreen = () => {
       </View>
 
       <ScrollView>
-        <View style={styles.him}>
-          <TouchableOpacity style={styles.mine1}>
+        <TouchableOpacity onPress={toggleSwitch} style={styles.him}>
+          <View style={styles.mine1}>
             <Text style={styles.you}>Conversation tones</Text>
             <Text style={styles.text}>Play sounds for incoming and outgoing</Text>
             <Text style={styles.text1}>messages.</Text>
-          </TouchableOpacity>
+          </View>
           <Switch
-            value={autoUpdate}
-            onValueChange={(value) => setAutoUpdate(value)}
-            style={styles.switch1}
+            trackColor={{ false: '#767577', true: '#ffffff' }}
+            thumbColor={isEnabled ? '#ffffff' : '#f4f3f4'}
+            ios_backgroundColor="#3e3e3e"
+            onValueChange={toggleSwitch}
+            value={isEnabled}
+            style={styles.switch}
           />
-        </View>
+        </TouchableOpacity>
 
         <View style={styles.pad}>
           <Text style={styles.him1}>Messages</Text>
@@ -73,31 +102,37 @@ const NotificationsScreen = () => {
             </TouchableOpacity>
           </View>
 
-          <View style={styles.him0}>
-            <TouchableOpacity style={styles.mine2}>
+          <TouchableOpacity onPress={toggleSwitch1} style={styles.him0}>
+            <View style={styles.mine2}>
               <Text style={styles.you}>Use high priority notifications</Text>
               <Text style={styles.text}>Show previews of notifications at the top</Text>
               <Text style={styles.text1}>of the screen.</Text>
-            </TouchableOpacity>
+            </View>
             <Switch
-              value={autoUpdate}
-              onValueChange={(value) => setAutoUpdate(value)}
-              style={styles.switch}
-            />
-          </View>
+            trackColor={{ false: '#767577', true: '#ffffff' }}
+            thumbColor={isEnabled1 ? '#ffffff' : '#f4f3f4'}
+            ios_backgroundColor="#3e3e3e"
+            onValueChange={toggleSwitch1}
+            value={isEnabled1}
+            style={styles.switch}
+          />
+          </TouchableOpacity>
         </View>
-        <View style={styles.him}>
-          <TouchableOpacity style={styles.mine1}>
+        <TouchableOpacity onPress={toggleSwitch2} style={styles.him}>
+          <View style={styles.mine1}>
             <Text style={styles.you}>Reaction Notification</Text>
             <Text style={styles.text}>Show notifications for reactions to</Text>
             <Text style={styles.text1}>messages you send.</Text>
-          </TouchableOpacity>
+          </View>
           <Switch
-            value={autoUpdate}
-            onValueChange={(value) => setAutoUpdate(value)}
+            trackColor={{ false: '#767577', true: '#ffffff' }}
+            thumbColor={isEnabled2 ? '#ffffff' : '#f4f3f4'}
+            ios_backgroundColor="#3e3e3e"
+            onValueChange={toggleSwitch2}
+            value={isEnabled2}
             style={styles.switch2}
           />
-        </View>
+        </TouchableOpacity>
 
         <View style={styles.pad}>
           <Text style={styles.him1}>Groups</Text>
@@ -121,33 +156,39 @@ const NotificationsScreen = () => {
               <Text style={styles.him1}>Blue</Text>
             </TouchableOpacity>
 
-            <View style={styles.him0}>
-              <TouchableOpacity style={styles.mine2}>
+            <TouchableOpacity onPress={toggleSwitch3} style={styles.him0}>
+              <View style={styles.mine2}>
                 <Text style={styles.you}>Use high priority notifications</Text>
                 <Text style={styles.text}>Show previews of notifications at the top</Text>
                 <Text style={styles.text1}>of the screen.</Text>
-              </TouchableOpacity>
+              </View>
               <Switch
-                value={autoUpdate}
-                onValueChange={(value) => setAutoUpdate(value)}
+                trackColor={{ false: '#767577', true: '#ffffff' }}
+                thumbColor={isEnabled3 ? '#ffffff' : '#f4f3f4'}
+                ios_backgroundColor="#3e3e3e"
+                onValueChange={toggleSwitch3}
+                value={isEnabled3}
                 style={styles.switch3}
               />
-            </View>
+            </TouchableOpacity>
           </View>
         </View>
 
-        <View style={styles.him}>
-            <TouchableOpacity style={styles.mine1}>
+        <TouchableOpacity onPress={toggleSwitch4} style={styles.him}>
+            <View style={styles.mine1}>
               <Text style={styles.you}>Reaction Notification</Text>
               <Text style={styles.text}>Show notifications for reactions to</Text>
               <Text style={styles.text1}>messages you send.</Text>
-            </TouchableOpacity>
-            <Switch
-              value={autoUpdate}
-              onValueChange={(value) => setAutoUpdate(value)}
-              style={styles.switch4}
-            />
-          </View>
+            </View>
+              <Switch
+                trackColor={{ false: '#767577', true: '#ffffff' }}
+                thumbColor={isEnabled4 ? '#ffffff' : '#f4f3f4'}
+                ios_backgroundColor="#3e3e3e"
+                onValueChange={toggleSwitch4}
+                value={isEnabled4}
+                style={styles.switch3}
+              />
+          </TouchableOpacity>
 
         <View style={styles.pad}>
           <Text style={styles.him1}>Calls</Text>
@@ -242,7 +283,7 @@ const styles = StyleSheet.create({
     marginLeft: 50,
   },
   switch2: {
-    marginLeft: 70,
+    marginLeft: 75,
   },
   switch3: {
     marginLeft: 35,

@@ -1,39 +1,28 @@
 import { StyleSheet, Text, View, Pressable } from 'react-native';
 import React from 'react';
-import { Ionicons, MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 
-const EmailScreen = ({navigation}) => {
+const LiveLocationScreen = ({navigation}) => {
   return (
     <View style={styles.container}>
         <View style={styles.header}>
             <Pressable onPress={() => navigation.goBack()}>
                 <Ionicons name="arrow-back" size={24} color="#000" />
             </Pressable>
-            <Text style={styles.headerTitle}>Email address</Text>
+            <Text style={styles.headerTitle}>Live location</Text>
         </View>
         <View style={styles.head}>
             <View style={styles.me}>
-                <MaterialIcons name="email" size={60} style={styles.lock} />
-                <Text style={styles.grey}>Email helps you access your account. It isn't visible to</Text>
-                <Text style={styles.grey}>others.</Text>
-            </View>
-            <View>
-                <Text style={styles.grey}>Email</Text>
-                <View style={styles.you}>
-                    <Text style={styles.bold}>SynkUser@gmail.com</Text>
-                    <MaterialCommunityIcons name="draw-pen" size={24} color="black" style={styles.pen} />
-                </View>
-                <View style={styles.you}>
-                    <Ionicons name="checkmark-circle-outline" size={24} color="green" />
-                    <Text style={{color: 'green', top: 3,}}>Verified</Text>
-                </View>
+            <MaterialIcons name="location-on" size={60} style={styles.location} />
+                <Text style={styles.grey}>You aren't sharing live loction in any chats</Text>
             </View>
         </View>
+        <Text style={styles.grey1}>Live location requires background location. You can manage this in your device settings.</Text>
     </View>
   )
 }
 
-export default EmailScreen
+export default LiveLocationScreen
 
 const styles = StyleSheet.create({
     container:{
@@ -51,26 +40,32 @@ const styles = StyleSheet.create({
         paddingLeft: 10,
     },
     headerTitle: {
-        fontSize: 28,
+        fontSize: 24,
         fontWeight: "bold",
         marginLeft: 10,
         paddingRight: 100,
     },
     head:{
-         padding: 20,
+        paddingTop: 20,
+        borderBottomWidth: StyleSheet.hairlineWidth,
+        borderBottomColor: 'Lightgray',
     },
     me:{
         alignItems:'center',
         paddingTop: 20,
-        paddingBottom: 30,
+        paddingBottom: 20,
     },
-    lock:{
+    location:{
         color: 'black',
-        paddingBottom: 10,
+        paddingBottom: 20,
     },
     grey:{
         color: 'grey',
         fontWeight: 'bold',
+    },
+    grey1:{
+        color: 'grey',
+        padding: 20,
     },
     pen:{
         height: 22,

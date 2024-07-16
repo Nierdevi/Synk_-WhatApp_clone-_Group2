@@ -11,6 +11,22 @@ const SChatScreen = () => {
 
     const [autoUpdate, setAutoUpdate] = useState(false);
     const [notifyUpdate, setNotifyUpdate] = useState(true);
+    
+    const [isEnabled, setIsEnabled] = useState(false);
+    const [isEnabled1, setIsEnabled1] = useState(false);
+    const [isEnabled2, setIsEnabled2] = useState(false);
+
+    const toggleSwitch = () => {
+        setIsEnabled(previousState => !previousState);
+    };
+
+    const toggleSwitch1 = () => {
+        setIsEnabled1(previousState => !previousState);
+    };
+
+    const toggleSwitch2 = () => {
+        setIsEnabled2(previousState => !previousState);
+    };2
 
     return (
     <View style={styles.container}>
@@ -45,30 +61,36 @@ const SChatScreen = () => {
             <View style={styles.her}>
                 <View style={styles.pad}>
                     <Text style={styles.him}>Chat settings</Text>
-                    <View style={styles.head}>
+                    <TouchableOpacity onPress={toggleSwitch} style={styles.head}>
                         <View style={{left: 45,}}>
                             <Text style={styles.you}>Enter is send</Text>
                             <Text style={styles.him}>Enter key will send your message</Text>
                         </View>
                         <Switch
-                            value={autoUpdate}
-                            onValueChange={(value) => setAutoUpdate(value)}
+                            trackColor={{ false: '#767577', true: '#ffffff' }}
+                            thumbColor={isEnabled ? '#ffffff' : '#f4f3f4'}
+                            ios_backgroundColor="#3e3e3e"
+                            onValueChange={toggleSwitch}
+                            value={isEnabled}
                             style={styles.switch}
                         />
-                    </View>
+                    </TouchableOpacity>
 
-                    <View style={styles.head}>
+                    <TouchableOpacity onPress={toggleSwitch1} style={styles.head}>
                         <View style={{left: 45,}}>
                             <Text style={styles.you}>Media visibility</Text>
                             <Text style={styles.him1}>Show newly downloaded media in your</Text>
                             <Text style={styles.him1}>device's gallery</Text>
                         </View>
                         <Switch
-                            value={autoUpdate}
-                            onValueChange={(value) => setAutoUpdate(value)}
+                            trackColor={{ false: '#767577', true: '#ffffff' }}
+                            thumbColor={isEnabled1 ? '#ffffff' : '#f4f3f4'}
+                            ios_backgroundColor="#3e3e3e"
+                            onValueChange={toggleSwitch1}
+                            value={isEnabled1}
                             style={styles.switch1}
                         />
-                    </View>
+                    </TouchableOpacity>
 
                     <View style={styles.head}>
                         <View style={{left: 45,}}>
@@ -82,7 +104,7 @@ const SChatScreen = () => {
             <View style={styles.her}>
                 <View style={styles.pad}>
                     <Text style={styles.him}>Archived chats</Text>
-                    <View style={styles.head}>
+                    <TouchableOpacity onPress={toggleSwitch2} style={styles.head}>
                         <View style={{left: 45,}}>
                             <Text style={styles.you}>Keep chats archived</Text>
                             <Text style={styles.him1}>Archived chats will remain</Text>
@@ -90,11 +112,14 @@ const SChatScreen = () => {
                             <Text style={styles.him1}>message</Text>
                         </View>
                         <Switch
-                            value={autoUpdate}
-                            onValueChange={(value) => setAutoUpdate(value)}
+                            trackColor={{ false: '#767577', true: '#ffffff' }}
+                            thumbColor={isEnabled2 ? '#ffffff' : '#f4f3f4'}
+                            ios_backgroundColor="#3e3e3e"
+                            onValueChange={toggleSwitch1}
+                            value={isEnabled2}
                             style={styles.switch}
                         />
-                    </View>
+                    </TouchableOpacity>
                 </View>
             </View>
 

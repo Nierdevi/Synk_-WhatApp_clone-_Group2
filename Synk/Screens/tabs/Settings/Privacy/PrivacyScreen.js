@@ -1,13 +1,55 @@
 import { StyleSheet, Text, View,Pressable,ScrollView } from 'react-native';
-import React from 'react';
-import { useNavigation } from '@react-navigation/native';
+import React, {useState} from 'react';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { Switch, TouchableOpacity } from 'react-native-gesture-handler';
 
 
-const PrivacyScreen = () => {
+const PrivacyScreen = ({navigation}) => {
+    const [isEnabled, setIsEnabled] = useState(false);
 
-    const navigation = useNavigation();
+    const toggleSwitch = () => {
+        setIsEnabled(previousState => !previousState);
+    };
+
+    const handleNavigationToLastSeen = () =>{
+        navigation.navigate('LastSeen');
+    };
+
+    const handleNavigationToProfilePhoto = () =>{
+        navigation.navigate('ProfilePhoto');
+    };
+
+    const handleNavigationToAbout = () =>{
+        navigation.navigate('About');
+    };
+
+    const handleNavigationToDefault = () =>{
+        navigation.navigate('Default');
+    };
+
+    const handleNavigationToGroups = () =>{
+        navigation.navigate('Groups');
+    };
+
+    const handleNavigationToLiveLocation = () =>{
+        navigation.navigate('LiveLocation');
+    };
+
+    const handleNavigationToCalls = () =>{
+        navigation.navigate('Calls');
+    };
+
+    const handleNavigationToAppLock = () =>{
+        navigation.navigate('AppLock');
+    };
+
+    const handleNavigationToChatLock = () =>{
+        navigation.navigate('ChatLock');
+    };
+
+    const handleNavigationToAdvanced = () =>{
+        navigation.navigate('Advanced');
+    };
 
   return (
     <View style={styles.container}>
@@ -24,17 +66,17 @@ const PrivacyScreen = () => {
                     <Text style={styles.text}>Who can see my personal info</Text>
                 </View>
 
-                <TouchableOpacity style={styles.mine}>
+                <TouchableOpacity style={styles.mine} onPress={handleNavigationToLastSeen}>
                     <Text style={styles.you}>Last seen and online</Text>
                     <Text style={styles.text}>Nobody</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.mine}>
+                <TouchableOpacity style={styles.mine} onPress={handleNavigationToProfilePhoto}>
                     <Text style={styles.you}>Profile Photo</Text>
                     <Text style={styles.text}>Everyone</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.mine}>
+                <TouchableOpacity style={styles.mine} onPress={handleNavigationToAbout}>
                     <Text style={styles.you}>About</Text>
                     <Text style={styles.text}>Everyone</Text>
                 </TouchableOpacity>
@@ -44,40 +86,46 @@ const PrivacyScreen = () => {
                     <Text style={styles.text}>20 contacts excluded</Text>
                 </TouchableOpacity>
             </View>
-            <View style={styles.him}>
-                <TouchableOpacity style={styles.mine1}>
-                    <Text style={styles.you}>Read receipts</Text>
-                    <Text style={styles.text}>If turned off, you won't send or recieve Read</Text>
-                    <Text style={styles.text}>receipts. Read receipts are always sent for</Text>
-                    <Text style={styles.text}>group chats.</Text>
-                </TouchableOpacity>
-                <Switch/>
-            </View>
-
+            <TouchableOpacity onPress={toggleSwitch} style={styles.can}>
+                <View style={{flexDirection: 'row', alignItems: 'center',}}>
+                    <Text style={styles.you}>Read reciepts</Text>
+                    <View style={styles.switchContainer}>
+                        <Switch
+                            trackColor={{ false: '#767577', true: '#ffffff' }}
+                            thumbColor={isEnabled ? '#ffffff' : '#f4f3f4'}
+                            ios_backgroundColor="#3e3e3e"
+                            onValueChange={toggleSwitch}
+                            value={isEnabled}
+                        />
+                    </View>
+                </View>
+                <Text style={styles.pod}>If turned off, you won't send or recieve Read reciepts. Read receipts are always sent for group chats.</Text>
+            </TouchableOpacity> 
+            
             <View style={styles.head}>
                 <Text style={styles.text2}>Disappearing messages</Text>
-                <View style={{flexDirection: 'row',}}>
-                    <TouchableOpacity>
+                <TouchableOpacity style={{flexDirection: 'row',}} onPress={handleNavigationToDefault}>
+                    <View>
                         <Text style={styles.you}>Default message timer</Text>
-                        <Text style={styles.text}>Start new chats with disappearing messages set</Text>
-                        <Text style={styles.text}>to your timer</Text>
-                    </TouchableOpacity>
+                        <Text style={styles.text0}>Start new chats with disappearing messages set</Text>
+                        <Text style={styles.text0}>to your timer</Text>
+                    </View>
                     <Text style={styles.text1}>Off</Text>
-                </View>
+                </TouchableOpacity>
             </View>
 
             <View style={styles.her}>
-            <TouchableOpacity style={styles.mine}>
+            <TouchableOpacity style={styles.mine} onPress={handleNavigationToGroups}>
                     <Text style={styles.you}>Groups</Text>
                     <Text style={styles.text}>Everyone</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.mine}>
+            <TouchableOpacity style={styles.mine} onPress={handleNavigationToLiveLocation}>
                     <Text style={styles.you}>Live location</Text>
                     <Text style={styles.text}>None</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.mine}>
+            <TouchableOpacity style={styles.mine} onPress={handleNavigationToCalls}>
                     <Text style={styles.you}>Calls</Text>
                     <Text style={styles.text}>Silence unknown callers</Text>
             </TouchableOpacity>
@@ -87,17 +135,17 @@ const PrivacyScreen = () => {
                     <Text style={styles.text}>29</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.mine}>
+            <TouchableOpacity style={styles.mine} onPress={handleNavigationToAppLock}>
                     <Text style={styles.you}>App lock</Text>
-                    <Text style={styles.text}>Everyone</Text>
+                    <Text style={styles.text}>Disabled</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.mine}>
+            <TouchableOpacity style={styles.mine} onPress={handleNavigationToChatLock}>
                     <Text style={styles.you}>Chat lock</Text>
                     <Text style={styles.text}></Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.mine}>
+            <TouchableOpacity style={styles.mine} onPress={handleNavigationToAdvanced}>
                     <Text style={styles.you}>Advanced</Text>
                     <Text style={styles.text}>Protect IP address in calls, Disable link previews</Text>
             </TouchableOpacity>
@@ -147,6 +195,11 @@ const styles = StyleSheet.create({
         fontSize: 13,
         color: 'grey',
     },
+    text0:{
+        fontSize: 13,
+        color: 'grey',
+        lineHeight: 15
+    },
     text1:{
         fontSize: 13,
         color: 'grey',
@@ -168,17 +221,33 @@ const styles = StyleSheet.create({
         paddingRight:20,
         
     },
+    switchContainer: {
+        marginLeft: 'auto', // Pushes the switch to the right end
+    },
     him:{
         flexDirection: "row",
-        borderBottomWidth: StyleSheet.hairlineWidth,
-        borderBottomColor: 'Lightgray',
     },
     her:{
-        padding: 20,
+        paddingTop: 20,
+        paddingLeft: 20,
+        paddingRight: 20,
     },
     head:{
         padding: 20,
         borderBottomWidth: StyleSheet.hairlineWidth,
+        borderTopWidth: StyleSheet.hairlineWidth,
         borderBottomColor: 'Lightgray',
+        borderTopColor: 'Lightgray',
+    },
+    can: {
+        paddingLeft: 20,
+        paddingRight: 20,
+    },
+    switchContainer: {
+        marginLeft: 'auto', // Pushes the switch to the right end
+    },
+    pod:{
+        paddingRight: 80,
+        top: -15,
     },
 })

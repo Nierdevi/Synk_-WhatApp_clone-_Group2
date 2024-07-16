@@ -8,6 +8,11 @@ const SecurityNotificationsScreen = ({navigation}) => {
 
     const [autoUpdate, setAutoUpdate] = useState(false);
     const [notifyUpdate, setNotifyUpdate] = useState(true);
+    const [isEnabled, setIsEnabled] = useState(false);
+
+    const toggleSwitch = () => {
+        setIsEnabled(previousState => !previousState);
+    };
 
     const handlePress = () => {
         // Handle the link press
@@ -65,13 +70,15 @@ const SecurityNotificationsScreen = ({navigation}) => {
             </View>
         </View>
 
-        <View style={{padding: 20,}}>
+        <TouchableOpacity onPress={toggleSwitch} style={{padding: 20,}}>
             <View style={{flexDirection: 'row',}}>
                 <Text style={{fontWeight: 'bold', fontSize: 15,}}>Show security notifications on this device</Text>
                 <Switch
-                    value={autoUpdate}
-                    onValueChange={(value) => setAutoUpdate(value)}
-                    style={styles.switch1}
+                    trackColor={{ false: '#767577', true: '#ffffff' }}
+                    thumbColor={isEnabled ? '#ffffff' : '#f4f3f4'}
+                    ios_backgroundColor="#3e3e3e"
+                    onValueChange={toggleSwitch}
+                    value={isEnabled}
                 />
             </View>
             <Text style={styles.grey1}>Get notified when your security code changes</Text>
@@ -83,7 +90,7 @@ const SecurityNotificationsScreen = ({navigation}) => {
             <TouchableOpacity onPress={handlePress}>
                 <Text style={styles.Text2}>Learn more</Text>
             </TouchableOpacity>
-        </View>
+        </TouchableOpacity>
     </View>
   );
 };
