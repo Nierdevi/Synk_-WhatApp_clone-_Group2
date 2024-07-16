@@ -18,38 +18,72 @@ import { Ionicons,Feather, FontAwesome5   } from '@expo/vector-icons';
 
 //poll
 <Ionicons name="bar-chart-outline" size={24} color="black" />
+const sendMessage = async (senderId, receiverId, messageText = '', mediaUri = '', type = 'text') => {
+  try {
+    let chatRoom = await getExistingChat(senderId, receiverId);
+    if (!chatRoom) {
+      chatRoom = await createChat(senderId, receiverId);
+    }
+    const chatId = chatRoom.$id;
 
-const sendMessage = async (senderId, receiverId, messageText = '', mediaUrl = '', type = 'text') => {
-    try {
-      let chatRoom = await getExistingChat(senderId, receiverId);
-      if (!chatRoom) {
-        chatRoom = await createChat(senderId, receiverId);
-      }
-      const chatId = chatRoom.$id;
-  
-      const response = await databases.createDocument(
-        '6685cbc40036f4c6a5ad',
-        '6685e691003e5ceef040',
-        ID.unique(),
+    let mediaUrl = '';
+
+    // If there's a mediaUri, upload the media and get the URL
+    if (mediaUri) {
+      console.log("media uri: ",mediaUri)
+      const formData = new FormData();
+      formData.append('fileId', ID.unique());
+      formData.append('file', {
+        uri: mediaUri,
+        name: `chatMedia_${senderId}_${new Date().getTime()}.jpg`,
+        type: 'image/jpeg', // Adjust MIME type according to your media type
+      });
+      // console.log("formData: ",formData)
+
+      const uploadResponse = await fetch(
+        'https://cloud.appwrite.io/v1/storage/buckets/669270af0034381c55c3/files',
         {
-          chatId,
-          senderId,
-          receiverId,
-          messageText,
-          mediaUrl,
-          type,
-          createdAt: new Date().toISOString(),
+          method: 'POST',
+          headers: {
+            'X-Appwrite-Project': '66795f4000158aa9d802',
+            'Content-Type': 'multipart/form-data',
+          },
+          body: formData,
         }
       );
-  
-      await addMessagedContact(senderId, receiverId);
-  
-      return response;
-    } catch (error) {
-      handleNetworkError(error);
-      return null;
+      console.log("uploaded response: ",uploadResponse)
+      const uploadData = await uploadResponse.json();
+      if (!uploadResponse.ok) {
+        throw new Error(uploadData.message || 'Failed to upload media');
+      }
+
+      mediaUrl = `https://cloud.appwrite.io/v1/storage/buckets/669270af0034381c55c3/files/${uploadData.$id}/view?project=66795f4000158aa9d802`;
     }
-  };
+    console.log("mediaUrl uploaded: ",mediaUrl)
+    const response = await databases.createDocument(
+      '6685cbc40036f4c6a5ad',
+      '6685e691003e5ceef040',
+      ID.unique(),
+      {
+        chatId,
+        senderId,
+        receiverId,
+        messageText,
+        mediaUrl,
+        type,
+        createdAt: new Date().toISOString(),
+      }
+    );
+
+    await addMessagedContact(senderId, receiverId);
+
+    return response;
+  } catch (error) {
+    console.log(error)
+    // handleNetworkError(error);
+    return null;
+  }
+};
 
 
 
@@ -229,3 +263,97 @@ const styles = StyleSheet.create({
 });
 
 export default ChatList;
+
+
+
+import { ID } from 'appwrite';
+
+// Helper function to determine media type and extension
+const getMediaTypeAndExtension = (mediaUri) => {
+  const extension = mediaUri.split('.').pop().toLowerCase();
+  let mediaType = '';
+  let mimeType = '';
+
+  switch (extension) {
+    case 'jpg':
+    case 'jpeg':
+    case 'png':
+      mediaType = 'image';
+      mimeType = `image/${extension === 'jpg' ? 'jpeg' : extension}`;
+      break;
+    case 'mp4':
+    case 'mov':
+    case 'mkv':
+      mediaType = 'video';
+      mimeType = `video/${extension}`;
+      break;
+    default:
+      throw new Error('Unsupported media type');
+  }
+
+  return { mediaType, mimeType, extension };
+};
+
+// Updated sendMessage function
+const sendMessage = async (senderId, recipientId, messageText, mediaUri, mediaType) => {
+  const payload = {
+    senderId,
+    recipientId,
+    messageText,
+    timestamp: new Date().toISOString(),
+  };
+
+  if (mediaUri) {
+    console.log("media uri: ", mediaUri);
+    const { mimeType, extension } = getMediaTypeAndExtension(mediaUri);
+    const formData = new FormData();
+    formData.append('fileId', ID.unique());
+    formData.append('file', {
+      uri: mediaUri,
+      name: `chatMedia_${senderId}_${new Date().getTime()}.${extension}`,
+      type: mimeType,
+    });
+
+    try {
+      const response = await fetch('YOUR_MEDIA_UPLOAD_ENDPOINT', {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to upload media');
+      }
+
+      const responseData = await response.json();
+      payload.mediaUri = responseData.fileUrl; // Adjust this based on your API response
+      payload.mediaType = mediaType;
+    } catch (error) {
+      console.error('Media upload error:', error);
+      return null;
+    }
+  }
+
+  // Send the message payload to your backend
+  try {
+    const response = await fetch('YOUR_MESSAGE_SEND_ENDPOINT', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to send message');
+    }
+
+    const responseData = await response.json();
+    return responseData;
+  } catch (error) {
+    console.error('Message send error:', error);
+    return null;
+  }
+};

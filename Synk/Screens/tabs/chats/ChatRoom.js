@@ -21,10 +21,20 @@ const ChatRoom = ({ route,navigation }) => {
   const [messages, setMessages] = useState([]);
   const [lastMessage, setLastMessage] = useState(null);
   const [userData, setUserData] = useState(null);
+  const [menuVisible, setMenuVisible] = useState(false);
+
 
   const recipientPhoneNumber = contact.normalizedPhoneNumbers[0];
 
 
+  const menuItems = [
+    { label: 'Report or Block', onPress: () => {} },
+    { label: 'Search', onPress: () => {} },
+    { label: 'Mute notifications', onPress: () => {} },
+    { label: 'Disappering messages', onPress: () => handleNavigateToSettings() }, // Navigate to SettingsScreen
+    { label: 'Media,Links and docs', onPress: () => {} },
+    { label: 'Clear chat', onPress: () => {} },
+  ]; 
 // console.log("user data: ",userData)
 // console.log("user data: ",profilePicture)
   useLayoutEffect(() => {
@@ -55,7 +65,7 @@ const ChatRoom = ({ route,navigation }) => {
           <TouchableOpacity style={styles.iconButton}>
             <Feather name="video" size={24} color="black" />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.iconButton}>
+          <TouchableOpacity style={styles.iconButton} onPress={()=>{setMenuVisible(true)}}>
             <MaterialIcons name="more-vert" size={24} color="black" />
           </TouchableOpacity>
         </View>
@@ -107,7 +117,18 @@ const ChatRoom = ({ route,navigation }) => {
 
   const handleSendMessage = async ({ text, mediaUri }) => {
     console.log(mediaUri)
-    const response = await sendMessage(currentUserPhoneNumber, recipientPhoneNumber, text, mediaUri, mediaUri ? 'media' : 'text');
+    let mediaType = 'text';
+  
+    if (mediaUri) {
+      const fileExtension = mediaUri.split('.').pop().toLowerCase();
+      if (['jpg', 'jpeg', 'png'].includes(fileExtension)) {
+        mediaType = 'image';
+      } else if (['mp4', 'mov', 'mkv'].includes(fileExtension)) {
+        mediaType = 'video';
+      }
+    }
+    console.log("media type: ",mediaType)
+    const response = await sendMessage(currentUserPhoneNumber, recipientPhoneNumber, text, mediaUri, mediaType);
     
     if (response) {
       setMessages((prevMessages) => [response, ...prevMessages]);
@@ -121,6 +142,7 @@ const ChatRoom = ({ route,navigation }) => {
       behavior={Platform.OS === 'ios' ? 'padding' : 0}
       keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0}
     >
+      <PopupMenu visible={menuVisible} onClose={() => setMenuVisible(false)} menuItems={menuItems} style={styles.popupMenu} />
     <StatusBar
         backgroundColor="transparent"
         translucent={true}
@@ -134,6 +156,9 @@ const ChatRoom = ({ route,navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    // backgroundColor:'pink',
+    position:'relative',
+    width:wp('100%')
   },
   headerLeft: {
     flexDirection: 'row',
@@ -166,7 +191,16 @@ const styles = StyleSheet.create({
     flex:1,
     height:'100%',
     justifyContent:'center',
-  }
+  },
+  popupMenu: {
+    position: 'absolute',
+    marginTop: 20,
+    backgroundColor: 'white',
+    width: wp("47%"),
+    borderRadius: 10,
+    elevation: 2,
+    justifyContent:'flex-end'
+  },
 });
 
 export default ChatRoom;

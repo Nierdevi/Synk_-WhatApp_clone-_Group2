@@ -30,7 +30,7 @@ const getExistingChat = async (senderPhoneNumber, recipientPhoneNumber) => {
       return null;
     }
   } catch (error) {
-    handleNetworkError(error);
+    // handleNetworkError(error);
     return null;
   }
 };
@@ -55,7 +55,7 @@ const createChat = async (senderPhoneNumber, recipientPhoneNumber) => {
 
     return response;
   } catch (error) {
-    handleNetworkError(error);
+    // handleNetworkError(error);
     return null;
   }
 };
@@ -73,12 +73,41 @@ const sendMessage = async (senderId, receiverId, messageText = '', mediaUri = ''
     // If there's a mediaUri, upload the media and get the URL
     if (mediaUri) {
       console.log("media uri: ",mediaUri)
+
+      const fileExtension = mediaUri.split('.').pop().toLowerCase();
+      console.log("file extention")
+      let mimeType;
+
+      switch (fileExtension) {
+        case 'jpg':
+        case 'jpeg':
+          mimeType = 'image/jpeg';
+          break;
+        case 'png':
+          mimeType = 'image/png';
+          break;
+        case 'mp4':
+          mimeType = 'video/mp4';
+          break;
+        case 'mov':
+          mimeType = 'video/quicktime';
+          break;
+        case 'mkv':
+          mimeType = 'video/x-matroska';
+          break;
+        default:
+          throw new Error('Unsupported media type');
+      }
+
+      console.log("file extention: ",fileExtension)
+      console.log("mimitype: ",mimeType)
+
       const formData = new FormData();
       formData.append('fileId', ID.unique());
       formData.append('file', {
         uri: mediaUri,
-        name: `chatMedia_${senderId}_${new Date().getTime()}.jpg`,
-        type: 'image/jpeg', // Adjust MIME type according to your media type
+        name: `chatMedia_${senderId}_${new Date().getTime()}.${fileExtension}`,
+        type: mimeType
       });
       // console.log("formData: ",formData)
 
@@ -122,7 +151,7 @@ const sendMessage = async (senderId, receiverId, messageText = '', mediaUri = ''
     return response;
   } catch (error) {
     console.log(error)
-    handleNetworkError(error);
+    // handleNetworkError(error);
     return null;
   }
 };
@@ -243,9 +272,9 @@ const fetchMessagedContacts = async (currentUserPhoneNumber) => {
     return Array.from(uniqueContacts.values());
   } catch (error) {
     console.error('Failed to fetch messaged contacts:', error);
-    if (error.message.includes('Network request failed')) {
-      // Alert.alert('Network Error', 'Please check your network connection.');
-    }
+    // if (error.message.includes('Network request failed')) {
+    //   // Alert.alert('Network Error', 'Please check your network connection.');
+    // }
     return [];
   }
 };
@@ -268,7 +297,7 @@ const fetchLastMessage = async (chatId) => {
       return null; // Return null if no message found
     }
   } catch (error) {
-    handleNetworkError(error);
+    // handleNetworkError(error);
     return null;
   }
 };

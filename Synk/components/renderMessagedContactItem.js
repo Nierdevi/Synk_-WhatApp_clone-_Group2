@@ -110,6 +110,7 @@ contactItem: {
     borderBottomWidth: 1,
     borderBottomColor: "#f2f2f2",
     // backgroundColor:'yellow',
+    width:wp('100%')
 },
 contactDetails: {
     justifyContent: "center",
@@ -118,7 +119,8 @@ contactDetails: {
 upperContactdetails: {
     justifyContent: "space-between",
     flexDirection: "row",
-    // backgroundColor:'red'
+    // backgroundColor:'red',
+    width:wp('80%')
 },
 contactName: {
     fontSize: hp("2.5%"),
