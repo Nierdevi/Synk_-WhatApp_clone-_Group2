@@ -5,11 +5,10 @@ import * as ImagePicker from 'expo-image-picker';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { Ionicons, MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
-import AppLogo from '../assets/AppLogo.png';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { addUsernameToDatabase, getcurrentUserData,addAboutToDatabase,getUserProfilePicture,uploadProfilePicture } from '../backend/userService';
-import { getUser } from '../constants/userContext';
-import { primaryColors, SecondaryColors } from '../constants/colors';
+import { addUsernameToDatabase, getcurrentUserData,addAboutToDatabase,getUserProfilePicture,uploadProfilePicture } from '../../../backend/userService';
+import { primaryColors,SecondaryColors } from '../../../constants/colors';
+import { getUser } from '../../../constants/userContext';
 
 const ProfileScreen = () => {
   const navigation = useNavigation();
@@ -271,13 +270,13 @@ const styles = StyleSheet.create({
         borderBottomColor: 'Lightgray',
         backgroundColor: 'white',
         paddingTop: 50,
+        paddingLeft: 10,
     },
     headerTitle: {
         fontSize: 28,
         fontWeight: "bold",
         marginLeft: 10,
         paddingRight: 250,
-        paddingBottom: 10,
     },
     headerImage: {
         width: 170,
@@ -351,8 +350,9 @@ const styles = StyleSheet.create({
     },
     pen1:{
       height: 22,
-      right: -85,
+      right: -180,
       bottom: -6,
+      color:"black",
     },
     profileValueInput:{
       backgroundColor:'red',

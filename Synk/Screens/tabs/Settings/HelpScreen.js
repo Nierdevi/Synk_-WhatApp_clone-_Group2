@@ -3,7 +3,7 @@ import React from 'react';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
-import { SecondaryColors } from '../constants/colors';
+import { SecondaryColors } from '../../../constants/colors';
 
 const HelpScreen = () => {
   const navigation = useNavigation();
