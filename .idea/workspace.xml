@@ -8,21 +8,28 @@
       <change beforePath="$PROJECT_DIR$/Synk/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/Synk/App.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Synk/Screens/ConfirmationScreen.js" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Synk/Screens/PhoneNumScreen.js" beforeDir="false" afterPath="$PROJECT_DIR$/Synk/Screens/PhoneNumScreen.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Synk/Screens/SettingsScreen.js" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Synk/Screens/UpdatesScreen.js" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Synk/Screens/Verification.js" beforeDir="false" afterPath="$PROJECT_DIR$/Synk/Screens/Verification.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Synk/Screens/WelcomeScreen.js" beforeDir="false" afterPath="$PROJECT_DIR$/Synk/Screens/WelcomeScreen.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Synk/app.json" beforeDir="false" afterPath="$PROJECT_DIR$/Synk/app.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Synk/assets/data/chats.json" beforeDir="false" afterPath="$PROJECT_DIR$/Synk/assets/data/chats.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Synk/assets/data/messages.json" beforeDir="false" afterPath="$PROJECT_DIR$/Synk/assets/data/messages.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Synk/babel.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/Synk/babel.config.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Synk/components/CountryCode.js" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Synk/components/PopupMenu.js" beforeDir="false" afterPath="$PROJECT_DIR$/Synk/components/PopupMenu.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Synk/constants/colors.js" beforeDir="false" afterPath="$PROJECT_DIR$/Synk/constants/colors.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Synk/constants/themeContext.js" beforeDir="false" afterPath="$PROJECT_DIR$/Synk/constants/themeContext.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Synk/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/Synk/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Synk/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/Synk/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Synk/src/components/Message/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Synk/src/components/Message/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Synk/src/screens/ChatScreen.js" beforeDir="false" afterPath="$PROJECT_DIR$/Synk/src/screens/ChatScreen.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Synk/src/screens/ChatsHomeScreen.js" beforeDir="false" afterPath="$PROJECT_DIR$/Synk/src/screens/ChatsHomeScreen.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Synk/src/components/ChatListItem/index.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Synk/src/components/InputBox/index.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Synk/src/components/Message/index.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Synk/src/navigation/MainTabNavigator.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Synk/src/navigation/Tabs.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Synk/src/screens/ChatScreen.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Synk/src/screens/ChatsHomeScreen.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Synk/src/screens/NotImplementedScreen.js" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

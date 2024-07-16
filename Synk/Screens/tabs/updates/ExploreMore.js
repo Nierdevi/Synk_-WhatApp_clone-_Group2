@@ -1,18 +1,30 @@
+import { Ionicons } from '@expo/vector-icons';
 import React, { useEffect, useState } from 'react';
-import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import { FlatList, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { primaryColors } from '../../../constants/colors';
 
-const ExploreMore = ({ route }) => {
-    const { channel } = route.params;
+const ExploreMore = ({ route, navigation }) => {
+    const { channels } = route.params;
     const [articles, setArticles] = useState([]);
 
     useEffect(() => {
-        // Fetch articles or updates for the channel
-        // This is a placeholder for your data fetching logic
+        navigation.setOptions({
+            headerTitle: 'Channels',
+            headerLeft: () => (
+                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.headerBackButton}>
+                    <Ionicons name="arrow-back" size={24} color="black" />
+                </TouchableOpacity>
+            ),
+            headerRight: () => (
+                <TouchableOpacity onPress={() => { /* Implement search functionality */ }} style={styles.headerSearchButton}>
+                    <Ionicons name="search" size={24} color="black" />
+                </TouchableOpacity>
+            )
+        });
+
         const fetchArticles = async () => {
             try {
-                const response = await fetch(`https://api.example.com/channel/${channel.id}/articles`);
+                const response = await fetch(`https://api.example.com/channels/${channels.id}/articles`);
                 const data = await response.json();
                 setArticles(data);
             } catch (error) {
@@ -21,27 +33,36 @@ const ExploreMore = ({ route }) => {
         };
 
         fetchArticles();
-    }, [channel.id]);
+    }, [channels.id, navigation]);
+
+    const renderButton = (title, onPress) => (
+        <TouchableOpacity style={styles.filterButton} onPress={onPress}>
+            <Text style={styles.filterButtonText}>{title}</Text>
+        </TouchableOpacity>
+    );
 
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <Image source={{ uri: channel.img }} style={styles.channelImg} />
-                <View style={styles.channelInfo}>
-                    <Text style={styles.channelName}>{channel.name}</Text>
-                    {channel.verified && (
+                <Image source={{ uri: channels.img }} style={styles.channelsImg} />
+                <View style={styles.channelsInfo}>
+                    <Text style={styles.channelsName}>{channels.name}</Text>
+                    {channels.verified && (
                         <Ionicons name="checkmark-circle" size={16} color="blue" style={styles.verifiedBadge} />
                     )}
-                    <Text style={styles.followersCount}>{channel.followers} followers</Text>
                 </View>
-                <TouchableOpacity style={styles.followButton}>
-                    <Text style={styles.followButtonText}>Follow</Text>
-                </TouchableOpacity>
             </View>
 
-            <Text style={styles.description}>{channel.description}</Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterScrollView}>
+                {renderButton("Explore", () => { /* Implement Explore functionality */ })}
+                {renderButton("Most Active", () => { /* Implement Most Active functionality */ })}
+                {renderButton("Popular", () => { /* Implement Popular functionality */ })}
+                {renderButton("New", () => { /* Implement New functionality */ })}
+                {renderButton("List of Countries", () => { /* Implement List of Countries functionality */ })}
+            </ScrollView>
 
-            <Text style={styles.sectionTitle}>Latest Updates</Text>
+            <Text style={styles.description}>{channels.description}</Text>
+
             <FlatList
                 data={articles}
                 renderItem={({ item }) => (
@@ -54,8 +75,6 @@ const ExploreMore = ({ route }) => {
                 keyExtractor={item => item.id.toString()}
             />
 
-            <Text style={styles.sectionTitle}>Related Channels</Text>
-            {/* Implement a list of related channels */}
         </View>
     );
 };
@@ -71,34 +90,12 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginBottom: 20,
     },
-    channelImg: {
-        width: 50,
-        height: 50,
-        borderRadius: 25,
-    },
-    channelInfo: {
-        flex: 1,
-        marginLeft: 10,
-    },
-    channelName: {
-        fontSize: 20,
-        fontWeight: 'bold',
-    },
     verifiedBadge: {
         marginLeft: 5,
     },
     followersCount: {
         fontSize: 14,
         color: '#555',
-    },
-    followButton: {
-        backgroundColor: primaryColors.purple,
-        padding: 10,
-        borderRadius: 5,
-    },
-    followButtonText: {
-        color: '#fff',
-        fontWeight: 'bold',
     },
     description: {
         fontSize: 14,
@@ -110,23 +107,28 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginBottom: 10,
     },
-    articleContainer: {
+    headerBackButton: {
+        marginLeft: 10,
+    },
+    headerSearchButton: {
+        marginRight: 10,
+    },
+    filterScrollView: {
+        flexDirection: 'row',
         marginBottom: 20,
     },
-    articleImage: {
-        width: '100%',
-        height: 150,
-        borderRadius: 10,
-        marginBottom: 10,
+    filterButton: {
+        paddingVertical: 5,
+        paddingHorizontal: 10,
+        borderRadius: 15,
+        borderWidth: 1,
+        borderColor: primaryColors.purple,
+        marginRight: 10,
+        backgroundColor: 'transparent',
     },
-    articleTitle: {
-        fontSize: 16,
+    filterButtonText: {
+        color: primaryColors.purple,
         fontWeight: 'bold',
-        marginBottom: 5,
-    },
-    articleDescription: {
-        fontSize: 14,
-        color: '#555',
     },
 });
 

@@ -1,6 +1,6 @@
 import moment from 'moment';
 import React, { useEffect, useRef, useState } from 'react';
-import { Image, Linking, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, Image, Linking, ScrollView, Share, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Menu, Provider } from 'react-native-paper';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { primaryColors } from '../../../constants/colors';
@@ -10,6 +10,7 @@ const ChannelDetails = ({ route }) => {
     const [menuVisible, setMenuVisible] = useState(false);
     const [articles, setArticles] = useState([]);
     const [articleReactions, setArticleReactions] = useState({});
+    const [loading, setLoading] = useState(true);
     const scrollViewRef = useRef();
 
     const reactions = ['👍', '❤️', '😂', '😮', '😢', '😡'];
@@ -33,6 +34,9 @@ const ChannelDetails = ({ route }) => {
                 setArticleReactions(reactionsMap);
             } catch (error) {
                 console.error('Error fetching NYT articles:', error);
+                Alert.alert('Error', 'Failed to fetch articles. Please try again later.');
+            } finally {
+                setLoading(false);
             }
         };
 
@@ -41,6 +45,12 @@ const ChannelDetails = ({ route }) => {
 
     const scrollToBottom = () => {
         scrollViewRef.current.scrollToEnd({ animated: true });
+    };
+
+    const handleShare = async (url) => {
+        await Share.share({
+            message: `Check out this article: ${url}`,
+        });
     };
 
     return (
@@ -77,32 +87,36 @@ const ChannelDetails = ({ route }) => {
                     </View>
                 </View>
 
-                <ScrollView ref={scrollViewRef} style={styles.articlesList}>
-                    {articles.map((item) => (
-                        <View key={item.url} style={styles.articleContainer}>
-                            {item.multimedia && item.multimedia.length > 0 && (
-                                <Image source={{ uri: item.multimedia[0].url }} style={styles.articleImage} />
-                            )}
-                            <Text style={styles.articleTitle}>{item.title}</Text>
-                            <Text style={styles.articleAbstract}>{item.abstract}</Text>
-                            <Text style={styles.reactionText}>{articleReactions[item.url]}</Text>
-                            <TouchableOpacity onPress={() => Linking.openURL(item.url)} style={styles.linkButton}>
-                                <Text style={styles.linkText}>
-                                    Check here <Ionicons name="chevron-forward" size={16} color="blue" />
-                                </Text>
-                            </TouchableOpacity>
-                            <Text style={styles.articleDate}>{moment(item.published_date).format('MMM D, YYYY, h:mm A')}</Text>
-                            <TouchableOpacity onPress={() => {}} style={styles.forwardIconContainer}>
-                                <View style={styles.forwardIconCircle}>
-                                    <Ionicons name="chevron-forward" size={24} color="black" />
-                                </View>
-                            </TouchableOpacity>
-                        </View>
-                    ))}
-                </ScrollView>
+                {loading ? (
+                    <Text>Loading articles...</Text>
+                ) : (
+                    <ScrollView ref={scrollViewRef} style={styles.articlesList}>
+                        {articles.map((item) => (
+                            <View key={item.url} style={styles.articleContainer}>
+                                {item.multimedia && item.multimedia.length > 0 && (
+                                    <Image source={{ uri: item.multimedia[0].url }} style={styles.articleImage} />
+                                )}
+                                <Text style={styles.articleTitle}>{item.title}</Text>
+                                <Text style={styles.articleAbstract}>{item.abstract}</Text>
+                                <Text style={styles.reactionText}>{articleReactions[item.url]}</Text>
+                                <TouchableOpacity onPress={() => Linking.openURL(item.url)} style={styles.linkButton}>
+                                    <Text style={styles.linkText}>
+                                        Check here👉 <Ionicons name="" size={16} color="blue" />
+                                    </Text>
+                                </TouchableOpacity>
+                                <Text style={styles.articleDate}>{moment(item.published_date).format('MMM D, YYYY, h:mm A')}</Text>
+                                <TouchableOpacity onPress={() => handleShare(item.url)} style={styles.forwardIconContainer}>
+                                    <View style={styles.forwardIconCircle}>
+                                    <FontAwesomeIcon icon="fa-regular fa-share-all" />
+                                    </View>
+                                </TouchableOpacity>
+                            </View>
+                        ))}
+                    </ScrollView>
+                )}
 
                 <TouchableOpacity onPress={scrollToBottom} style={styles.scrollToBottomButton}>
-                    <Ionicons name="arrow-down" size={30} color="white" />
+                    <FontAwesomeIcon name="angle-double-down" size={24} color='black' />
                 </TouchableOpacity>
             </View>
         </Provider>
@@ -114,7 +128,7 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#fff',
         padding: 20,
-        marginTop:40
+        marginTop: 40,
     },
     topSection: {
         flexDirection: 'row',
@@ -165,7 +179,7 @@ const styles = StyleSheet.create({
         right: 0,
         height: 2,
         backgroundColor: 'black',
-        transform: [{ rotate: '40deg' }]
+        transform: [{ rotate: '40deg' }],
     },
     articleContainer: {
         backgroundColor: '#f9f9f9',
