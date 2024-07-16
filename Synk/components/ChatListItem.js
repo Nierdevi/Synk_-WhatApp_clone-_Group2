@@ -6,13 +6,16 @@ import DateTime from './DateTime';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import { LongPressGestureHandler, State } from 'react-native-gesture-handler';
 import FullScreenMediaModal from './FullScreenMediaModal ';
+import { PopupMenu } from './PopupMenu';
 
-const ChatList = ({ messages, currentUserPhoneNumber }) => {
+
+const ChatList = ({ messages, currentUserPhoneNumber}) => {
   const flatListRef = useRef(null);
   const [isAutoScrolling, setIsAutoScrolling] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedMediaUri, setSelectedMediaUri] = useState('');
   const [selectedMediaType, setSelectedMediaType] = useState('');
+  const [selectedText, setSelectedText] = useState('');
 
   useEffect(() => {
     if (flatListRef.current) {
@@ -24,16 +27,19 @@ const ChatList = ({ messages, currentUserPhoneNumber }) => {
     console.log('Long press detected on message:', message.messageText);
   };
 
-  const handleMediaPress = (uri, type) => {
+  const handleMediaPress = (uri, type,messageText) => {
     setSelectedMediaUri(uri);
     setSelectedMediaType(type);
+    setSelectedText(messageText)
     setModalVisible(true);
+    // console.log("selected Text:, ",messageText)
   };
 
+  // console.log("selectedText: ",selectedText)
   const renderItem = ({ item }) => {
     const isCurrentUser = item.senderId === currentUserPhoneNumber;
 
-    // console.log('Rendering item:', item);
+    // console.log('Rendering item:', item.mediaUrl);
 
     return (
       <LongPressGestureHandler
@@ -43,6 +49,8 @@ const ChatList = ({ messages, currentUserPhoneNumber }) => {
           }
         }}
       >
+        
+        {/* <PopupMenu visible={menuVisible} onClose={close} menuItems={menuItems} style={styles.popupMenu} /> */}
         <TouchableWithoutFeedback>
           <View
             style={[
@@ -53,11 +61,11 @@ const ChatList = ({ messages, currentUserPhoneNumber }) => {
             {item.mediaUrl ? (
               <>
                 {item.type === 'image' ? (
-                  <TouchableWithoutFeedback onPress={() => handleMediaPress(item.mediaUrl, 'image')}>
+                  <TouchableWithoutFeedback onPress={() => handleMediaPress(item.mediaUrl, 'image',item.messageText)}>
                     <Image source={{ uri: item.mediaUrl }} style={styles.media} />
                   </TouchableWithoutFeedback>
                 ) : item.type === 'video' ? (
-                  <TouchableWithoutFeedback onPress={() => handleMediaPress(item.mediaUrl, 'video')}>
+                  <TouchableWithoutFeedback onPress={() => handleMediaPress(item.mediaUrl, 'video',item.messageText)}>
                     <View style={styles.mediaContainer}>
                       <Video
                         source={{ uri: item.mediaUrl }}
@@ -104,6 +112,7 @@ const ChatList = ({ messages, currentUserPhoneNumber }) => {
         mediaType={selectedMediaType}
         onClose={() => setModalVisible(false)}
         onRequestClose={() => setModalVisible(false)}
+        messageText={selectedText}
       />
     </View>
   );
@@ -118,7 +127,7 @@ const styles = StyleSheet.create({
   },
   message: {
     maxWidth: '80%',
-    padding: 5,
+    padding: 7,
     marginBottom: 10,
     borderRadius: 10,
   },

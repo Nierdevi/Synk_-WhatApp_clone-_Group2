@@ -22,9 +22,10 @@ const InputBox = ({ onSendMessage }) => {
 
   const handlePickMedia = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      quality: 1,
+      mediaTypes: ImagePicker.MediaTypeOptions.All, // Accept images and videos
+      allowsEditing: false, // Disable editing to avoid cropping
+      aspect: [4, 3],
+      quality: 1, // Use full quality
     });
 
     // if (!result.canceled) {
