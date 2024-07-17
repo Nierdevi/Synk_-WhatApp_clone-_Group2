@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { FlatList, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Divider, Menu, Provider } from 'react-native-paper';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { FontAwesomeIcon } from '@expo/vector-icons/FontAwesome';
 import { primaryColors } from '../../../constants/colors';
 
 const DefaultProfileImg = () => (
