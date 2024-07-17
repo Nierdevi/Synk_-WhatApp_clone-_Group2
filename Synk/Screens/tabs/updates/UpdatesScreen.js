@@ -36,38 +36,54 @@ const UpdatesScreen = ({ navigation }) => {
     useEffect(() => {
         const fetchChannels = async () => {
             try {
-                const apiKey = 'xICQ9NoAelPxIAplcKVta3keJdV5y2ur';
-                const responseNYT = await fetch(`https://api.nytimes.com/svc/topstories/v2/home.json?api-key=${apiKey}`);
+                const apiKeyNYT = 'xICQ9NoAelPxIAplcKVta3keJdV5y2ur';
+                const responseNYT = await fetch(`https://api.nytimes.com/svc/topstories/v2/home.json?api-key=${apiKeyNYT}`);
                 const dataNYT = await responseNYT.json();
-
-                const latestArticle = dataNYT.results[0];
-
+                const latestArticleNYT = dataNYT.results[0];
+    
                 const nyTimesChannel = {
                     id: 1,
                     name: 'The New York Times',
-                    description: latestArticle.title.split('.')[0] || 'Top stories', // Use the first sentence of the title
+                    description: latestArticleNYT.title.split('.')[0] || 'Top stories',
                     img: 'https://upload.wikimedia.org/wikipedia/commons/4/40/New_York_Times_logo_variation.jpg',
-                    time: '2h ago',
+                    time: getTimeAgo(latestArticleNYT.published_date),
                     unread: dataNYT.results.length
                 };
-
-                const nyPostChannel = {
+    
+                const apiKeyBBC = 'c5dc75c07497410f91ee4702f12712e0';
+                const responseBBC = await fetch(`https://newsapi.org/v2/top-headlines?sources=bbc-news&apiKey=${apiKeyBBC}`);
+                const dataBBC = await responseBBC.json();
+                const latestArticleBBC = dataBBC.articles[0];
+    
+                const bbcChannel = {
                     id: 2,
-                    name: 'The New York Post',
-                    description: 'Breaking news',
-                    img: 'https://upload.wikimedia.org/wikipedia/commons/e/ee/New_York_Post_logo.png',
-                    time: '1h ago',
-                    unread: 5
+                    name: 'BBC News',
+                    description: latestArticleBBC.title.split('.')[0] || 'Top stories',
+                    img: latestArticleBBC.urlToImage || 'https://upload.wikimedia.org/wikipedia/en/6/60/BBC_News_2023.svg', // Fallback image
+                    time: getTimeAgo(latestArticleBBC.publishedAt),
+                    unread: dataBBC.articles.length
                 };
-
-                setChannels([nyTimesChannel, nyPostChannel]);
+    
+                setChannels([nyTimesChannel, bbcChannel]);
             } catch (error) {
                 console.error('Error fetching channels:', error);
             }
         };
-
+    
+        const getTimeAgo = (publishedDate) => {
+            const date = new Date(publishedDate);
+            const now = new Date();
+            const seconds = Math.floor((now - date) / 1000);
+            
+            if (seconds < 60) return `${seconds} seconds ago`;
+            else if (seconds < 3600) return `${Math.floor(seconds / 60)} minutes ago`;
+            else if (seconds < 86400) return `${Math.floor(seconds / 3600)} hours ago`;
+            else return `${Math.floor(seconds / 86400)} days ago`;
+        };
+    
         fetchChannels();
-    }, []);
+    }, []);    
+    
 
     const handleSelectChannel = (channel) => {
         navigation.navigate('ChannelDetails', { channel });
@@ -376,6 +392,7 @@ const styles = StyleSheet.create({
     },
     exploreMoreButton: {
         marginTop: 10,
+        marginBottom: 120,
         backgroundColor: '#fff',
         paddingVertical: 8, // Reduced padding
         paddingHorizontal: 12, // Reduced padding
