@@ -114,7 +114,7 @@ const UpdatesScreen = ({ navigation }) => {
                     <View style={styles.section}>
                         <View style={styles.channelsHeader}>
                             <Text style={styles.title}>Channels</Text>
-                            <TouchableOpacity onPress={() => navigation.navigate('Explore')}>
+                            <TouchableOpacity onPress={() => navigation.navigate('Explore',{channels})}>
                                 <Text style={styles.exploreText}>Explore &gt;</Text>
                             </TouchableOpacity>
                         </View>

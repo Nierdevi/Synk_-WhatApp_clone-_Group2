@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import moment from 'moment';
 import React, { useEffect, useRef, useState } from 'react';
 import { Alert, Image, Linking, ScrollView, Share, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -117,7 +116,7 @@ const ChannelDetails = ({ route }) => {
                 )}
 
                 <TouchableOpacity onPress={scrollToBottom} style={styles.scrollToBottomButton}>
-                    <FontAwesomeIcon icon="fa-solid fa-chevrons-down" />
+                    <FontAwesomeIcon name="angle-double-down" size={24} color='black' />
                 </TouchableOpacity>
             </View>
         </Provider>
