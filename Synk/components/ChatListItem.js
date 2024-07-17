@@ -11,11 +11,12 @@ import { PopupMenu } from './PopupMenu';
 
 const ChatList = ({ messages, currentUserPhoneNumber}) => {
   const flatListRef = useRef(null);
-  const [isAutoScrolling, setIsAutoScrolling] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedMediaUri, setSelectedMediaUri] = useState('');
   const [selectedMediaType, setSelectedMediaType] = useState('');
   const [selectedText, setSelectedText] = useState('');
+  const listRef = useRef(null);
+  const scrollOffsetY = useRef(0);
 
   useEffect(() => {
     if (flatListRef.current) {
@@ -32,7 +33,10 @@ const ChatList = ({ messages, currentUserPhoneNumber}) => {
     setSelectedMediaType(type);
     setSelectedText(messageText)
     setModalVisible(true);
-    // console.log("selected Text:, ",messageText)
+  };
+
+  const handleScroll = (event) => {
+    scrollOffsetY.current = event.nativeEvent.contentOffset.y;
   };
 
   // console.log("selectedText: ",selectedText)
@@ -40,6 +44,7 @@ const ChatList = ({ messages, currentUserPhoneNumber}) => {
     const isCurrentUser = item.senderId === currentUserPhoneNumber;
 
     // console.log('Rendering item:', item.mediaUrl);
+
 
     return (
       <LongPressGestureHandler
@@ -92,19 +97,14 @@ const ChatList = ({ messages, currentUserPhoneNumber}) => {
   return (
     <View style={{ flex: 1 }}>
       <FlatList
-        ref={flatListRef}
+        ref={listRef}
         data={messages}
         renderItem={renderItem}
         keyExtractor={(item) => item.$id}
         inverted
         contentContainerStyle={styles.flatListContainer}
-        onContentSizeChange={() => {
-          if (isAutoScrolling && flatListRef.current) {
-            flatListRef.current.scrollToEnd({ animated: true });
-          }
-        }}
-        onScrollBeginDrag={() => setIsAutoScrolling(false)}
-        onMomentumScrollEnd={() => setIsAutoScrolling(true)}
+        onScroll={handleScroll}
+        onContentSizeChange={() => listRef.current.scrollToOffset({ offset: scrollOffsetY.current, animated: false })}
       />
       <FullScreenMediaModal
         visible={modalVisible}

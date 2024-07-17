@@ -1,133 +1,142 @@
-import React, { useEffect, useState } from 'react';
-import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import { Ionicons } from '@expo/vector-icons';
+import { Picker } from '@react-native-picker/picker';
+import React, { useState } from 'react';
+import { FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { primaryColors } from '../../../constants/colors';
 
-const ExploreMore = ({ route }) => {
-    const { channel } = route.params;
-    const [articles, setArticles] = useState([]);
+const channelsData = [
+  { id: '1', name: 'Channel One', description: 'Description One' },
+  { id: '2', name: 'Channel Two', description: 'Description Two' },
+  // Add more channels
+];
 
-    useEffect(() => {
-        // Fetch articles or updates for the channel
-        // This is a placeholder for your data fetching logic
-        const fetchArticles = async () => {
-            try {
-                const response = await fetch(`https://api.example.com/channel/${channel.id}/articles`);
-                const data = await response.json();
-                setArticles(data);
-            } catch (error) {
-                console.error('Error fetching articles:', error);
-            }
-        };
+const ExploreMore = () => {
+  const [selectedCountry, setSelectedCountry] = useState('Ghana'); // Default country is Ghana
+  const countries = [
+    'Afghanistan', 'Albania', 'Algeria', 'Andorra', 'Angola', 'Argentina',
+    'Armenia', 'Australia', 'Austria', 'Azerbaijan', 'Bahamas', 'Bahrain',
+    'Bangladesh', 'Barbados', 'Belarus', 'Belgium', 'Belize', 'Benin',
+    'Bhutan', 'Bolivia', 'Bosnia and Herzegovina', 'Botswana', 'Brazil',
+    'Brunei', 'Bulgaria', 'Burkina Faso', 'Burundi', 'Cabo Verde', 'Cambodia',
+    'Cameroon', 'Canada', 'Central African Republic', 'Chad', 'Chile', 'China',
+    'Colombia', 'Comoros', 'Congo, Democratic Republic of the', 'Congo, Republic of the',
+    'Costa Rica', 'Croatia', 'Cuba', 'Cyprus', 'Czech Republic', 'Denmark',
+    'Djibouti', 'Dominica', 'Dominican Republic', 'Ecuador', 'Egypt', 'El Salvador',
+    'Equatorial Guinea', 'Eritrea', 'Estonia', 'Eswatini', 'Ethiopia', 'Fiji',
+    'Finland', 'France', 'Gabon', 'Gambia', 'Georgia', 'Germany', 'Ghana',
+    'Greece', 'Grenada', 'Guatemala', 'Guinea', 'Guinea-Bissau', 'Guyana',
+    'Haiti', 'Honduras', 'Hungary', 'Iceland', 'India', 'Indonesia', 'Iran',
+    'Iraq', 'Ireland', 'Israel', 'Italy', 'Jamaica', 'Japan', 'Jordan',
+    'Kazakhstan', 'Kenya', 'Kiribati', 'Korea, North', 'Korea, South', 'Kuwait',
+    'Kyrgyzstan', 'Laos', 'Latvia', 'Lebanon', 'Lesotho', 'Liberia', 'Libya',
+    'Liechtenstein', 'Lithuania', 'Luxembourg', 'Madagascar', 'Malawi', 'Malaysia',
+    'Maldives', 'Mali', 'Malta', 'Marshall Islands', 'Mauritania', 'Mauritius',
+    'Mexico', 'Micronesia', 'Moldova', 'Monaco', 'Mongolia', 'Montenegro',
+    'Morocco', 'Mozambique', 'Myanmar', 'Namibia', 'Nauru', 'Nepal',
+    'Netherlands', 'New Zealand', 'Nicaragua', 'Niger', 'Nigeria', 'North Macedonia',
+    'Norway', 'Oman', 'Pakistan', 'Palau', 'Palestine', 'Panama',
+    'Papua New Guinea', 'Paraguay', 'Peru', 'Philippines', 'Poland', 'Portugal',
+    'Qatar', 'Romania', 'Russia', 'Rwanda', 'Saint Kitts and Nevis',
+    'Saint Lucia', 'Saint Vincent and the Grenadines', 'Samoa', 'San Marino',
+    'Sao Tome and Principe', 'Saudi Arabia', 'Senegal', 'Serbia', 'Seychelles',
+    'Sierra Leone', 'Singapore', 'Slovakia', 'Slovenia', 'Solomon Islands',
+    'Somalia', 'South Africa', 'South Sudan', 'Spain', 'Sri Lanka', 'Sudan',
+    'Suriname', 'Sweden', 'Switzerland', 'Syria', 'Taiwan', 'Tajikistan',
+    'Tanzania', 'Thailand', 'Togo', 'Tonga', 'Trinidad and Tobago', 'Tunisia',
+    'Turkey', 'Turkmenistan', 'Tuvalu', 'Uganda', 'Ukraine', 'United Arab Emirates',
+    'United Kingdom', 'United States', 'Uruguay', 'Uzbekistan', 'Vanuatu',
+    'Vatican City', 'Venezuela', 'Vietnam', 'Yemen', 'Zambia', 'Zimbabwe',
+  ];
 
-        fetchArticles();
-    }, [channel.id]);
+  return (
+    <View style={styles.container}>
+      {/* Header */}
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => {/* Implement search functionality */}}>
+          <Ionicons name="search" size={24} color={primaryColors.purple} />
+        </TouchableOpacity>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.buttonContainer}>
+          {['Most Active', 'Popular', 'New'].map((button) => (
+            <TouchableOpacity key={button} style={styles.button} onPress={() => {/* Handle button press */}}>
+              <Text style={styles.buttonText}>{button}</Text>
+            </TouchableOpacity>
+          ))}
+          {/* Country Dropdown */}
+          <View style={styles.dropdownContainer}>
+            <Picker
+              selectedValue={selectedCountry}
+              style={styles.dropdown}
+              onValueChange={(itemValue) => setSelectedCountry(itemValue)}
+            >
+              {countries.map((country) => (
+                <Picker.Item key={country} label={country} value={country} />
+              ))}
+            </Picker>
+          </View>
+        </ScrollView>
+      </View>
 
-    return (
-        <View style={styles.container}>
-            <View style={styles.header}>
-                <Image source={{ uri: channel.img }} style={styles.channelImg} />
-                <View style={styles.channelInfo}>
-                    <Text style={styles.channelName}>{channel.name}</Text>
-                    {channel.verified && (
-                        <Ionicons name="checkmark-circle" size={16} color="blue" style={styles.verifiedBadge} />
-                    )}
-                    <Text style={styles.followersCount}>{channel.followers} followers</Text>
-                </View>
-                <TouchableOpacity style={styles.followButton}>
-                    <Text style={styles.followButtonText}>Follow</Text>
-                </TouchableOpacity>
-            </View>
-
-            <Text style={styles.description}>{channel.description}</Text>
-
-            <Text style={styles.sectionTitle}>Latest Updates</Text>
-            <FlatList
-                data={articles}
-                renderItem={({ item }) => (
-                    <View style={styles.articleContainer}>
-                        {item.image && <Image source={{ uri: item.image }} style={styles.articleImage} />}
-                        <Text style={styles.articleTitle}>{item.title}</Text>
-                        <Text style={styles.articleDescription}>{item.description}</Text>
-                    </View>
-                )}
-                keyExtractor={item => item.id.toString()}
-            />
-
-            <Text style={styles.sectionTitle}>Related Channels</Text>
-            {/* Implement a list of related channels */}
-        </View>
-    );
+      {/* Channel List */}
+      <FlatList
+        data={channelsData}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <View style={styles.channelCard}>
+            <Text style={styles.channelName}>{item.name}</Text>
+            <Text>{item.description}</Text>
+          </View>
+        )}
+      />
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-        padding: 20,
-    },
-    header: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: 20,
-    },
-    channelImg: {
-        width: 50,
-        height: 50,
-        borderRadius: 25,
-    },
-    channelInfo: {
-        flex: 1,
-        marginLeft: 10,
-    },
-    channelName: {
-        fontSize: 20,
-        fontWeight: 'bold',
-    },
-    verifiedBadge: {
-        marginLeft: 5,
-    },
-    followersCount: {
-        fontSize: 14,
-        color: '#555',
-    },
-    followButton: {
-        backgroundColor: primaryColors.purple,
-        padding: 10,
-        borderRadius: 5,
-    },
-    followButtonText: {
-        color: '#fff',
-        fontWeight: 'bold',
-    },
-    description: {
-        fontSize: 14,
-        color: '#555',
-        marginBottom: 20,
-    },
-    sectionTitle: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        marginBottom: 10,
-    },
-    articleContainer: {
-        marginBottom: 20,
-    },
-    articleImage: {
-        width: '100%',
-        height: 150,
-        borderRadius: 10,
-        marginBottom: 10,
-    },
-    articleTitle: {
-        fontSize: 16,
-        fontWeight: 'bold',
-        marginBottom: 5,
-    },
-    articleDescription: {
-        fontSize: 14,
-        color: '#555',
-    },
+  container: {
+    flex: 1,
+    padding: 16,
+    backgroundColor: '#fff',
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 16,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+  },
+  button: {
+    padding: 10,
+    marginRight: 8,
+    backgroundColor: primaryColors.grey,
+    borderRadius: 8,
+  },
+  buttonText: {
+    fontSize: 16,
+  },
+  dropdownContainer: {
+    marginLeft: 8,
+    borderWidth: 1,
+    borderColor: primaryColors.gray,
+    borderRadius: 8,
+    overflow: 'hidden',
+  },
+  dropdown: {
+    width: 120,
+    height: 40,
+  },
+  channelCard: {
+    marginVertical: 8,
+    padding: 16,
+    borderWidth: 1,
+    borderRadius: 8,
+    borderColor: primaryColors.gray,
+  },
+  channelName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
 });
 
 export default ExploreMore;

@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Contacts from 'expo-contacts';
 import { Linking, Alert, Platform } from 'react-native';
 import { client, databases } from './appwrite';
+import { useState,useEffect } from 'react';
 
 const STORAGE_KEY = '@MyApp:cachedContacts';
 const REFRESH_INTERVAL = 60000; // 30 seconds in milliseconds
@@ -123,5 +124,32 @@ const subscribeToDatabaseChanges = (setContacts) => {
   return unsubscribe;
 };
 
+const useContacts = (session) => {
+  const [contacts, setContacts] = useState([]);
 
-export { fetchAndNormalizeContacts, loadCachedContacts, startContactRefresh, normalizePhoneNumber,subscribeToDatabaseChanges };
+  useEffect(() => {
+    const loadContacts = async () => {
+      try {
+        const cachedContacts = await loadCachedContacts();
+        if (cachedContacts) setContacts(cachedContacts);
+
+        const fetchedContacts = await fetchAndNormalizeContacts();
+        if (fetchedContacts) setContacts(fetchedContacts);
+      } catch (error) {
+        console.error('Failed to fetch contacts:', error);
+        if (error.message.includes('Network request failed')) {
+          // Alert.alert('Network Error', 'Please check your network connection and try again.');
+        }
+      }
+    };
+
+    if (session) {
+      loadContacts();
+    }
+  }, [session]);
+
+  return contacts;
+};
+
+
+export { fetchAndNormalizeContacts, loadCachedContacts, startContactRefresh, normalizePhoneNumber,subscribeToDatabaseChanges,useContacts };

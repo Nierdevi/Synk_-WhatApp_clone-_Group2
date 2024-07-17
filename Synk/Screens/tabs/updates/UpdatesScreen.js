@@ -1,199 +1,131 @@
-import React, { useEffect, useState } from 'react';
-import { FlatList, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { Divider, Menu, Provider } from 'react-native-paper';
+import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons';
+import moment from 'moment';
+import React, { useEffect, useRef, useState } from 'react';
+import { Alert, Image, Linking, ScrollView, Share, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Menu, Provider } from 'react-native-paper';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { primaryColors } from '../../../constants/colors';
 
-const DefaultProfileImg = () => (
-    <View style={styles.statusContainer}>
-        <View style={styles.statusWrapperDefault}>
-            <Image source={{ uri: 'https://via.placeholder.com/50' }} style={styles.statusImg} />
-            <View style={styles.plusSign}>
-                <Text style={styles.plusText}>+</Text>
-            </View>
-        </View>
-        <Text style={styles.statusUser}>My Status</Text>
-    </View>
-);
-
-const UpdatesScreen = ({ navigation }) => {
-    const [statuses, setStatuses] = useState([
-        { id: 1, user: 'Alice', img: 'https://via.placeholder.com/50', total: 3, viewed: 1 },
-        { id: 2, user: 'Bob', img: 'https://via.placeholder.com/50', total: 2, viewed: 1 }
-    ]);
-
-    const [channels, setChannels] = useState([]);
-    const [followedChannels, setFollowedChannels] = useState([]);
-
-    const suggestedChannels = [
-        { id: 3, name: 'CNN', img: 'https://via.placeholder.com/50', followers: '1.2k followers' },
-        { id: 4, name: 'BBC News', img: 'https://via.placeholder.com/50', followers: '900 followers' },
-        { id: 5, name: 'TechCrunch', img: 'https://via.placeholder.com/50', followers: '1.5k followers' },
-        { id: 6, name: 'National Geographic', img: 'https://via.placeholder.com/50', followers: '800 followers' },
-        { id: 7, name: 'ESPN', img: 'https://via.placeholder.com/50', followers: '2k followers' }
-    ];
-
-    useEffect(() => {
-        const fetchChannels = async () => {
-            try {
-                const apiKey = 'xICQ9NoAelPxIAplcKVta3keJdV5y2ur';
-                const responseNYT = await fetch(`https://api.nytimes.com/svc/topstories/v2/home.json?api-key=${apiKey}`);
-                const dataNYT = await responseNYT.json();
-
-                const latestArticle = dataNYT.results[0];
-
-                const nyTimesChannel = {
-                    id: 1,
-                    name: 'The New York Times',
-                    description: latestArticle.title.split('.')[0] || 'Top stories', // Use the first sentence of the title
-                    img: 'https://via.placeholder.com/50',
-                    time: '2h ago',
-                    unread: dataNYT.results.length
-                };
-
-                const nyPostChannel = {
-                    id: 2,
-                    name: 'The New York Post',
-                    description: 'Breaking news',
-                    img: 'https://via.placeholder.com/50',
-                    time: '1h ago',
-                    unread: 5
-                };
-
-                setChannels([nyTimesChannel, nyPostChannel]);
-            } catch (error) {
-                console.error('Error fetching channels:', error);
-            }
-        };
-
-        fetchChannels();
-    }, []);
-
-    const handleSelectChannel = (channel) => {
-        navigation.navigate('ChannelDetails', { channel });
-        navigation.setOptions({headerShown:false})
-    };
-
-    const handleFollowChannel = (channelId) => {
-        setFollowedChannels(prevState => [...prevState, channelId]);
-    };
-
+const ChannelDetails = ({ route }) => {
+    const { channel } = route.params;
     const [menuVisible, setMenuVisible] = useState(false);
+    const [articles, setArticles] = useState([]);
+    const [articleReactions, setArticleReactions] = useState({});
+    const [loading, setLoading] = useState(true);
+    const [buttonOpacity, setButtonOpacity] = useState(0.5);
+    const scrollViewRef = useRef();
+
+    const reactions = ['👍', '❤️', '😂', '😮', '😢', '😡'];
 
     const openMenu = () => setMenuVisible(true);
     const closeMenu = () => setMenuVisible(false);
 
+    useEffect(() => {
+        const fetchChannelArticles = async () => {
+            try {
+                const url = `https://api.nytimes.com/svc/topstories/v2/${channel.slug}.json?api-key=xICQ9NoAelPxIAplcKVta3keJdV5y2ur`;
+                console.log(`Fetching articles from: ${url}`);
+
+                const response = await fetch(url);
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+                }
+
+                const data = await response.json();
+                const reactionsMap = data.results.map(item => ({
+                    url: item.url,
+                    reaction: reactions[Math.floor(Math.random() * reactions.length)],
+                }));
+
+                setArticles(data.results);
+                setArticleReactions(Object.fromEntries(reactionsMap.map(item => [item.url, item.reaction])));
+            } catch (error) {
+                console.error('Error fetching channel articles:', error);
+                Alert.alert('Error', 'Failed to fetch articles. Please try again later.');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchChannelArticles();
+    }, [channel.slug]);
+
+    const scrollToBottom = () => {
+        scrollViewRef.current.scrollToEnd({ animated: true });
+    };
+
+    const handleShare = async (url) => {
+        await Share.share({
+            message: `Check out this article: ${url}`,
+        });
+    };
+
     return (
         <Provider>
             <View style={styles.container}>
-                <ScrollView>
-                    <View style={styles.section}>
-                        <Text style={styles.title}>Status</Text>
-                        <FlatList
-                            horizontal
-                            data={[{ id: 'default', user: 'My Status', img: 'https://via.placeholder.com/50' }, ...statuses]}
-                            renderItem={({ item }) => (
-                                item.id === 'default' ? (
-                                    <DefaultProfileImg />
-                                ) : (
-                                    <View key={item.id} style={styles.statusContainer}>
-                                        <View style={[
-                                            styles.statusWrapper, 
-                                            { borderColor: item.viewed < item.total ? primaryColors.purple : '#ccc' }
-                                        ]}>
-                                            <Image source={{ uri: item.img }} style={styles.statusImg} />
-                                        </View>
-                                        <Text style={styles.statusUser}>{item.user}</Text>
-                                    </View>
-                                )
-                            )}
-                            keyExtractor={item => item.id.toString()}
-                            showsHorizontalScrollIndicator={false}
-                        />
+                <View style={styles.topSection}>
+                    <Image source={{ uri: channel.img }} style={styles.channelImg} />
+                    <View style={styles.channelInfo}>
+                        <Text style={styles.channelName}>{channel.name}</Text>
+                        {channel.verified && (
+                            <Ionicons name="checkmark-circle" size={16} color="blue" style={styles.verifiedBadge} />
+                        )}
+                        <Text style={styles.followersCount}>{channel.followers} followers</Text>
                     </View>
-                    <View style={styles.section}>
-                        <View style={styles.channelsHeader}>
-                            <Text style={styles.title}>Channels</Text>
-                            <TouchableOpacity onPress={() => navigation.navigate('Explore')}>
-                                <Text style={styles.exploreText}>Explore &gt;</Text>
-                            </TouchableOpacity>
+                    <View style={styles.topIcons}>
+                        <View style={styles.bellIconContainer}>
+                            <Ionicons name="notifications-outline" size={24} color="black" />
+                            <View style={styles.lineThrough} />
                         </View>
-                        <FlatList
-                            data={channels}
-                            renderItem={({ item }) => (
-                                <TouchableOpacity key={item.id} onPress={() => handleSelectChannel(item)}>
-                                    <View style={styles.listItem}>
-                                        <Image source={{ uri: item.img }} style={styles.channelImg} />
-                                        <View style={styles.channelInfo}>
-                                            <Text style={styles.channelName}>{item.name}</Text>
-                                            <Text style={styles.channelDescription}>{item.description}</Text>
-                                        </View>
-                                        <View style={styles.channelMeta}>
-                                            <Text style={styles.channelTime}>{item.time}</Text>
-                                            <View style={styles.unreadBadge}>
-                                                <Text style={styles.unreadText}>{item.unread}</Text>
-                                            </View>
-                                        </View>
+                        <Menu
+                            visible={menuVisible}
+                            onDismiss={closeMenu}
+                            anchor={
+                                <TouchableOpacity onPress={openMenu} style={styles.iconButton}>
+                                    <Ionicons name="ellipsis-vertical" size={24} color="black" />
+                                </TouchableOpacity>
+                            }
+                        >
+                            <Menu.Item onPress={() => {}} title="Channel Info" />
+                            <Menu.Item onPress={() => {}} title="Unfollow" />
+                            <Menu.Item onPress={() => {}} title="Share" />
+                            <Menu.Item onPress={() => {}} title="Report" />
+                        </Menu>
+                    </View>
+                </View>
+
+                {loading ? (
+                    <Text>Loading articles...</Text>
+                ) : (
+                    <ScrollView ref={scrollViewRef} style={styles.articlesList}>
+                        {articles.map((item) => (
+                            <View key={item.url} style={styles.articleContainer}>
+                                {item.multimedia && item.multimedia[0] && (
+                                    <Image source={{ uri: item.multimedia[0].url }} style={styles.articleImage} />
+                                )}
+                                <Text style={styles.articleTitle}>{item.title}</Text>
+                                <Text style={styles.articleAbstract}>{item.abstract}</Text>
+                                <Text style={styles.reactionText}>{articleReactions[item.url]}</Text>
+                                <TouchableOpacity onPress={() => Linking.openURL(item.url)} style={styles.linkButton}>
+                                    <Text style={styles.linkText}>
+                                        Check here👉 <Ionicons name="link" size={16} color="blue" />
+                                    </Text>
+                                </TouchableOpacity>
+                                <Text style={styles.articleDate}>{moment(item.published_date).format('MMM D, YYYY, h:mm A')}</Text>
+                                <TouchableOpacity onPress={() => handleShare(item.url)} style={styles.forwardIconContainer}>
+                                    <View style={styles.forwardIconCircle}>
+                                        <MaterialCommunityIcons name="share-all" size={24} color="black" />
                                     </View>
                                 </TouchableOpacity>
-                            )}
-                            keyExtractor={item => item.id.toString()}
-                            showsVerticalScrollIndicator={false}
-                        />
-                    </View>
-                    <View style={styles.findChannelsContainer}>
-                        <Text style={styles.findChannelsText}>Find Channels to Follow</Text>
-                        <FlatList
-                            data={suggestedChannels}
-                            renderItem={({ item }) => (
-                                <View style={styles.suggestedChannelItem}>
-                                    <Image source={{ uri: item.img }} style={styles.suggestedChannelImg} />
-                                    <View style={styles.suggestedChannelInfo}>
-                                        <View style={styles.channelHeader}>
-                                            <Text style={styles.suggestedChannelName}>{item.name}</Text>
-                                            <Ionicons name="checkmark-circle" size={16} color="purple" style={styles.verifiedIcon} />
-                                        </View>
-                                        <Text style={styles.followersCount}>{item.followers}</Text>
-                                    </View>
-                                    {followedChannels.includes(item.id) ? (
-                                        <Text style={styles.followingText}>Following</Text>
-                                    ) : (
-                                        <TouchableOpacity style={styles.followButton} onPress={() => handleFollowChannel(item.id)}>
-                                            <Text style={styles.followButtonText}>Follow</Text>
-                                        </TouchableOpacity>
-                                    )}
-                                </View>
-                            )}
-                            keyExtractor={item => item.id.toString()}
-                            showsVerticalScrollIndicator={false}
-                        />
-                        <TouchableOpacity style={styles.exploreMoreButton} onPress={() => navigation.navigate('Explore')}>
-                            <Text style={styles.exploreMoreButtonText}>Explore More</Text>
-                        </TouchableOpacity>
-                    </View>
-                </ScrollView>
-                <View style={styles.bottomRightIcons}>
-                    <TouchableOpacity style={[styles.bottomIcon, { marginBottom: 10 }]}>
-                        <Ionicons name="pencil" size={24} color="#fff" />
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.bottomIcon}>
-                        <Ionicons name="camera" size={24} color="#fff" />
-                    </TouchableOpacity>
-                </View>
-                <Menu
-                    visible={menuVisible}
-                    onDismiss={closeMenu}
-                    anchor={
-                        <TouchableOpacity onPress={openMenu} style={styles.menuButton}>
-                            <Ionicons name="ellipsis-vertical" size={24} color="black" />
-                        </TouchableOpacity>
-                    }
-                >
-                    <Menu.Item onPress={() => {}} title="Status privacy" />
-                    <Menu.Item onPress={() => {}} title="Create channel" />
-                    <Divider />
-                    <Menu.Item onPress={() => {}} title="Settings" />
-                </Menu>
+                            </View>
+                        ))}
+                    </ScrollView>
+                )}
+
+                <TouchableOpacity onPress={scrollToBottom} style={styles.scrollToBottomButton(buttonOpacity)}>
+                    <FontAwesome name="angle-double-down" size={24} color={primaryColors.purple} />
+                </TouchableOpacity>
             </View>
         </Provider>
     );
@@ -202,210 +134,129 @@ const UpdatesScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff'
+        backgroundColor: '#fff',
+        padding: 20,
+        marginTop: 40,
     },
-    section: {
-        padding: 20
-    },
-    title: {
-        marginBottom: 10,
-        color: '#555',
-        fontSize: 18,
-        fontWeight: 'bold'
-    },
-    channelsHeader: {
+    topSection: {
         flexDirection: 'row',
+        alignItems: 'center',
         justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: 10
-    },
-    exploreText: {
-        color: primaryColors.purple,
-        fontSize: 16,
-        fontWeight: 'bold'
-    },
-    statusContainer: {
-        alignItems: 'center',
-        marginRight: 15
-    },
-    statusWrapper: {
-        width: 60,
-        height: 60,
-        borderRadius: 30,
-        borderWidth: 2,
-        justifyContent: 'center',
-        alignItems: 'center',
-        position: 'relative'
-    },
-    statusWrapperDefault: {
-        width: 60,
-        height: 60,
-        borderRadius: 30,
-        justifyContent: 'center',
-        alignItems: 'center',
-        position: 'relative'
-    },
-    plusSign: {
-        position: 'absolute',
-        bottom: 0,
-        right: 0,
-        backgroundColor: primaryColors.purple,
-        borderRadius: 12,
-        width: 24,
-        height: 24,
-        justifyContent: 'center',
-        alignItems: 'center',
-        zIndex: 2
-    },
-    plusText: {
-        color: '#fff',
-        fontSize: 16,
-        fontWeight: 'bold'
-    },
-    statusImg: {
-        width: 50,
-        height: 50,
-        borderRadius: 25,
-        zIndex: 2
-    },
-    statusUser: {
-        marginTop: 5,
-        textAlign: 'center',
-        fontWeight: 'bold'
-    },
-    listItem: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: 10,
-        padding: 10,
-        borderBottomWidth: 1,
-        borderBottomColor: '#ddd'
+        width: '100%',
+        marginBottom: 20,
     },
     channelImg: {
         width: 50,
         height: 50,
         borderRadius: 25,
-        marginRight: 10
     },
     channelInfo: {
+        flexDirection: 'column',
+        alignItems: 'flex-start',
         flex: 1,
-        flexDirection: 'column'
+        marginLeft: 10,
     },
     channelName: {
-        fontWeight: 'bold'
-    },
-    channelDescription: {
-        color: '#888'
-    },
-    channelMeta: {
-        alignItems: 'flex-end'
-    },
-    channelTime: {
-        fontSize: 12,
-        color: '#888'
-    },
-    unreadBadge: {
-        backgroundColor: primaryColors.purple,
-        borderRadius: 12,
-        paddingVertical: 2,
-        paddingHorizontal: 6,
-        marginTop: 2
-    },
-    unreadText: {
-        color: '#fff',
-        fontSize: 12,
-        fontWeight: 'bold'
-    },
-    findChannelsContainer: {
-        paddingHorizontal: 20,
-        marginTop: 20
-    },
-    findChannelsText: {
-        fontSize: 18,
+        fontSize: 20,
         fontWeight: 'bold',
-        marginBottom: 10
+        marginRight: 5,
     },
-    suggestedChannelItem: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: 10,
-        justifyContent: 'space-between'
-    },
-    suggestedChannelImg: {
-        width: 50,
-        height: 50,
-        borderRadius: 25
-    },
-    suggestedChannelInfo: {
-        marginLeft: 10,
-        flex: 1
-    },
-    channelHeader: {
-        flexDirection: 'row',
-        alignItems: 'center'
-    },
-    suggestedChannelName: {
-        fontWeight: 'bold',
-        marginBottom: 5
-    },
-    verifiedIcon: {
-        marginLeft: 5
+    verifiedBadge: {
+        marginLeft: 5,
     },
     followersCount: {
-        color: '#888',
-        marginBottom: 5
+        fontSize: 14,
+        color: '#555',
+        marginTop: 2,
     },
-    followingText: {
-        color: '#888',
-        fontWeight: 'bold'
+    topIcons: {
+        flexDirection: 'row',
     },
-    followButton: {
-        backgroundColor: primaryColors.purple,
-        paddingVertical: 5,
-        paddingHorizontal: 10,
-        borderRadius: 5,
-        alignItems: 'center'
+    iconButton: {
+        marginLeft: 15,
     },
-    followButtonText: {
-        color: '#fff',
-        fontWeight: 'bold'
-    },
-    exploreMoreButton: {
-        marginTop: 10,
-        backgroundColor: '#fff',
-        paddingVertical: 8, // Reduced padding
-        paddingHorizontal: 12, // Reduced padding
-        borderRadius: 20,
-        borderColor: primaryColors.purple,
-        borderWidth: 1,
+    bellIconContainer: {
+        position: 'relative',
+        flexDirection: 'row',
         alignItems: 'center',
-        alignSelf: 'flex-start' // Align button to the left
     },
-    exploreMoreButtonText: {
-        color: primaryColors.purple,
-        fontSize: 14, // Reduced font size
-        fontWeight: 'bold'
+    lineThrough: {
+        position: 'absolute',
+        top: '50%',
+        left: 0,
+        right: 0,
+        height: 2,
+        backgroundColor: 'black',
+        transform: [{ rotate: '40deg' }],
     },
-    bottomRightIcons: {
+    articleContainer: {
+        backgroundColor: '#f9f9f9',
+        padding: 15,
+        borderRadius: 10,
+        marginBottom: 15,
+        position: 'relative',
+    },
+    articleImage: {
+        width: '100%',
+        height: 150,
+        borderRadius: 10,
+        marginBottom: 10,
+    },
+    articleTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 5,
+    },
+    articleAbstract: {
+        fontSize: 14,
+        color: '#555',
+        marginBottom: 10,
+    },
+    reactionText: {
+        fontSize: 24,
+        marginBottom: 10,
+    },
+    linkButton: {
+        marginTop: 10,
+    },
+    linkText: {
+        color: 'blue',
+        textDecorationLine: 'underline',
+    },
+    articlesList: {
+        marginTop: 20,
+    },
+    articleDate: {
+        position: 'absolute',
+        bottom: 10,
+        right: 10,
+        fontSize: 12,
+        color: '#888',
+    },
+    forwardIconContainer: {
+        position: 'absolute',
+        bottom: -15,
+        left: 10,
+    },
+    forwardIconCircle: {
+        backgroundColor: 'white',
+        borderRadius: 10,
+        padding: 5,
+        borderWidth: 1,
+        borderColor: primaryColors.purple,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    scrollToBottomButton: (opacity) => ({
         position: 'absolute',
         bottom: 20,
         right: 20,
-        flexDirection: 'column',
-        alignItems: 'flex-end'
-    },
-    bottomIcon: {
-        backgroundColor: primaryColors.purple,
-        borderRadius: 30,
-        width: 60,
-        height: 60,
+        backgroundColor: `rgba(255, 255, 255, ${opacity})`,
+        borderRadius: 25,
+        padding: 10,
         justifyContent: 'center',
-        alignItems: 'center'
-    },
-    menuButton: {
-        position: 'absolute',
-        top: 10,
-        right: 10
-    }
+        alignItems: 'center',
+    }),
 });
 
-export default UpdatesScreen;
+export default ChannelDetails;

@@ -104,13 +104,6 @@ const getUserProfilePicture = async (userId) => {
     }
 };
 
-const extractIdsFromUrl = async(url) => {
-    const urlParts = url.split('/');
-    const fileId = urlParts[7];   // Extract file ID
-    console.log("fileId: ",fileId)
-    return { fileId };
-};
-
 
 const uploadProfilePicture = async (userId, uri) => {
     try {
@@ -176,6 +169,8 @@ const uploadProfilePicture = async (userId, uri) => {
         throw error;
     }
 };
+
+
 
 // Function to download and cache the profile picture locally
 const downloadAndCacheProfilePicture = async (url) => {
