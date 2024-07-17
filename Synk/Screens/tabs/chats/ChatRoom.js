@@ -17,7 +17,7 @@ import { useFocusEffect } from '@react-navigation/native';
 
 
 const ChatRoom = ({ route,navigation }) => {
-  const { contact, currentUserPhoneNumber, profilePicture } = route.params;
+  const {contact, currentUserPhoneNumber, profilePicture } = route.params;
   const [messages, setMessages] = useState([]);
   const [lastMessage, setLastMessage] = useState(null);
   const [userData, setUserData] = useState(null);
@@ -41,7 +41,7 @@ console.log(contact.name)
     navigation.setOptions({
       headerShown: true,
       headerTitle: '',
-      headerStyle:{height:hp('10%'),elevation:10,},
+      headerStyle:{height:hp('11%'),elevation:10,},
       headerLeft: () => (
         <View style={styles.headerLeft}>
           <TouchableOpacity style={styles.iconButton} onPress={()=>{navigation.goBack()}}>
@@ -142,11 +142,10 @@ console.log(contact.name)
       behavior={Platform.OS === 'ios' ? 'padding' : 0}
       keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0}
     >
-      <PopupMenu visible={menuVisible} onClose={() => setMenuVisible(false)} menuItems={menuItems} style={styles.popupMenu} />
-    <StatusBar
-        backgroundColor="transparent"
-        translucent={true}
-          />
+      <View style={{alignItems: 'flex-end',}}>
+        <PopupMenu visible={menuVisible} onClose={() => setMenuVisible(false)} menuItems={menuItems} style={styles.popupMenu} />
+      </View>
+      <StatusBar backgroundColor="transparent" translucent={true} />
       <ChatList messages={messages} currentUserPhoneNumber={currentUserPhoneNumber} contactName={contact}/>
       <InputBox onSendMessage={handleSendMessage} />
     </KeyboardAvoidingView>
@@ -194,12 +193,13 @@ const styles = StyleSheet.create({
   },
   popupMenu: {
     position: 'absolute',
-    marginTop: 20,
     backgroundColor: 'white',
     width: wp("47%"),
     borderRadius: 10,
     elevation: 2,
-    justifyContent:'flex-end'
+    justifyContent:'flex-end',
+    top: 1,
+    right:3,
   },
 });
 

@@ -132,16 +132,16 @@ const SettingsScreen = () => {
                 <Pressable style={{width:wp('7')}}>
                   <Ionicons name="qr-code" size={24} color="black" />
                 </Pressable>
-                <Pressable style={{width:wp('7')}}>
+                <Pressable style={{width:wp('7')}} onPress={toggleDrawer}>
                 <Ionicons name="chevron-down-circle" size={24} color="black" />  
                 </Pressable>	
               </View>
-              <Pressable style={styles.scan}>
+              {/* <Pressable style={styles.scan}>
                 <Ionicons name="qr-code" size={24} color="black" />
-              </Pressable>
-              <Pressable style={styles.down} onPress={toggleDrawer}>
+              </Pressable> */}
+              {/* <Pressable style={styles.down} >
               <Ionicons name="chevron-down-circle" size={24} color="black" />  
-              </Pressable>	
+              </Pressable>	 */}
             </View>
           </TouchableOpacity>
 
@@ -273,6 +273,7 @@ const styles = StyleSheet.create({
     height: hp('7%'),
     borderRadius: 50,
     marginRight: 15,
+    marginLeft: 5,
   },
   headerContainer: {
     justifyContent: 'center',
@@ -346,7 +347,7 @@ const styles = StyleSheet.create({
   modalContainer: {
     flex: 1,
     justifyContent: 'flex-end',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 0.1)',
   },
   drawerContent: {
     backgroundColor: 'white',

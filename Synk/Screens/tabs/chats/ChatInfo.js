@@ -176,7 +176,7 @@ const styles=StyleSheet.create({
     bottom: 30,
   },
   back:{
-    padding: 30,
+    padding: 30, 
     right: 8,
   },
   dots: {
