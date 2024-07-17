@@ -1,8 +1,9 @@
-import { Ionicons } from '@expo/vector-icons';
-import { Picker } from '@react-native-picker/picker';
 import React, { useState } from 'react';
-import { FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { View, Text, TouchableOpacity, FlatList, ScrollView, StyleSheet } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
+import { Ionicons } from '@expo/vector-icons';
 import { primaryColors } from '../../../constants/colors';
+
 
 const channelsData = [
   { id: '1', name: 'Channel One', description: 'Description One' },
