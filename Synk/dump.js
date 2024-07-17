@@ -357,7 +357,8 @@ const sendMessage = async (senderId, recipientId, messageText, mediaUri, mediaTy
     return null;
   }
 };
-
+import { databases } from '../backend/appwrite';
+import { useContacts } from '../backend/contacts ';
 
 
 useEffect(() => {

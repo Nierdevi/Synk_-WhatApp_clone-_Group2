@@ -1,125 +1,37 @@
+import React, { useState } from 'react';
 import { View, StyleSheet, Text, TouchableOpacity, ScrollView } from 'react-native';
-import React from 'react';
-import Fab from '../../../components/fab';
 import { MaterialIcons, Ionicons } from '@expo/vector-icons';
+import Fab from '../../../components/fab';
 import { primaryColors } from '../../../constants/colors';
+import GroupChatModal from '../../../components/GroupChatModal ';
+import { createGroupChat } from '../../../backend/groupServices';
 
 export default function GroupsScreen({ navigation }) {
-  const handleNavigateToGroupRoom = () =>{
-    navigation.navigate('GroupRoom')
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const handleCreateGroup = async (groupName, selectedPhoneNumbers) => {
+    try {
+      await createGroupChat(groupName, selectedPhoneNumbers);
+      setModalVisible(false);
+      // Handle any additional logic after group creation, like navigation or state update
+    } catch (error) {
+      console.error('Failed to create group:', error);
+    }
   };
+
+  const handleNavigateToGroupRoom = () => {
+    navigation.navigate('GroupRoom');
+  };
+
   return (
-    <View style={{flex:1,}}>
-      <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-        <View style={styles.mo1}>
-              <TouchableOpacity style={styles.man1} onPress={handleNavigateToGroupRoom}>
-                <View style={styles.fab}>
-                  <MaterialIcons name="groups" size={44} color="black" />
-                </View>
-                  <Text style={styles.groupTitle}>FOLC COMMUNITY 😷❤️</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.messageContainer}>
-                  <View style={styles.icon}>
-                    <MaterialIcons name="volume-up" size={24} color="black" />
-                  </View>
-                  <Text style={styles.message}>Announcements ~ Dr. Joy-Philippe Bruce: https://udn...</Text>
-                  <Text style={styles.time}>10:48 AM</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.messageContainer} onPress={handleNavigateToGroupRoom}>
-                  <View style={styles.icon}>
-                    <MaterialIcons name="groups" size={24} color="black" />
-                  </View>
-                  <Text style={styles.message1}>OUR A1 CHARISMA FAMILEE❤️ ~ gafia? 👀🙏</Text>
-                  <Text style={styles.time}>Yesterday</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={{flexDirection: 'row', paddingBottom: 10,}}>
-                  <Ionicons name="arrow-back" size={24} color="#000" style={styles.viewAll} />
-                  <Text style={styles.viewAllnow}>View all</Text>
-              </TouchableOpacity>
-        </View>
-
-        <View style={styles.mo1}>
-              <TouchableOpacity style={styles.man1} onPress={handleNavigateToGroupRoom}>
-                <View style={styles.fab}>
-                  <MaterialIcons name="groups" size={44} color="black" />
-                </View>
-                  <Text style={styles.groupTitle}>FOLC COMMUNITY 😷❤️</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.messageContainer}>
-                  <View style={styles.icon}>
-                    <MaterialIcons name="volume-up" size={24} color="black" />
-                  </View>
-                  <Text style={styles.message}>Announcements ~ Dr. Joy-Philippe Bruce: https://udn...</Text>
-                  <Text style={styles.time}>10:48 AM</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.messageContainer} onPress={handleNavigateToGroupRoom}>
-                  <View style={styles.icon}>
-                    <MaterialIcons name="groups" size={24} color="black" />
-                  </View>
-                  <Text style={styles.message1}>OUR A1 CHARISMA FAMILEE❤️ ~ gafia? 👀🙏</Text>
-                  <Text style={styles.time}>Yesterday</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={{flexDirection: 'row', paddingBottom: 10,}}>
-                  <Ionicons name="arrow-back" size={24} color="#000" style={styles.viewAll} />
-                  <Text style={styles.viewAllnow}>View all</Text>
-              </TouchableOpacity>
-        </View>
-
-        <View style={styles.mo1}>
-              <TouchableOpacity style={styles.man1} onPress={handleNavigateToGroupRoom}>
-                <View style={styles.fab}>
-                  <MaterialIcons name="groups" size={44} color="black" />
-                </View>
-                  <Text style={styles.groupTitle}>FOLC COMMUNITY 😷❤️</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.messageContainer}>
-                  <View style={styles.icon}>
-                    <MaterialIcons name="volume-up" size={24} color="black" />
-                  </View>
-                  <Text style={styles.message}>Announcements ~ Dr. Joy-Philippe Bruce: https://udn...</Text>
-                  <Text style={styles.time}>10:48 AM</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.messageContainer} onPress={handleNavigateToGroupRoom}>
-                  <View style={styles.icon}>
-                    <MaterialIcons name="groups" size={24} color="black" />
-                  </View>
-                  <Text style={styles.message1}>OUR A1 CHARISMA FAMILEE❤️ ~ gafia? 👀🙏</Text>
-                  <Text style={styles.time}>Yesterday</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={{flexDirection: 'row', paddingBottom: 10,}}>
-                  <Ionicons name="arrow-back" size={24} color="#000" style={styles.viewAll} />
-                  <Text style={styles.viewAllnow}>View all</Text>
-              </TouchableOpacity>
-        </View>
-
-        <View style={styles.mo1}>
-              <TouchableOpacity style={styles.man1} onPress={handleNavigateToGroupRoom}>
-                <View style={styles.fab}>
-                  <MaterialIcons name="groups" size={44} color="black" />
-                </View>
-                  <Text style={styles.groupTitle}>FOLC COMMUNITY 😷❤️</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.messageContainer}>
-                  <View style={styles.icon}>
-                    <MaterialIcons name="volume-up" size={24} color="black" />
-                  </View>
-                  <Text style={styles.message}>Announcements ~ Dr. Joy-Philippe Bruce: https://udn...</Text>
-                  <Text style={styles.time}>10:48 AM</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.messageContainer} onPress={handleNavigateToGroupRoom}>
-                  <View style={styles.icon}>
-                    <MaterialIcons name="groups" size={24} color="black" />
-                  </View>
-                  <Text style={styles.message1}>OUR A1 CHARISMA FAMILEE❤️ ~ gafia? 👀🙏</Text>
-                  <Text style={styles.time}>Yesterday</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={{flexDirection: 'row', paddingBottom: 10,}}>
-                  <Ionicons name="arrow-back" size={24} color="#000" style={styles.viewAll} />
-                  <Text style={styles.viewAllnow}>View all</Text>
-              </TouchableOpacity>
-        </View>
-      </ScrollView>
-      <Fab type="groups" handlePress={{}}/>
+    <View style={{ flex: 1 }}>
+      <Fab type="groups" handlePress={() => setModalVisible(true)} />
+      <GroupChatModal
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        onCreateGroup={handleCreateGroup}
+        close={()=>setModalVisible(false)}
+      />
     </View>
   );
 }
@@ -129,7 +41,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'yellow',
   },
-  contentContainer: {    alignItems: 'center',
+  contentContainer: {
+    alignItems: 'center',
   },
   mo: {
     backgroundColor: 'white',

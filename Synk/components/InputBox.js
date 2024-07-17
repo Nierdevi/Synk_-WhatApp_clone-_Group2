@@ -56,7 +56,7 @@ const InputBox = ({ onSendMessage, contactName  }) => {
   //   { label: 'Pick Image', icon: 'image', onPress: handlePickImage },
   //   // Add more attachment options here
   // ];
-  console.log("contact name in input box",contactName)
+  // console.log("contact name in input box",contactName)
 
   return (
     <View style={styles.container}>
