@@ -12,7 +12,7 @@ const ChannelDetails = ({ route }) => {
     const [articles, setArticles] = useState([]);
     const [articleReactions, setArticleReactions] = useState({});
     const [loading, setLoading] = useState(true);
-    const [buttonOpacity, setButtonOpacity] = useState(0.5); // Default opacity
+    const [buttonOpacity, setButtonOpacity] = useState(0.5);
     const scrollViewRef = useRef();
 
     const reactions = ['👍', '❤️', '😂', '😮', '😢', '😡'];
@@ -23,19 +23,18 @@ const ChannelDetails = ({ route }) => {
     useEffect(() => {
         const fetchChannelArticles = async () => {
             try {
-                // Replace with your actual API endpoint
-                const response = await fetch(`https://api.example.com/channels/${channel.id}/articles`);
+                const response = await fetch(`https://api.nytimes.com/svc/topstories/v2/${channel.slug}.json?api-key=xICQ9NoAelPxIAplcKVta3keJdV5y2ur`);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
 
                 const data = await response.json();
-                const reactionsMap = data.map(item => ({
+                const reactionsMap = data.results.map(item => ({
                     url: item.url,
                     reaction: reactions[Math.floor(Math.random() * reactions.length)],
                 }));
 
-                setArticles(data);
+                setArticles(data.results);
                 setArticleReactions(Object.fromEntries(reactionsMap.map(item => [item.url, item.reaction])));
             } catch (error) {
                 console.error('Error fetching channel articles:', error);
@@ -46,7 +45,7 @@ const ChannelDetails = ({ route }) => {
         };
 
         fetchChannelArticles();
-    }, [channel.id]);
+    }, [channel.slug]);
 
     const scrollToBottom = () => {
         scrollViewRef.current.scrollToEnd({ animated: true });
@@ -98,8 +97,8 @@ const ChannelDetails = ({ route }) => {
                     <ScrollView ref={scrollViewRef} style={styles.articlesList}>
                         {articles.map((item) => (
                             <View key={item.url} style={styles.articleContainer}>
-                                {item.image && (
-                                    <Image source={{ uri: item.image }} style={styles.articleImage} />
+                                {item.multimedia && item.multimedia[0] && (
+                                    <Image source={{ uri: item.multimedia[0].url }} style={styles.articleImage} />
                                 )}
                                 <Text style={styles.articleTitle}>{item.title}</Text>
                                 <Text style={styles.articleAbstract}>{item.abstract}</Text>
@@ -248,7 +247,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: 20,
         right: 20,
-        backgroundColor: `rgba(255, 255, 255, ${opacity})`, // White with variable transparency
+        backgroundColor: `rgba(255, 255, 255, ${opacity})`,
         borderRadius: 25,
         padding: 10,
         justifyContent: 'center',
