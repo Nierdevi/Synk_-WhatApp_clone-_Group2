@@ -1,27 +1,34 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, Text, TouchableOpacity, ScrollView } from 'react-native';
+import React, { useState,useEffect } from 'react';
+import { View, StyleSheet, Text, TouchableOpacity, ScrollView, FlatList } from 'react-native';
 import { MaterialIcons, Ionicons } from '@expo/vector-icons';
 import Fab from '../../../components/fab';
 import { primaryColors } from '../../../constants/colors';
 import GroupChatModal from '../../../components/GroupChatModal ';
-import { createGroupChat } from '../../../backend/groupServices';
+import { fetchUserGroups, } from '../../../backend/groupServices';
+import { getUser } from '../../../constants/userContext';
+import RenderGroupsIn from '../../../components/RenderGroupsIn';
+
+
 
 export default function GroupsScreen({ navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
+  const {session}=getUser()
+  useEffect(() => {
+    const loadUserGroups = async () => {
+      const userGroups = await fetchUserGroups(session.phoneNumber);
+      // console.log(userGroups);
+    };
+    loadUserGroups();
+  }, [session.phoneNumber]);
 
-  const handleCreateGroup = async (groupName, selectedPhoneNumbers) => {
-    try {
-      await createGroupChat(groupName, selectedPhoneNumbers);
-      setModalVisible(false);
-      // Handle any additional logic after group creation, like navigation or state update
-    } catch (error) {
-      console.error('Failed to create group:', error);
-    }
-  };
+
 
   const handleNavigateToGroupRoom = () => {
     navigation.navigate('GroupRoom');
   };
+
+
+
 
   return (
     <View style={{ flex: 1 }}>
@@ -29,9 +36,10 @@ export default function GroupsScreen({ navigation }) {
       <GroupChatModal
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
-        onCreateGroup={handleCreateGroup}
         close={()=>setModalVisible(false)}
+        navigation={navigation}
       />
+      <RenderGroupsIn navigation={navigation} session={session} />
     </View>
   );
 }
