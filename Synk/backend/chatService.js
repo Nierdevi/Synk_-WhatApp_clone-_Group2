@@ -273,7 +273,7 @@ const fetchMessagedContacts = async (currentUserPhoneNumber) => {
   } catch (error) {
     console.error('Failed to fetch messaged contacts:', error);
     // if (error.message.includes('Network request failed')) {
-    //   // Alert.alert('Network Error', 'Please check your network connection.');
+      // Alert.alert('Failed to fetch messaged contacts', 'Please check your network connection.');
     // }
     return [];
   }

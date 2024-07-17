@@ -357,3 +357,23 @@ const sendMessage = async (senderId, recipientId, messageText, mediaUri, mediaTy
     return null;
   }
 };
+import { databases } from '../backend/appwrite';
+import { useContacts } from '../backend/contacts ';
+
+
+useEffect(() => {
+  const checkSession = async () => {
+    const storedSession = await AsyncStorage.getItem('session');
+    if (storedSession || session) {
+      const session = JSON.parse(storedSession);
+      setSession(session);
+      setIsLoading(false);
+      console.log(session)
+      navigationRef.current?.navigate('Tabs');
+    } else {
+      navigationRef.current?.navigate('welcome');
+    }
+  };
+
+  checkSession();
+}, [setSession]);

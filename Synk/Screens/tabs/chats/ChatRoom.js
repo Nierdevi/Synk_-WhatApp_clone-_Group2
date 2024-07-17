@@ -26,7 +26,7 @@ const ChatRoom = ({ route,navigation }) => {
 
   const recipientPhoneNumber = contact.normalizedPhoneNumbers[0];
 
-console.log(contact.name)
+// console.log(contact.name)
   const menuItems = [
     { label: 'Report or Block', onPress: () => {} },
     { label: 'Search', onPress: () => {} },
@@ -86,6 +86,10 @@ console.log(contact.name)
         const sortedMessages = fetchedMessages.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
         setMessages(sortedMessages);
 
+        // Compare new messages with the existing ones to avoid unnecessary updates
+        if (JSON.stringify(sortedMessages) !== JSON.stringify(messages)) {
+          setMessages(sortedMessages);
+          }
         // Fetch the last message
         try {
           const lastMessageData = await fetchLastMessage(chatId);
@@ -97,10 +101,10 @@ console.log(contact.name)
     };
     loadMessages();
 
-    // const intervalId = setInterval(loadMessages, 3000); // 1000ms = 1 seconds
+    const intervalId = setInterval(loadMessages, 1000); // 1000ms = 1 seconds
 
-    // // Clean up interval on component unmount
-    // return () => clearInterval(intervalId);
+    // Clean up interval on component unmount
+    return () => clearInterval(intervalId);
   }, [currentUserPhoneNumber, recipientPhoneNumber]);
 
   // const handleSendMessage = async (messageText) => {

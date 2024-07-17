@@ -92,7 +92,7 @@ const ChatsScreen = ({ navigation }) => {
   // console.log(session.phoneNumber)
   const onRefresh = async () => {
     setRefreshing(true);
-    // await fetchMessagedContacts(session.phoneNumber);
+    await fetchMessagedContacts(session.phoneNumber);
     setRefreshing(false);
   };
 // console.log(contacts)
