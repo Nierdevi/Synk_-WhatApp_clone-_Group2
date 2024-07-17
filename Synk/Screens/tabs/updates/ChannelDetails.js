@@ -1,3 +1,4 @@
+import { FontAwesome } from '@expo/vector-icons';
 import moment from 'moment';
 import React, { useEffect, useRef, useState } from 'react';
 import { Alert, Image, Linking, ScrollView, Share, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -101,13 +102,13 @@ const ChannelDetails = ({ route }) => {
                                 <Text style={styles.reactionText}>{articleReactions[item.url]}</Text>
                                 <TouchableOpacity onPress={() => Linking.openURL(item.url)} style={styles.linkButton}>
                                     <Text style={styles.linkText}>
-                                        Check here👉 <Ionicons name="" size={16} color="blue" />
+                                        Check here👉 <Ionicons name="link" size={16} color="blue" />
                                     </Text>
                                 </TouchableOpacity>
                                 <Text style={styles.articleDate}>{moment(item.published_date).format('MMM D, YYYY, h:mm A')}</Text>
                                 <TouchableOpacity onPress={() => handleShare(item.url)} style={styles.forwardIconContainer}>
                                     <View style={styles.forwardIconCircle}>
-                                    <FontAwesomeIcon icon="fa-regular fa-share-all" />
+                                        <FontAwesome name="share-alt" size={24} color="black" />
                                     </View>
                                 </TouchableOpacity>
                             </View>
@@ -116,7 +117,7 @@ const ChannelDetails = ({ route }) => {
                 )}
 
                 <TouchableOpacity onPress={scrollToBottom} style={styles.scrollToBottomButton}>
-                    <FontAwesomeIcon name="angle-double-down" size={24} color='black' />
+                    <FontAwesome name="angle-double-down" size={24} color={primaryColors.purple} />
                 </TouchableOpacity>
             </View>
         </Provider>
@@ -243,7 +244,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: 20,
         right: 20,
-        backgroundColor: primaryColors.purple,
+        backgroundColor: 'transparent',
         borderRadius: 25,
         padding: 10,
         justifyContent: 'center',
