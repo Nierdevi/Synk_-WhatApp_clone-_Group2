@@ -1,179 +1,142 @@
 import { Ionicons } from '@expo/vector-icons';
-import React, { useEffect, useRef, useState } from 'react';
-import { Animated, FlatList, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
+import React, { useState } from 'react';
+import { FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { primaryColors } from '../../../constants/colors';
 
-const ExploreMore = ({ route, navigation }) => {
-    const { channels } = route.params;
-    const [articles, setArticles] = useState([]);
-    const [searchVisible, setSearchVisible] = useState(false);
-    const [searchText, setSearchText] = useState('');
-    const searchWidth = useRef(new Animated.Value(0)).current;
+const channelsData = [
+  { id: '1', name: 'Channel One', description: 'Description One' },
+  { id: '2', name: 'Channel Two', description: 'Description Two' },
+  // Add more channels
+];
 
-    useEffect(() => {
-        navigation.setOptions({
-            headerTitle: 'Channels',
-            headerLeft: () => (
-                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.headerBackButton}>
-                    <Ionicons name="arrow-back" size={24} color="black" />
-                </TouchableOpacity>
-            ),
-            headerRight: () => (
-                <View style={styles.headerRightContainer}>
-                    {searchVisible ? (
-                        <Animated.View style={[styles.searchBar, { width: searchWidth }]}>
-                            <TextInput
-                                style={styles.searchInput}
-                                placeholder="Search..."
-                                value={searchText}
-                                onChangeText={setSearchText}
-                            />
-                            <TouchableOpacity onPress={handleSearchClose}>
-                                <Ionicons name="close" size={24} color="black" />
-                            </TouchableOpacity>
-                        </Animated.View>
-                    ) : (
-                        <TouchableOpacity onPress={handleSearchOpen} style={styles.headerSearchButton}>
-                            <Ionicons name="search" size={24} color="black" />
-                        </TouchableOpacity>
-                    )}
-                </View>
-            )
-        });
+const ExploreMore = () => {
+  const [selectedCountry, setSelectedCountry] = useState('Ghana'); // Default country is Ghana
+  const countries = [
+    'Afghanistan', 'Albania', 'Algeria', 'Andorra', 'Angola', 'Argentina',
+    'Armenia', 'Australia', 'Austria', 'Azerbaijan', 'Bahamas', 'Bahrain',
+    'Bangladesh', 'Barbados', 'Belarus', 'Belgium', 'Belize', 'Benin',
+    'Bhutan', 'Bolivia', 'Bosnia and Herzegovina', 'Botswana', 'Brazil',
+    'Brunei', 'Bulgaria', 'Burkina Faso', 'Burundi', 'Cabo Verde', 'Cambodia',
+    'Cameroon', 'Canada', 'Central African Republic', 'Chad', 'Chile', 'China',
+    'Colombia', 'Comoros', 'Congo, Democratic Republic of the', 'Congo, Republic of the',
+    'Costa Rica', 'Croatia', 'Cuba', 'Cyprus', 'Czech Republic', 'Denmark',
+    'Djibouti', 'Dominica', 'Dominican Republic', 'Ecuador', 'Egypt', 'El Salvador',
+    'Equatorial Guinea', 'Eritrea', 'Estonia', 'Eswatini', 'Ethiopia', 'Fiji',
+    'Finland', 'France', 'Gabon', 'Gambia', 'Georgia', 'Germany', 'Ghana',
+    'Greece', 'Grenada', 'Guatemala', 'Guinea', 'Guinea-Bissau', 'Guyana',
+    'Haiti', 'Honduras', 'Hungary', 'Iceland', 'India', 'Indonesia', 'Iran',
+    'Iraq', 'Ireland', 'Israel', 'Italy', 'Jamaica', 'Japan', 'Jordan',
+    'Kazakhstan', 'Kenya', 'Kiribati', 'Korea, North', 'Korea, South', 'Kuwait',
+    'Kyrgyzstan', 'Laos', 'Latvia', 'Lebanon', 'Lesotho', 'Liberia', 'Libya',
+    'Liechtenstein', 'Lithuania', 'Luxembourg', 'Madagascar', 'Malawi', 'Malaysia',
+    'Maldives', 'Mali', 'Malta', 'Marshall Islands', 'Mauritania', 'Mauritius',
+    'Mexico', 'Micronesia', 'Moldova', 'Monaco', 'Mongolia', 'Montenegro',
+    'Morocco', 'Mozambique', 'Myanmar', 'Namibia', 'Nauru', 'Nepal',
+    'Netherlands', 'New Zealand', 'Nicaragua', 'Niger', 'Nigeria', 'North Macedonia',
+    'Norway', 'Oman', 'Pakistan', 'Palau', 'Palestine', 'Panama',
+    'Papua New Guinea', 'Paraguay', 'Peru', 'Philippines', 'Poland', 'Portugal',
+    'Qatar', 'Romania', 'Russia', 'Rwanda', 'Saint Kitts and Nevis',
+    'Saint Lucia', 'Saint Vincent and the Grenadines', 'Samoa', 'San Marino',
+    'Sao Tome and Principe', 'Saudi Arabia', 'Senegal', 'Serbia', 'Seychelles',
+    'Sierra Leone', 'Singapore', 'Slovakia', 'Slovenia', 'Solomon Islands',
+    'Somalia', 'South Africa', 'South Sudan', 'Spain', 'Sri Lanka', 'Sudan',
+    'Suriname', 'Sweden', 'Switzerland', 'Syria', 'Taiwan', 'Tajikistan',
+    'Tanzania', 'Thailand', 'Togo', 'Tonga', 'Trinidad and Tobago', 'Tunisia',
+    'Turkey', 'Turkmenistan', 'Tuvalu', 'Uganda', 'Ukraine', 'United Arab Emirates',
+    'United Kingdom', 'United States', 'Uruguay', 'Uzbekistan', 'Vanuatu',
+    'Vatican City', 'Venezuela', 'Vietnam', 'Yemen', 'Zambia', 'Zimbabwe',
+  ];
 
-        const fetchArticles = async () => {
-            try {
-                const response = await fetch(`https://api.example.com/channels/${channels.id}/articles`);
-                const data = await response.json();
-                setArticles(data);
-            } catch (error) {
-                console.error('Error fetching articles:', error);
-            }
-        };
-
-        fetchArticles();
-    }, [channels.id, navigation, searchVisible]);
-
-    const handleSearchOpen = () => {
-        setSearchVisible(true);
-        Animated.timing(searchWidth, {
-            toValue: 200,
-            duration: 300,
-            useNativeDriver: false
-        }).start();
-    };
-
-    const handleSearchClose = () => {
-        Animated.timing(searchWidth, {
-            toValue: 0,
-            duration: 300,
-            useNativeDriver: false
-        }).start(() => {
-            setSearchVisible(false);
-            setSearchText('');
-        });
-    };
-
-    const renderButton = (title, onPress) => (
-        <TouchableOpacity style={styles.filterButton} onPress={onPress}>
-            <Text style={styles.filterButtonText}>{title}</Text>
+  return (
+    <View style={styles.container}>
+      {/* Header */}
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => {/* Implement search functionality */}}>
+          <Ionicons name="search" size={24} color={primaryColors.purple} />
         </TouchableOpacity>
-    );
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.buttonContainer}>
+          {['Most Active', 'Popular', 'New'].map((button) => (
+            <TouchableOpacity key={button} style={styles.button} onPress={() => {/* Handle button press */}}>
+              <Text style={styles.buttonText}>{button}</Text>
+            </TouchableOpacity>
+          ))}
+          {/* Country Dropdown */}
+          <View style={styles.dropdownContainer}>
+            <Picker
+              selectedValue={selectedCountry}
+              style={styles.dropdown}
+              onValueChange={(itemValue) => setSelectedCountry(itemValue)}
+            >
+              {countries.map((country) => (
+                <Picker.Item key={country} label={country} value={country} />
+              ))}
+            </Picker>
+          </View>
+        </ScrollView>
+      </View>
 
-    return (
-        <View style={styles.container}>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterScrollView}>
-                {renderButton("Explore", () => { /* Implement Explore functionality */ })}
-                {renderButton("Most Active", () => { /* Implement Most Active functionality */ })}
-                {renderButton("Popular", () => { /* Implement Popular functionality */ })}
-                {renderButton("New", () => { /* Implement New functionality */ })}
-                {renderButton("List of Countries", () => { /* Implement List of Countries functionality */ })}
-            </ScrollView>
-
-            <Text style={styles.description}>{channels.description}</Text>
-
-            <FlatList
-                data={articles}
-                renderItem={({ item }) => (
-                    <View style={styles.articleContainer}>
-                        {item.image && <Image source={{ uri: item.image }} style={styles.articleImage} />}
-                        <Text style={styles.articleTitle}>{item.title}</Text>
-                        <Text style={styles.articleDescription}>{item.description}</Text>
-                    </View>
-                )}
-                keyExtractor={item => item.id.toString()}
-            />
-        </View>
-    );
+      {/* Channel List */}
+      <FlatList
+        data={channelsData}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <View style={styles.channelCard}>
+            <Text style={styles.channelName}>{item.name}</Text>
+            <Text>{item.description}</Text>
+          </View>
+        )}
+      />
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-        padding: 20,
-    },
-    headerBackButton: {
-        marginLeft: 10,
-    },
-    headerSearchButton: {
-        marginRight: 10,
-    },
-    headerRightContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    searchBar: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        borderWidth: 1,
-        borderColor: '#ccc',
-        borderRadius: 15,
-        paddingLeft: 10,
-        marginRight: 10,
-    },
-    searchInput: {
-        flex: 1,
-        height: 40,
-    },
-    filterScrollView: {
-        flexDirection: 'row',
-    },
-    filterButton: {
-        paddingVertical: 5,
-        paddingHorizontal: 15,
-        borderRadius: 15,
-        borderWidth: 1,
-        borderColor: primaryColors.purple,
-        marginRight: 10,
-        backgroundColor: 'transparent',
-        paddingBottom: 2, // Reduced padding bottom
-    },
-    filterButtonText: {
-        color: primaryColors.purple,
-        fontWeight: 'bold',
-    },
-    description: {
-        fontSize: 14,
-        color: '#555',
-        marginBottom: 20,
-    },
-    articleContainer: {
-        marginBottom: 20,
-    },
-    articleImage: {
-        width: '100%',
-        height: 200,
-        borderRadius: 10,
-        marginBottom: 10,
-    },
-    articleTitle: {
-        fontSize: 16,
-        fontWeight: 'bold',
-    },
-    articleDescription: {
-        color: '#555',
-    },
+  container: {
+    flex: 1,
+    padding: 16,
+    backgroundColor: '#fff',
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 16,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+  },
+  button: {
+    padding: 10,
+    marginRight: 8,
+    backgroundColor: primaryColors.grey,
+    borderRadius: 8,
+  },
+  buttonText: {
+    fontSize: 16,
+  },
+  dropdownContainer: {
+    marginLeft: 8,
+    borderWidth: 1,
+    borderColor: primaryColors.gray,
+    borderRadius: 8,
+    overflow: 'hidden',
+  },
+  dropdown: {
+    width: 120,
+    height: 40,
+  },
+  channelCard: {
+    marginVertical: 8,
+    padding: 16,
+    borderWidth: 1,
+    borderRadius: 8,
+    borderColor: primaryColors.gray,
+  },
+  channelName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
 });
 
 export default ExploreMore;
