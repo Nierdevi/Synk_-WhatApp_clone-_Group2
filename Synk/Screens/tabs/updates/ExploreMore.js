@@ -1,11 +1,14 @@
 import { Ionicons } from '@expo/vector-icons';
-import React, { useEffect, useState } from 'react';
-import { FlatList, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { Animated, FlatList, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { primaryColors } from '../../../constants/colors';
 
 const ExploreMore = ({ route, navigation }) => {
     const { channels } = route.params;
     const [articles, setArticles] = useState([]);
+    const [searchVisible, setSearchVisible] = useState(false);
+    const [searchText, setSearchText] = useState('');
+    const searchWidth = useRef(new Animated.Value(0)).current;
 
     useEffect(() => {
         navigation.setOptions({
@@ -16,9 +19,25 @@ const ExploreMore = ({ route, navigation }) => {
                 </TouchableOpacity>
             ),
             headerRight: () => (
-                <TouchableOpacity onPress={() => { /* Implement search functionality */ }} style={styles.headerSearchButton}>
-                    <Ionicons name="search" size={24} color="black" />
-                </TouchableOpacity>
+                <View style={styles.headerRightContainer}>
+                    {searchVisible ? (
+                        <Animated.View style={[styles.searchBar, { width: searchWidth }]}>
+                            <TextInput
+                                style={styles.searchInput}
+                                placeholder="Search..."
+                                value={searchText}
+                                onChangeText={setSearchText}
+                            />
+                            <TouchableOpacity onPress={handleSearchClose}>
+                                <Ionicons name="close" size={24} color="black" />
+                            </TouchableOpacity>
+                        </Animated.View>
+                    ) : (
+                        <TouchableOpacity onPress={handleSearchOpen} style={styles.headerSearchButton}>
+                            <Ionicons name="search" size={24} color="black" />
+                        </TouchableOpacity>
+                    )}
+                </View>
             )
         });
 
@@ -33,7 +52,27 @@ const ExploreMore = ({ route, navigation }) => {
         };
 
         fetchArticles();
-    }, [channels.id, navigation]);
+    }, [channels.id, navigation, searchVisible]);
+
+    const handleSearchOpen = () => {
+        setSearchVisible(true);
+        Animated.timing(searchWidth, {
+            toValue: 200,
+            duration: 300,
+            useNativeDriver: false
+        }).start();
+    };
+
+    const handleSearchClose = () => {
+        Animated.timing(searchWidth, {
+            toValue: 0,
+            duration: 300,
+            useNativeDriver: false
+        }).start(() => {
+            setSearchVisible(false);
+            setSearchText('');
+        });
+    };
 
     const renderButton = (title, onPress) => (
         <TouchableOpacity style={styles.filterButton} onPress={onPress}>
@@ -43,16 +82,6 @@ const ExploreMore = ({ route, navigation }) => {
 
     return (
         <View style={styles.container}>
-            <View style={styles.header}>
-                <Image source={{ uri: channels.img }} style={styles.channelsImg} />
-                <View style={styles.channelsInfo}>
-                    <Text style={styles.channelsName}>{channels.name}</Text>
-                    {channels.verified && (
-                        <Ionicons name="checkmark-circle" size={16} color="blue" style={styles.verifiedBadge} />
-                    )}
-                </View>
-            </View>
-
             <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterScrollView}>
                 {renderButton("Explore", () => { /* Implement Explore functionality */ })}
                 {renderButton("Most Active", () => { /* Implement Most Active functionality */ })}
@@ -74,7 +103,6 @@ const ExploreMore = ({ route, navigation }) => {
                 )}
                 keyExtractor={item => item.id.toString()}
             />
-
         </View>
     );
 };
@@ -85,50 +113,66 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         padding: 20,
     },
-    header: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: 20,
-    },
-    verifiedBadge: {
-        marginLeft: 5,
-    },
-    followersCount: {
-        fontSize: 14,
-        color: '#555',
-    },
-    description: {
-        fontSize: 14,
-        color: '#555',
-        marginBottom: 20,
-    },
-    sectionTitle: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        marginBottom: 10,
-    },
     headerBackButton: {
         marginLeft: 10,
     },
     headerSearchButton: {
         marginRight: 10,
     },
+    headerRightContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    searchBar: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 15,
+        paddingLeft: 10,
+        marginRight: 10,
+    },
+    searchInput: {
+        flex: 1,
+        height: 40,
+    },
     filterScrollView: {
         flexDirection: 'row',
-        marginBottom: 20,
     },
     filterButton: {
         paddingVertical: 5,
-        paddingHorizontal: 10,
+        paddingHorizontal: 15,
         borderRadius: 15,
         borderWidth: 1,
         borderColor: primaryColors.purple,
         marginRight: 10,
         backgroundColor: 'transparent',
+        paddingBottom: 2, // Reduced padding bottom
     },
     filterButtonText: {
         color: primaryColors.purple,
         fontWeight: 'bold',
+    },
+    description: {
+        fontSize: 14,
+        color: '#555',
+        marginBottom: 20,
+    },
+    articleContainer: {
+        marginBottom: 20,
+    },
+    articleImage: {
+        width: '100%',
+        height: 200,
+        borderRadius: 10,
+        marginBottom: 10,
+    },
+    articleTitle: {
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+    articleDescription: {
+        color: '#555',
     },
 });
 
