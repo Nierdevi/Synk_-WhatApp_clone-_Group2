@@ -26,11 +26,11 @@ const UpdatesScreen = ({ navigation }) => {
     const [followedChannels, setFollowedChannels] = useState([]);
 
     const suggestedChannels = [
-        { id: 3, name: 'CNN', img: 'https://via.placeholder.com/50', followers: '1.2k followers' },
-        { id: 4, name: 'BBC News', img: 'https://via.placeholder.com/50', followers: '900 followers' },
-        { id: 5, name: 'TechCrunch', img: 'https://via.placeholder.com/50', followers: '1.5k followers' },
-        { id: 6, name: 'National Geographic', img: 'https://via.placeholder.com/50', followers: '800 followers' },
-        { id: 7, name: 'ESPN', img: 'https://via.placeholder.com/50', followers: '2k followers' }
+        { id: 3, name: 'CNN', img: 'https://upload.wikimedia.org/wikipedia/commons/6/66/CNN_International_logo.png', followers: '1.2k followers' },
+        { id: 4, name: 'BBC News', img: 'https://upload.wikimedia.org/wikipedia/commons/e/ed/BBC_News_2022.svg', followers: '900 followers' },
+        { id: 5, name: 'TechCrunch', img: 'https://upload.wikimedia.org/wikipedia/commons/a/ad/TechCrunch_logo.svg', followers: '1.5k followers' },
+        { id: 6, name: 'National Geographic', img: 'https://upload.wikimedia.org/wikipedia/commons/7/74/National_Geographic_logo_2021.svg', followers: '800 followers' },
+        { id: 7, name: 'ESPN', img: 'https://upload.wikimedia.org/wikipedia/commons/2/2f/ESPN_wordmark.svg', followers: '2k followers' }
     ];
 
     useEffect(() => {
@@ -46,7 +46,7 @@ const UpdatesScreen = ({ navigation }) => {
                     id: 1,
                     name: 'The New York Times',
                     description: latestArticle.title.split('.')[0] || 'Top stories', // Use the first sentence of the title
-                    img: 'https://via.placeholder.com/50',
+                    img: 'https://upload.wikimedia.org/wikipedia/commons/4/40/New_York_Times_logo_variation.jpg',
                     time: '2h ago',
                     unread: dataNYT.results.length
                 };
@@ -55,7 +55,7 @@ const UpdatesScreen = ({ navigation }) => {
                     id: 2,
                     name: 'The New York Post',
                     description: 'Breaking news',
-                    img: 'https://via.placeholder.com/50',
+                    img: 'https://upload.wikimedia.org/wikipedia/commons/e/ee/New_York_Post_logo.png',
                     time: '1h ago',
                     unread: 5
                 };
@@ -71,7 +71,7 @@ const UpdatesScreen = ({ navigation }) => {
 
     const handleSelectChannel = (channel) => {
         navigation.navigate('ChannelDetails', { channel });
-        navigation.setOptions({headerShown:false})
+        navigation.setOptions({ headerShown: false })
     };
 
     const handleFollowChannel = (channelId) => {
@@ -98,7 +98,7 @@ const UpdatesScreen = ({ navigation }) => {
                                 ) : (
                                     <View key={item.id} style={styles.statusContainer}>
                                         <View style={[
-                                            styles.statusWrapper, 
+                                            styles.statusWrapper,
                                             { borderColor: item.viewed < item.total ? primaryColors.purple : '#ccc' }
                                         ]}>
                                             <Image source={{ uri: item.img }} style={styles.statusImg} />
@@ -114,7 +114,7 @@ const UpdatesScreen = ({ navigation }) => {
                     <View style={styles.section}>
                         <View style={styles.channelsHeader}>
                             <Text style={styles.title}>Channels</Text>
-                            <TouchableOpacity onPress={() => navigation.navigate('Explore')}>
+                            <TouchableOpacity onPress={() => navigation.navigate('Explore',{channels})}>
                                 <Text style={styles.exploreText}>Explore &gt;</Text>
                             </TouchableOpacity>
                         </View>
@@ -167,7 +167,7 @@ const UpdatesScreen = ({ navigation }) => {
                             keyExtractor={item => item.id.toString()}
                             showsVerticalScrollIndicator={false}
                         />
-                        <TouchableOpacity style={styles.exploreMoreButton} onPress={() => navigation.navigate('Explore')}>
+                        <TouchableOpacity style={styles.exploreMoreButton} onPress={() => navigation.navigate('Explore',{channels})}>
                             <Text style={styles.exploreMoreButtonText}>Explore More</Text>
                         </TouchableOpacity>
                     </View>
@@ -361,14 +361,18 @@ const styles = StyleSheet.create({
     },
     followButton: {
         backgroundColor: primaryColors.purple,
-        paddingVertical: 5,
+        paddingVertical: 10,
         paddingHorizontal: 10,
-        borderRadius: 5,
+        borderRadius: 10,
         alignItems: 'center'
     },
     followButtonText: {
         color: '#fff',
         fontWeight: 'bold'
+    },
+    followingText: {
+        fontSize: 14,
+        color: primaryColors.purple
     },
     exploreMoreButton: {
         marginTop: 10,
@@ -405,6 +409,16 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: 10,
         right: 10
+    },
+    channelsHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: 10
+    },
+    exploreText: {
+        color: primaryColors.purple,
+        fontWeight: 'bold'
     }
 });
 
