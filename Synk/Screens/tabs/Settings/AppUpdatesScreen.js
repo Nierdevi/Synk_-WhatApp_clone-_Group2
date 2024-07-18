@@ -179,7 +179,7 @@ headerTitle: {
   modalContainer: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.1)',
+    backgroundColor: 'rgba(0, 0, 0, 0.0)',
     alignItems: 'center',
     marginTop: 30,
   },
