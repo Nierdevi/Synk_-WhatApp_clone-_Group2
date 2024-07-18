@@ -5,6 +5,96 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0e154f7d-0774-4dec-9b76-982ec452d9d0" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/Synk/GroupDump.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/Screens/AccountScreen.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/Screens/tabs/Settings/AccountScreen.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/Screens/tabs/Settings/AppUpdatesScreen.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/Screens/tabs/Settings/AvatarScreen.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/Screens/tabs/Settings/ChangeNumberScreen.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/Screens/tabs/Settings/DeleteAccountScreen.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/Screens/tabs/Settings/EmailScreen.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/Screens/tabs/Settings/HelpScreen.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/Screens/tabs/Settings/NotificationsScreen.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/Screens/tabs/Settings/PassKeysScreen.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/Screens/tabs/Settings/PrivacyScreen.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/Screens/tabs/Settings/ProfileScreen.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/Screens/tabs/Settings/RequestAccountInfoScreen.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/Screens/tabs/Settings/SChatScreen.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/Screens/tabs/Settings/SecurityNotificationsScreen.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/Screens/tabs/Settings/SettingsScreen.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/Screens/tabs/Settings/StorageScreen.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/Screens/tabs/Settings/TwoStepVerificationScreen.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/Screens/tabs/chats/ChatListItem.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/Screens/tabs/chats/InputBox.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/Screens/tabs/chats/Message.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/Screens/tabs/updates/ChannelDetails.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/Screens/tabs/updates/ChannelInfo.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/Screens/tabs/updates/EditStatusScreen.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/Screens/tabs/updates/ExploreMore.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/android/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/android/app/build.gradle" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/android/app/debug.keystore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/android/app/my-upload-key.keystore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/android/app/proguard-rules.pro" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/android/app/src/debug/AndroidManifest.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/android/app/src/main/AndroidManifest.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/android/app/src/main/java/com/synkapp_inc/synk/MainActivity.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/android/app/src/main/java/com/synkapp_inc/synk/MainApplication.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/android/app/src/main/res/drawable-hdpi/splashscreen_image.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/android/app/src/main/res/drawable-mdpi/splashscreen_image.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/android/app/src/main/res/drawable-xhdpi/splashscreen_image.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/android/app/src/main/res/drawable-xxhdpi/splashscreen_image.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/android/app/src/main/res/drawable-xxxhdpi/splashscreen_image.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/android/app/src/main/res/drawable/rn_edit_text_material.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/android/app/src/main/res/drawable/splashscreen.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/android/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/android/app/src/main/res/mipmap-hdpi/ic_launcher.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/android/app/src/main/res/mipmap-hdpi/ic_launcher_foreground.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/android/app/src/main/res/mipmap-hdpi/ic_launcher_round.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/android/app/src/main/res/mipmap-mdpi/ic_launcher.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/android/app/src/main/res/mipmap-mdpi/ic_launcher_foreground.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/android/app/src/main/res/mipmap-mdpi/ic_launcher_round.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/android/app/src/main/res/mipmap-xhdpi/ic_launcher.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/android/app/src/main/res/mipmap-xhdpi/ic_launcher_foreground.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/android/app/src/main/res/mipmap-xhdpi/ic_launcher_round.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/android/app/src/main/res/mipmap-xxhdpi/ic_launcher_foreground.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/android/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_foreground.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/android/app/src/main/res/values-night/colors.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/android/app/src/main/res/values/colors.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/android/app/src/main/res/values/strings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/android/app/src/main/res/values/styles.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/android/build.gradle" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/android/gradle.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/android/gradle/wrapper/gradle-wrapper.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/android/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/android/gradlew" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/android/gradlew.bat" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/android/settings.gradle" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/assets/Avator.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/assets/Grp.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/assets/images/avatar.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/assets/images/verification.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/components/ChatListItem.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/components/DateTime.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/components/FullScreenMediaModal .js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/components/GroupChatList.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/components/GroupChatModal .js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/components/InputBox.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/components/LoadingScreen.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/components/MediaReviewModal .js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/components/RenderGroupsIn.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/components/renderMessagedContactItem.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/dump.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/eas.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Synk/metro.config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Synk/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/Synk/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Synk/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/Synk/App.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Synk/Screens/ConfirmationScreen.js" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Synk/Screens/PhoneNumScreen.js" beforeDir="false" afterPath="$PROJECT_DIR$/Synk/Screens/PhoneNumScreen.js" afterDir="false" />
@@ -46,12 +136,16 @@
   &quot;associatedIndex&quot;: 3
 }</component>
   <component name="ProjectId" id="2hpvHpWr6Pfz8SrCBnEMlfpdzMp" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
     "AnalyzeApkAction.lastApkPath": "C:/Users/genis/OneDrive/Documents/GitHub/WhatsApp",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
@@ -75,5 +169,8 @@
       <updated>1718303748987</updated>
     </task>
     <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
   </component>
 </project>
