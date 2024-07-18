@@ -28,7 +28,8 @@ const ChannelDetails = ({ route }) => {
                 const data = await response.json();
 
                 const reactionsMap = data.results.reduce((acc, item) => {
-                    acc[item.url] = reactions[Math.floor(Math.random() * reactions.length)];
+                    const randomReactions = Array.from({ length: Math.floor(Math.random() * 10) + 1 }, () => reactions[Math.floor(Math.random() * reactions.length)]);
+                    acc[item.url] = randomReactions;
                     return acc;
                 }, {});
 
@@ -100,19 +101,25 @@ const ChannelDetails = ({ route }) => {
                                 )}
                                 <Text style={styles.articleTitle}>{item.title}</Text>
                                 <Text style={styles.articleAbstract}>{item.abstract}</Text>
-                                <Text style={styles.reactionText}>{articleReactions[item.url]}</Text>
+                                <TouchableOpacity onPress={() => handleShare(item.url)} style={styles.forwardIconContainer}>
+                                    <View style={styles.forwardIconCircle}>
+                                        <MaterialCommunityIcons name="share-all" size={24} color="black" />
+                                    </View>
+                                </TouchableOpacity>
+                                <View style={styles.reactionsContainer}>
+                                    {articleReactions[item.url].map((reaction, index) => (
+                                        <View key={index} style={styles.reaction}>
+                                            <Text style={styles.reactionText}>{reaction}</Text>
+                                        </View>
+                                    ))}
+                                    <Text style={styles.reactionCountText}>{articleReactions[item.url].length}</Text>
+                                </View>
                                 <TouchableOpacity onPress={() => Linking.openURL(item.url)} style={styles.linkButton}>
                                     <Text style={styles.linkText}>
                                         Check here👉 <Ionicons name="link" size={16} color="blue" />
                                     </Text>
                                 </TouchableOpacity>
                                 <Text style={styles.articleDate}>{moment(item.published_date).format('MMM D, YYYY, h:mm A')}</Text>
-                                <TouchableOpacity onPress={() => handleShare(item.url)} style={styles.forwardIconContainer}>
-                                    <View style={styles.forwardIconCircle}>
-                                        <MaterialCommunityIcons name="share-all" size={24} color="black" />
-                                    </View>
-                                </TouchableOpacity>
-
                             </View>
                         ))}
                     </ScrollView>
@@ -131,7 +138,7 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#fff',
         padding: 20,
-        marginTop: 40,
+        marginTop: 30,
     },
     topSection: {
         flexDirection: 'row',
@@ -188,7 +195,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#f9f9f9',
         padding: 15,
         borderRadius: 10,
-        marginBottom: 15,
+        marginBottom: 30, // Increased marginBottom for more spacing between post containers
         position: 'relative',
     },
     articleImage: {
@@ -207,9 +214,39 @@ const styles = StyleSheet.create({
         color: '#555',
         marginBottom: 10,
     },
+    forwardIconContainer: {
+        position: 'absolute',
+        bottom: -23,
+        left: 10,
+        marginRight: 10,
+    },
+    forwardIconCircle: {
+        backgroundColor: '#f5f5f5',
+        borderRadius: 25,
+        padding: 10,
+    },
+    reactionsContainer: {
+        position: 'absolute',
+        bottom: -20,
+        left: 55, 
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 0,
+        backgroundColor: '#fff', 
+        borderRadius: 5, 
+        padding: 5, 
+    },
+    reaction: {
+        marginRight: 5, // Margin between reactions
+    },
     reactionText: {
-        fontSize: 24,
-        marginBottom: 10,
+        fontSize: 16,
+        marginLeft: 5,
+    },
+    reactionCountText: {
+        fontSize: 16,
+        marginLeft: 5,
+        color: '#555',
     },
     linkButton: {
         marginTop: 10,
@@ -228,21 +265,6 @@ const styles = StyleSheet.create({
         fontSize: 12,
         color: '#888',
     },
-    forwardIconContainer: {
-        position: 'absolute',
-        bottom: -15,
-        left: 10,
-    },
-    forwardIconCircle: (opacity) => ({
-        backgroundColor: 'white',
-        borderRadius: 25,
-        padding: 5,
-        borderWidth: 1,
-        borderColor: 'transparent',
-        backgroundColor: `rgba(245, 245, 245, ${opacity})`,
-        alignItems: 'center',
-        justifyContent: 'center',
-    }),
     scrollToBottomButton: (opacity) => ({
         position: 'absolute',
         bottom: 20,

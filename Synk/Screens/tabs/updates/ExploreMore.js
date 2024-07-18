@@ -1,112 +1,148 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Picker } from '@react-native-picker/picker';
-import React, { useState } from 'react';
-import { FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { FlatList, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { primaryColors } from '../../../constants/colors';
 
-const channelsData = [
-  { id: '1', name: 'The New York Times', description: 'News and articles from The New York Times' },
-  { id: '2', name: 'BBC News', description: 'Latest news from BBC' },
-  // Add more channels
-];
-
 const ExploreMore = ({ navigation }) => {
-  const [selectedCountry, setSelectedCountry] = useState('Ghana'); // Default country is Ghana
-  const countries = [
-    'Ghana', 'United States', 'United Kingdom', 'Canada', // Add more countries as needed
-  ];
+    const [channels, setChannels] = useState([]);
+    const [selectedCountry, setSelectedCountry] = useState('');
 
-  return (
-    <View style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => {/* Implement search functionality */}}>
-          <Ionicons name="search" size={24} color={primaryColors.purple} />
-        </TouchableOpacity>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.buttonContainer}>
-          {['Most Active', 'Popular', 'New'].map((button) => (
-            <TouchableOpacity key={button} style={styles.button} onPress={() => {/* Handle button press */}}>
-              <Text style={styles.buttonText}>{button}</Text>
-            </TouchableOpacity>
-          ))}
-          {/* Country Dropdown */}
-          <View style={styles.dropdownContainer}>
-            <Picker
-              selectedValue={selectedCountry}
-              style={styles.dropdown}
-              onValueChange={(itemValue) => setSelectedCountry(itemValue)}
-            >
-              {countries.map((country) => (
-                <Picker.Item key={country} label={country} value={country} />
-              ))}
-            </Picker>
-          </View>
-        </ScrollView>
-      </View>
+    useEffect(() => {
+        // Mock data for channels (replace with actual API fetch)
+        const mockChannels = [
+            { id: 1, name: 'The New York Times', img: 'https://via.placeholder.com/50', followers: '1.2k' },
+            { id: 2, name: 'BBC News', img: 'https://via.placeholder.com/50', followers: '900' },
+            { id: 3, name: 'CNN', img: 'https://via.placeholder.com/50', followers: '1.5k' },
+            { id: 4, name: 'Fox News', img: 'https://via.placeholder.com/50', followers: '800' },
+            { id: 5, name: 'The Guardian', img: 'https://via.placeholder.com/50', followers: '1.1k' },
+            { id: 6, name: 'Reuters', img: 'https://via.placeholder.com/50', followers: '1.3k' },
+            { id: 7, name: 'Al Jazeera', img: 'https://via.placeholder.com/50', followers: '700' },
+        ];
 
-      {/* Channel List */}
-      <FlatList
-        data={channelsData}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => navigation.navigate('ChannelDetails', { channel: item })}>
-            <View style={styles.channelCard}>
-              <Text style={styles.channelName}>{item.name}</Text>
-              <Text>{item.description}</Text>
+        setChannels(mockChannels);
+    }, []);
+
+    const handleSelectChannel = (channel) => {
+        navigation.navigate('ChannelDetails', { channel });
+    };
+
+    // Dummy data for countries
+    const countries = ['Country A', 'Country B', 'Country C'];
+
+    return (
+        <View style={styles.container}>
+            {/* Header */}
+            <View style={styles.header}>
+                <Text style={styles.title}>Channels</Text>
+                <TouchableOpacity onPress={() => {/* Implement search functionality */}}>
+                    <Ionicons name="search" size={24} color={primaryColors.purple} />
+                </TouchableOpacity>
             </View>
-          </TouchableOpacity>
-        )}
-      />
-    </View>
-  );
+
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.buttonContainer}>
+                {['Explore','Most Active', 'Popular', 'New'].map((button, index) => (
+                    <TouchableOpacity key={index} style={styles.button} onPress={() => {/* Handle button press */}}>
+                        <Text style={styles.buttonText}>{button}</Text>
+                    </TouchableOpacity>
+                ))}
+                {/* Country Dropdown */}
+                <View style={styles.dropdownContainer}>
+                    <Picker
+                        selectedValue={selectedCountry}
+                        style={styles.dropdown}
+                        onValueChange={(itemValue) => setSelectedCountry(itemValue)}
+                    >
+                        {countries.map((country, index) => (
+                            <Picker.Item key={index} label={country} value={country} />
+                        ))}
+                    </Picker>
+                </View>
+            </ScrollView>
+
+            {/* Channel List */}
+            <FlatList
+                data={channels}
+                keyExtractor={(item) => item.id.toString()}
+                renderItem={({ item }) => (
+                    <TouchableOpacity style={styles.channelItem} onPress={() => handleSelectChannel(item)}>
+                        <Image source={{ uri: item.img }} style={styles.channelImg} />
+                        <View style={styles.channelInfo}>
+                            <Text style={styles.channelName}>{item.name}</Text>
+                            <Text style={styles.followers}>{item.followers} followers</Text>
+                        </View>
+                    </TouchableOpacity>
+                )}
+            />
+        </View>
+    );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-    backgroundColor: '#fff',
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 16,
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-  },
-  button: {
-    padding: 10,
-    marginRight: 8,
-    backgroundColor: primaryColors.grey,
-    borderRadius: 8,
-  },
-  buttonText: {
-    fontSize: 16,
-  },
-  dropdownContainer: {
-    marginLeft: 8,
-    borderWidth: 1,
-    borderColor: primaryColors.gray,
-    borderRadius: 8,
-    overflow: 'hidden',
-  },
-  dropdown: {
-    width: 120,
-    height: 40,
-  },
-  channelCard: {
-    marginVertical: 8,
-    padding: 16,
-    borderWidth: 1,
-    borderRadius: 8,
-    borderColor: primaryColors.gray,
-  },
-  channelName: {
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+    },
+    header: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: 16,
+        borderBottomWidth: 1,
+        borderBottomColor: '#eee',
+    },
+    title: {
+        fontSize: 24,
+        fontWeight: 'bold',
+    },
+    buttonContainer: {
+        flexDirection: 'row',
+        paddingVertical: 10,
+        paddingHorizontal: 16,
+    },
+    button: {
+        marginRight: 10,
+        padding: 10,
+        backgroundColor: primaryColors.purple,
+        borderRadius: 5,
+    },
+    buttonText: {
+        fontSize: 16,
+        color: '#fff',
+    },
+    dropdownContainer: {
+        borderColor: '#ccc',
+        borderWidth: 1,
+        borderRadius: 5,
+        marginLeft: 10,
+    },
+    dropdown: {
+        height: 40,
+        width: 150,
+    },
+    channelItem: {
+        flexDirection: 'row',
+        padding: 16,
+        borderBottomWidth: 1,
+        borderBottomColor: '#eee',
+    },
+    channelImg: {
+        width: 50,
+        height: 50,
+        borderRadius: 25,
+        marginRight: 16,
+    },
+    channelInfo: {
+        justifyContent: 'center',
+    },
+    channelName: {
+        fontSize: 18,
+        fontWeight: 'bold',
+    },
+    followers: {
+        fontSize: 14,
+        color: '#888',
+    },
 });
 
 export default ExploreMore;
