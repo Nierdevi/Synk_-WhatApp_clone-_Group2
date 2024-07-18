@@ -23,9 +23,13 @@ const ChannelDetails = ({ route }) => {
     useEffect(() => {
         const fetchChannelArticles = async () => {
             try {
-                const response = await fetch(`https://api.nytimes.com/svc/topstories/v2/${channel.slug}.json?api-key=xICQ9NoAelPxIAplcKVta3keJdV5y2ur`);
+                const url = `https://api.nytimes.com/svc/topstories/v2/${channel.slug}.json?api-key=xICQ9NoAelPxIAplcKVta3keJdV5y2ur`;
+                console.log(`Fetching articles from: ${url}`);
+
+                const response = await fetch(url);
                 if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+                    const errorText = await response.text();
+                    throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
                 }
 
                 const data = await response.json();
