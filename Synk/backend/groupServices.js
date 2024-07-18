@@ -107,7 +107,7 @@ const fetchGroupMessages = async (groupId) => {
     const response = await databases.listDocuments(
       '6685cbc40036f4c6a5ad',
       '6697b81f001fb40f86af',
-      [Query.equal('chatId', groupId),
+      [Query.equal('groupId', groupId),
         Query.orderDesc('createdAt'),
       ]
     );

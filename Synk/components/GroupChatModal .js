@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, View, Text, FlatList, TouchableOpacity, StyleSheet, TextInput,Image } from 'react-native';
+import { Modal, View, Text, FlatList, TouchableOpacity, StyleSheet, TextInput,Image, Alert } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { CheckBox } from 'react-native-elements'; // Ensure you have installed this package
 import { databases } from '../backend/appwrite';
@@ -56,6 +56,16 @@ const GroupChatModal = ({ visible, onClose, navigation ,close}) => {
 
 
   const handleCreateGroup = async () => {
+    if(!groupName){
+      Alert.alert("Required field","Group must have a name")
+      return
+    }
+    if(selectedContacts.length === 0){
+      Alert.alert("Required field","You must select at least one contact")
+      return
+    }
+
+
     const participants = selectedContacts.map(phoneNumber => {
       const contact = filteredContacts.find(c => c.normalizedPhoneNumbers[0] === phoneNumber);
       // console.log("Found Contact:", contact);
@@ -88,24 +98,21 @@ const GroupChatModal = ({ visible, onClose, navigation ,close}) => {
       console.log("current: ",currentUserPhoneNumber)
       console.log("current: ",participants)
 
-
-      navigation.navigate('GroupRoom', {
-        groupData:response,
-        groupId: chatResponse,
-        participants: [currentUserPhoneNumber, ...participants],
-        currentUserPhoneNumber,
-        profilePicture: profilePicUrl,
-      });
-
       // Create a new chat room with the groupId and participants
       const chatResponse = await createChat(response.groupId,currentUserPhoneNumber, [currentUserPhoneNumber, ...participants]);
       console.log("Chat Room Response:", chatResponse);
 
       // Navigate to the chat room
-      // if (chatResponse) {
-      //   // Navigate to the chat room
-       
-      // }
+      if (chatResponse) {
+        // Navigate to the chat room
+        navigation.navigate('GroupRoom', {
+          groupData:response,
+          chatResponse: chatResponse,
+          participants: [currentUserPhoneNumber, ...participants],
+          currentUserPhoneNumber,
+          profilePicture: profilePicUrl,
+        });
+      }
   }
 
     // Reset states

@@ -1,32 +1,27 @@
 import React, { useState, useEffect, useLayoutEffect } from 'react';
 import { StyleSheet, KeyboardAvoidingView, Platform, View, Text, TouchableOpacity, StatusBar } from 'react-native';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
-import { sendMessage, fetchGroupMessages } from '../../../backend/chatService';
 import { Image } from 'expo-image';
 import InputBox from '../../../components/InputBox';
 import ChatList from '../../../components/ChatListItem';
-import { fetchLastMessage } from '../../../backend/chatService';
 import { Feather, Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { PopupMenu } from '../../../components/PopupMenu';
-import { getcurrentUserData, getUserData } from '../../../backend/userService';
-import { useFocusEffect } from '@react-navigation/native';
-import { sendGroupMessage } from '../../../backend/groupServices';
-
-
+import { fetchGroupMessages, sendGroupMessage } from '../../../backend/groupServices';
+import { fetchLastMessage } from '../../../backend/chatService';
+import GroupChatList from '../../../components/GroupChatList';
 
 const ChatRoom = ({ route, navigation }) => {
-  const { contact, currentUserPhoneNumber, profilePicture } = route.params;
+  const { groupData, groupId, participants, currentUserPhoneNumber, profilePicture } = route.params;
   const [messages, setMessages] = useState([]);
   const [lastMessage, setLastMessage] = useState(null);
   const [menuVisible, setMenuVisible] = useState(false);
 
-//   const recipientPhoneNumber = contact.normalizedPhoneNumbers[0];
+  console.log("group data: ", participants);
 
   const menuItems = [
     { label: 'Report or Block', onPress: () => {} },
     { label: 'Search', onPress: () => {} },
     { label: 'Mute notifications', onPress: () => {} },
-    // { label: 'Disappearing messages', onPress: () => handleNavigateToSettings() },
     { label: 'Media, Links and docs', onPress: () => {} },
     { label: 'Clear chat', onPress: () => {} },
   ];
@@ -42,12 +37,12 @@ const ChatRoom = ({ route, navigation }) => {
             <Ionicons name="arrow-back-outline" size={24} color="black" style={{ marginRight: 6 }} />
           </TouchableOpacity>
           <Image
-            source={profilePicture ? { uri: profilePicture } : require('../../../assets/Avator.jpg')}
+            source={profilePicture ? { uri: profilePicture } : require('../../../assets/Grp.jpg')}
             style={styles.profilePicture}
             cachePolicy='disk'
           />
           <TouchableOpacity style={styles.usenameContainer} onPress={() => { navigation.navigate('ChatInfo', {}) }}>
-            <Text style={styles.name}>{}  </Text>
+            <Text style={styles.name}>{groupData.groupName}</Text>
           </TouchableOpacity>
         </View>
       ),
@@ -65,12 +60,12 @@ const ChatRoom = ({ route, navigation }) => {
         </View>
       ),
     });
-  }, [navigation]);
+  }, [navigation, profilePicture, groupData.groupName]);
 
   useEffect(() => {
     const loadMessages = async () => {
-      const groupId = route.params.groupId;
       if (groupId) {
+        console.log("groupid in room: ", groupId);
         const fetchedMessages = await fetchGroupMessages(groupId);
         const sortedMessages = fetchedMessages.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
         setMessages(sortedMessages);
@@ -92,7 +87,7 @@ const ChatRoom = ({ route, navigation }) => {
     const intervalId = setInterval(loadMessages, 1000);
 
     return () => clearInterval(intervalId);
-  }, [currentUserPhoneNumber]);
+  }, [groupId, messages]);
 
   const handleSendMessage = async ({ text, mediaUri }) => {
     let mediaType = 'text';
@@ -106,20 +101,14 @@ const ChatRoom = ({ route, navigation }) => {
       }
     }
 
-    const response = await sendMessage(currentUserPhoneNumber, groupId, participants, text, mediaUri, mediaType);
+    const response = await sendGroupMessage(groupId,currentUserPhoneNumber,participants, text, mediaUri, mediaType);
     if (response) {
-      setMessages((prevMessages) => [response, ...prevMessages]);
-      setLastMessage(response);
-    }
-  };
-
-
-  const handleSend = async (messageText, mediaUri = '', type = 'text') => {
-    await sendMessage(currentUserPhoneNumber, groupId, participants, messageText, mediaUri, type);
-    // Reload messages after sending a new one
-    const fetchedMessages = await fetchGroupMessages(groupId);
-    const sortedMessages = fetchedMessages.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-    setMessages(sortedMessages);
+        setMessages((prevMessages) => {
+          const newMessages = [response, ...prevMessages];
+          return newMessages.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+        });
+        setLastMessage(response);
+      }
   };
 
   return (
@@ -130,7 +119,7 @@ const ChatRoom = ({ route, navigation }) => {
     >
       <PopupMenu visible={menuVisible} onClose={() => setMenuVisible(false)} menuItems={menuItems} style={styles.popupMenu} />
       <StatusBar backgroundColor="transparent" translucent={true} />
-      <ChatList messages={messages} currentUserPhoneNumber={currentUserPhoneNumber} contactName={contact} />
+      <GroupChatList messages={messages} currentUserPhoneNumber={currentUserPhoneNumber} contactName={groupData.groupName} />
       <InputBox onSendMessage={handleSendMessage} />
     </KeyboardAvoidingView>
   );
