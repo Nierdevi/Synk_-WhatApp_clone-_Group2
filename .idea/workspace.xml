@@ -130,7 +130,7 @@
     <option name="formatViaClangd" value="false" />
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/Synk" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 3
@@ -153,9 +153,9 @@
     "RunOnceActivity.readMode.enableVisualFormatting": "true",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "master",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/genis/OneDrive/Documents/GitHub/WhatsApp",
+    "last_opened_file_path": "C:/Users/genis/OneDrive/Documents/GitHub/Synk_-WhatApp_clone-_Group2/Synk_-WhatApp_clone-_Group2",
     "settings.editor.selected.configurable": "AndroidSdkUpdater"
   }
 }]]></component>
