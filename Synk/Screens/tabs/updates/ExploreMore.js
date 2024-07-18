@@ -6,7 +6,7 @@ import { primaryColors } from '../../../constants/colors';
 
 const ExploreMore = ({ navigation }) => {
     const [channels, setChannels] = useState([]);
-    const [selectedCountry, setSelectedCountry] = useState('');
+    const [selectedCountry, setSelectedCountry] = useState('Ghana');
 
     useEffect(() => {
         // Mock data for channels (replace with actual API fetch)
@@ -28,7 +28,7 @@ const ExploreMore = ({ navigation }) => {
     };
 
     // Dummy data for countries
-    const countries = ['Country A', 'Country B', 'Country C'];
+    const countries = ['Ghana', 'Country A', 'Country B', 'Country C'];
 
     return (
         <View style={styles.container}>
@@ -41,7 +41,7 @@ const ExploreMore = ({ navigation }) => {
             </View>
 
             <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.buttonContainer}>
-                {['Explore','Most Active', 'Popular', 'New'].map((button, index) => (
+                {['Channels','Most Active', 'Popular', 'New'].map((button, index) => (
                     <TouchableOpacity key={index} style={styles.button} onPress={() => {/* Handle button press */}}>
                         <Text style={styles.buttonText}>{button}</Text>
                     </TouchableOpacity>
@@ -99,6 +99,10 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         paddingVertical: 10,
         paddingHorizontal: 16,
+        marginTop: 20,
+        backgroundColor: '#f0f0f0', // Add background color
+        height: 60, // Increase height
+        alignItems: 'center', // Center align buttons vertically
     },
     button: {
         marginRight: 10,
