@@ -1,4 +1,4 @@
-import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons';
+import { FontAwesome } from '@expo/vector-icons';
 import moment from 'moment';
 import React, { useEffect, useRef, useState } from 'react';
 import { Alert, Image, Linking, ScrollView, Share, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -21,32 +21,29 @@ const ChannelDetails = ({ route }) => {
     const closeMenu = () => setMenuVisible(false);
 
     useEffect(() => {
-        const fetchChannelArticles = async () => {
+        const fetchNYTArticles = async () => {
             try {
-                // Replace with your actual API endpoint
-                const response = await fetch(`https://api.example.com/channels/${channel.id}/articles`);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
+                const apiKey = 'xICQ9NoAelPxIAplcKVta3keJdV5y2ur';
+                const response = await fetch(`https://api.nytimes.com/svc/topstories/v2/home.json?api-key=${apiKey}`);
                 const data = await response.json();
-                const reactionsMap = data.map(item => ({
-                    url: item.url,
-                    reaction: reactions[Math.floor(Math.random() * reactions.length)],
-                }));
 
-                setArticles(data);
-                setArticleReactions(Object.fromEntries(reactionsMap.map(item => [item.url, item.reaction])));
+                const reactionsMap = data.results.reduce((acc, item) => {
+                    acc[item.url] = reactions[Math.floor(Math.random() * reactions.length)];
+                    return acc;
+                }, {});
+
+                setArticles(data.results);
+                setArticleReactions(reactionsMap);
             } catch (error) {
-                console.error('Error fetching channel articles:', error);
+                console.error('Error fetching NYT articles:', error);
                 Alert.alert('Error', 'Failed to fetch articles. Please try again later.');
             } finally {
                 setLoading(false);
             }
         };
 
-        fetchChannelArticles();
-    }, [channel.id]);
+        fetchNYTArticles();
+    }, []);
 
     const scrollToBottom = () => {
         scrollViewRef.current.scrollToEnd({ animated: true });
@@ -98,8 +95,8 @@ const ChannelDetails = ({ route }) => {
                     <ScrollView ref={scrollViewRef} style={styles.articlesList}>
                         {articles.map((item) => (
                             <View key={item.url} style={styles.articleContainer}>
-                                {item.image && (
-                                    <Image source={{ uri: item.image }} style={styles.articleImage} />
+                                {item.multimedia && item.multimedia.length > 0 && (
+                                    <Image source={{ uri: item.multimedia[0].url }} style={styles.articleImage} />
                                 )}
                                 <Text style={styles.articleTitle}>{item.title}</Text>
                                 <Text style={styles.articleAbstract}>{item.abstract}</Text>
@@ -112,7 +109,7 @@ const ChannelDetails = ({ route }) => {
                                 <Text style={styles.articleDate}>{moment(item.published_date).format('MMM D, YYYY, h:mm A')}</Text>
                                 <TouchableOpacity onPress={() => handleShare(item.url)} style={styles.forwardIconContainer}>
                                     <View style={styles.forwardIconCircle}>
-                                        <MaterialCommunityIcons name="share-all" size={24} color="black" />
+                                        <FontAwesome name="share-alt" size={24} color="black" />
                                     </View>
                                 </TouchableOpacity>
                             </View>
@@ -237,7 +234,7 @@ const styles = StyleSheet.create({
     },
     forwardIconCircle: {
         backgroundColor: 'white',
-        borderRadius: 10,
+        borderRadius: 20,
         padding: 5,
         borderWidth: 1,
         borderColor: primaryColors.purple,
@@ -248,7 +245,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: 20,
         right: 20,
-        backgroundColor: `rgba(255, 255, 255, ${opacity})`, // White with variable transparency
+        backgroundColor: `rgba(128, 0, 128, ${opacity})`, // Purple with variable transparency
         borderRadius: 25,
         padding: 10,
         justifyContent: 'center',
