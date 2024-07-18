@@ -54,7 +54,7 @@ const UpdatesStackNavigator = ({ navigation, route }) => {
         options={{ headerShown: true }} 
       />
       <ChatsStack.Screen 
-        name="EditStatusScreen" 
+        name="EditStatus" 
         component={EditStatusScreen} 
         options={{ headerShown: true }} 
       />

@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Picker } from '@react-native-picker/picker';
-import React, { useState } from 'react';
-import { FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { FlatList, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { primaryColors } from '../../../constants/colors';
 
 const ExploreMore = ({ navigation }) => {
@@ -30,46 +30,61 @@ const ExploreMore = ({ navigation }) => {
     // Dummy data for countries
     const countries = ['Country A', 'Country B', 'Country C'];
 
-  return (
-    <View style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => {/* Implement search functionality */}}>
-          <Ionicons name="search" size={24} color={primaryColors.purple} />
-        </TouchableOpacity>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.buttonContainer}>
-          {['Most Active', 'Popular', 'New'].map((button) => (
-            <TouchableOpacity key={button} style={styles.button} onPress={() => {/* Handle button press */}}>
-              <Text style={styles.buttonText}>{button}</Text>
-            </TouchableOpacity>
-          ))}
-          {/* Country Dropdown */}
-          <View style={styles.dropdownContainer}>
-            <Picker
-              selectedValue={selectedCountry}
-              style={styles.dropdown}
-              onValueChange={(itemValue) => setSelectedCountry(itemValue)}
-            >
-              {countries.map((country) => (
-                <Picker.Item key={country} label={country} value={country} />
-              ))}
-            </Picker>
-          </View>
-        </ScrollView>
-      </View>
+    // Buttons data
+    const buttons = ['Explore', 'Most Active', 'Popular', 'New'];
+
+    return (
+        <View style={styles.container}>
+            {/* Header */}
+            <View style={styles.header}>
+                <Text style={styles.title}>Channels</Text>
+                <TouchableOpacity onPress={() => {/* Implement search functionality */}}>
+                    <Ionicons name="search" size={24} color={primaryColors.purple} />
+                </TouchableOpacity>
+            </View>
+
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.buttonContainer}>
+                <FlatList
+                    horizontal
+                    data={buttons}
+                    keyExtractor={(item, index) => index.toString()}
+                    renderItem={({ item }) => (
+                        <TouchableOpacity style={styles.button} onPress={() => {/* Handle button press */}}>
+                            <Text style={styles.buttonText}>{item}</Text>
+                        </TouchableOpacity>
+                    )}
+                />
+                {/* Country Dropdown */}
+                <View style={styles.dropdownContainer}>
+                    <Picker
+                        selectedValue={selectedCountry}
+                        style={styles.dropdown}
+                        onValueChange={(itemValue) => setSelectedCountry(itemValue)}
+                    >
+                        {countries.map((country, index) => (
+                            <Picker.Item key={index} label={country} value={country} />
+                        ))}
+                    </Picker>
+                </View>
+            </ScrollView>
 
             {/* Channel List */}
             <FlatList
                 data={channels}
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={({ item }) => (
-                    <TouchableOpacity style={styles.channelItem} onPress={() => handleSelectChannel(item)}>
-                        <Image source={{ uri: item.img }} style={styles.channelImg} />
-                        <View style={styles.channelInfo}>
-                            <Text style={styles.channelName}>{item.name}</Text>
-                            <Text style={styles.followers}>{item.followers} followers</Text>
-                        </View>
-                    </TouchableOpacity>
+                    <View style={styles.channelItem}>
+                        <TouchableOpacity onPress={() => handleSelectChannel(item)}>
+                            <Image source={{ uri: item.img }} style={styles.channelImg} />
+                            <View style={styles.channelInfo}>
+                                <Text style={styles.channelName}>{item.name}</Text>
+                                <Text style={styles.followers}>{item.followers} followers</Text>
+                            </View>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.followButton} onPress={() => {/* Handle follow action */}}>
+                            <Text style={styles.followButtonText}>Follow</Text>
+                        </TouchableOpacity>
+                    </View>
                 )}
             />
         </View>
@@ -120,6 +135,8 @@ const styles = StyleSheet.create({
     },
     channelItem: {
         flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
         padding: 16,
         borderBottomWidth: 1,
         borderBottomColor: '#eee',
@@ -140,6 +157,16 @@ const styles = StyleSheet.create({
     followers: {
         fontSize: 14,
         color: '#888',
+    },
+    followButton: {
+        backgroundColor: primaryColors.purple,
+        paddingVertical: 5,
+        paddingHorizontal: 10,
+        borderRadius: 5,
+    },
+    followButtonText: {
+        color: '#fff',
+        fontSize: 16,
     },
 });
 
