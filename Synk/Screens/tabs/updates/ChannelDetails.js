@@ -233,15 +233,16 @@ const styles = StyleSheet.create({
         bottom: -15,
         left: 10,
     },
-    forwardIconCircle: {
+    forwardIconCircle: (opacity) => ({
         backgroundColor: 'white',
-        borderRadius: 20,
+        borderRadius: 25,
         padding: 5,
         borderWidth: 1,
-        borderColor: primaryColors.purple,
+        borderColor: 'transparent',
+        backgroundColor: `rgba(245, 245, 245, ${opacity})`,
         alignItems: 'center',
         justifyContent: 'center',
-    },
+    }),
     scrollToBottomButton: (opacity) => ({
         position: 'absolute',
         bottom: 20,
