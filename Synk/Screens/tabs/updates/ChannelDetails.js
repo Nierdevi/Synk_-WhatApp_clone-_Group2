@@ -1,4 +1,4 @@
-import { FontAwesome } from '@expo/vector-icons';
+import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons';
 import moment from 'moment';
 import React, { useEffect, useRef, useState } from 'react';
 import { Alert, Image, Linking, ScrollView, Share, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -12,7 +12,7 @@ const ChannelDetails = ({ route }) => {
     const [articles, setArticles] = useState([]);
     const [articleReactions, setArticleReactions] = useState({});
     const [loading, setLoading] = useState(true);
-    const [buttonOpacity, setButtonOpacity] = useState(0.5); // Default opacity
+    const [buttonOpacity, setButtonOpacity] = useState(0.5);
     const scrollViewRef = useRef();
 
     const reactions = ['👍', '❤️', '😂', '😮', '😢', '😡'];
@@ -109,9 +109,10 @@ const ChannelDetails = ({ route }) => {
                                 <Text style={styles.articleDate}>{moment(item.published_date).format('MMM D, YYYY, h:mm A')}</Text>
                                 <TouchableOpacity onPress={() => handleShare(item.url)} style={styles.forwardIconContainer}>
                                     <View style={styles.forwardIconCircle}>
-                                        <FontAwesome name="share-alt" size={24} color="black" />
+                                        <MaterialCommunityIcons name="share-all" size={24} color="black" />
                                     </View>
                                 </TouchableOpacity>
+
                             </View>
                         ))}
                     </ScrollView>
@@ -245,7 +246,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: 20,
         right: 20,
-        backgroundColor: `rgba(128, 0, 128, ${opacity})`, // Purple with variable transparency
+        backgroundColor: `rgba(245, 245, 245, ${opacity})`,
         borderRadius: 25,
         padding: 10,
         justifyContent: 'center',
