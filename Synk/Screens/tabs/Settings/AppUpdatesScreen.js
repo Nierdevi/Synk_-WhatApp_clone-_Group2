@@ -13,7 +13,7 @@ const AppUpdatesScreen = () => {
   const [isEnabled1, setIsEnabled1] = useState(false);
 
   const toggleAutoUpdate = () => {
-    setAutoUpdateEnabled(prevState => !prevState); // Toggle the state
+    setAutoUpdateEnabled(previousState => !previousState); // Toggle the state
   };
 
   const toggleSwitch = () => {
@@ -61,6 +61,7 @@ const stopPropagation = event => {
               onValueChange={toggleSwitch}
               value={isEnabled}
               style={styles.switch}
+              onPress={toggleDrawer}
             />
           </View>
           <Text style={styles.body1}>Automatically update app over WiFi.</Text>
@@ -100,7 +101,7 @@ const stopPropagation = event => {
                 </View>
             </View>
             <View style={{alignItems: 'center', paddingTop: 20,paddingBottom: 20,}}> 
-              <TouchableOpacity onPress={toggleSwitch} style={styles.plus}>
+              <TouchableOpacity onPress={() => { toggleSwitch(); toggleAutoUpdate(); }} style={styles.plus}>
                 <Text style={styles.drawerText2}>{autoUpdateEnabled ? 'Turn on' : 'Turn off'}</Text>
               </TouchableOpacity>
               <TouchableOpacity onPress={closeModal1} style={styles.plus1}>
