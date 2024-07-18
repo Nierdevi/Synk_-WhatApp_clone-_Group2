@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Picker } from '@react-native-picker/picker';
-import React, { useEffect, useState } from 'react';
-import { FlatList, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useState } from 'react';
+import { FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { primaryColors } from '../../../constants/colors';
 
 const ExploreMore = ({ navigation }) => {
@@ -30,35 +30,33 @@ const ExploreMore = ({ navigation }) => {
     // Dummy data for countries
     const countries = ['Country A', 'Country B', 'Country C'];
 
-    return (
-        <View style={styles.container}>
-            {/* Header */}
-            <View style={styles.header}>
-                <Text style={styles.title}>Channels</Text>
-                <TouchableOpacity onPress={() => {/* Implement search functionality */}}>
-                    <Ionicons name="search" size={24} color={primaryColors.purple} />
-                </TouchableOpacity>
-            </View>
-
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.buttonContainer}>
-                {['Explore','Most Active', 'Popular', 'New'].map((button, index) => (
-                    <TouchableOpacity key={index} style={styles.button} onPress={() => {/* Handle button press */}}>
-                        <Text style={styles.buttonText}>{button}</Text>
-                    </TouchableOpacity>
-                ))}
-                {/* Country Dropdown */}
-                <View style={styles.dropdownContainer}>
-                    <Picker
-                        selectedValue={selectedCountry}
-                        style={styles.dropdown}
-                        onValueChange={(itemValue) => setSelectedCountry(itemValue)}
-                    >
-                        {countries.map((country, index) => (
-                            <Picker.Item key={index} label={country} value={country} />
-                        ))}
-                    </Picker>
-                </View>
-            </ScrollView>
+  return (
+    <View style={styles.container}>
+      {/* Header */}
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => {/* Implement search functionality */}}>
+          <Ionicons name="search" size={24} color={primaryColors.purple} />
+        </TouchableOpacity>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.buttonContainer}>
+          {['Most Active', 'Popular', 'New'].map((button) => (
+            <TouchableOpacity key={button} style={styles.button} onPress={() => {/* Handle button press */}}>
+              <Text style={styles.buttonText}>{button}</Text>
+            </TouchableOpacity>
+          ))}
+          {/* Country Dropdown */}
+          <View style={styles.dropdownContainer}>
+            <Picker
+              selectedValue={selectedCountry}
+              style={styles.dropdown}
+              onValueChange={(itemValue) => setSelectedCountry(itemValue)}
+            >
+              {countries.map((country) => (
+                <Picker.Item key={country} label={country} value={country} />
+              ))}
+            </Picker>
+          </View>
+        </ScrollView>
+      </View>
 
             {/* Channel List */}
             <FlatList

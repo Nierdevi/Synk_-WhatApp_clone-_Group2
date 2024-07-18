@@ -170,6 +170,8 @@ const uploadProfilePicture = async (userId, uri) => {
     }
 };
 
+
+
 // Function to download and cache the profile picture locally
 const downloadAndCacheProfilePicture = async (url) => {
     try {
