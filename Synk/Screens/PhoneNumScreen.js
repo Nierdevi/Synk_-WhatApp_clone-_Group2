@@ -29,7 +29,7 @@ const PhoneNumScreen = ({ navigation }) => {
 
     const checkPhoneNumberExists = async (phoneNumber) => {
         try {
-            const response = await databases.listDocuments('6685cbc40036f4c6a5ad', '6685cc6600212adefdbf', [
+            const response = await databases.listDocuments('database_id', 'users', [
                 Query.equal('phoneNumber', phoneNumber),
             ]);
 

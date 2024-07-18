@@ -41,11 +41,11 @@ const sendMessage = async (senderId, receiverId, messageText = '', mediaUri = ''
       // console.log("formData: ",formData)
 
       const uploadResponse = await fetch(
-        'https://cloud.appwrite.io/v1/storage/buckets/669270af0034381c55c3/files',
+        'https://cloud.appwrite.io/v1/storage/buckets/synk_bucket/files',
         {
           method: 'POST',
           headers: {
-            'X-Appwrite-Project': '66795f4000158aa9d802',
+            'X-Appwrite-Project': '66992806000309150f65',
             'Content-Type': 'multipart/form-data',
           },
           body: formData,
@@ -57,12 +57,12 @@ const sendMessage = async (senderId, receiverId, messageText = '', mediaUri = ''
         throw new Error(uploadData.message || 'Failed to upload media');
       }
 
-      mediaUrl = `https://cloud.appwrite.io/v1/storage/buckets/669270af0034381c55c3/files/${uploadData.$id}/view?project=66795f4000158aa9d802`;
+      mediaUrl = `https://cloud.appwrite.io/v1/storage/buckets/synk_bucket/files/${uploadData.$id}/view?project=66992806000309150f65`;
     }
     console.log("mediaUrl uploaded: ",mediaUrl)
     const response = await databases.createDocument(
-      '6685cbc40036f4c6a5ad',
-      '6685e691003e5ceef040',
+      'database_id',
+      'chats',
       ID.unique(),
       {
         chatId,
