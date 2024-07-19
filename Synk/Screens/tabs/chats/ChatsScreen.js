@@ -160,12 +160,14 @@ const ChatsScreen = ({ navigation }) => {
   };
 
 
-
-
-
   const filteredContacts = contacts.filter(contact =>
     contact.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const hnadleOfficialSite=()=>{
+    Alert.alert("Oops!🤤","Under construction🐽");
+    return
+  }
 
   //main return funtction
 
@@ -174,8 +176,7 @@ const ChatsScreen = ({ navigation }) => {
 
     <TouchableOpacity
         style={styles.contactItem}
-        onPress={() =>
-            navigation.navigate("ChatRoom")}
+        onPress={hnadleOfficialSite}
         >
         <Image
             source={Applogo} 

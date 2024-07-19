@@ -109,6 +109,10 @@ const handleImageSelect = async () => {
   }
 };
 
+const profilePicReview=()=>{
+  setModalVisible(true)
+}
+
   const handleUsernameEdit = () => {
     setIsUserEditing(true);
 };
@@ -160,14 +164,15 @@ const handleStatusSavePress = async () => {
           <Ionicons name="camera-outline" size={24} color="black" />
         </Pressable>
       </View> */}
-        <FullScreenMediaModal 
-          visible={modalVisible} 
-          onClose={()=>{setModalVisible(false)}}
-          mediaType='image'
-          mediaUri={{}}
-          />
+      <FullScreenMediaModal
+        visible={modalVisible}
+        mediaUri={profilePicture}
+        mediaType='image'
+        onClose={() => setModalVisible(false)}
+        onRequestClose={() => setModalVisible(false)}
+      />
       <View style={styles.head}>
-        <Pressable onPress={{}}>
+        <Pressable onPress={profilePicReview}>
             <Image
                 source={profilePicture ? { uri: profilePicture } : { uri: 'https://via.placeholder.com/50' }} 
                 style={styles.headerImage}
