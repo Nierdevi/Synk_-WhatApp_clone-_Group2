@@ -105,21 +105,21 @@ const SettingsScreen = () => {
     event.stopPropagation();
   };
 
-  return (  
-    <SafeAreaView style={styles.container}>  
+  return (
+    <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <Pressable onPress={() => navigation.goBack()}>
           <Ionicons name="arrow-back" size={24} color="#000" />
         </Pressable>
         <Text style={styles.headerTitle}>Settings</Text>
-      </View>   
+      </View>
 
       <ScrollView style={styles.container}>
 
           <TouchableOpacity style={styles.head} onPress={handleNavigateToProfile}>
-          <Image 
+          <Image
                 source={profilePicture ? { uri: profilePicture } : { uri: 'https://via.placeholder.com/50' }} 
-                style={styles.headerImage} 
+                style={styles.headerImage}
                 cachePolicy='memory-disk'
                 // resizeMode='contain'
             />
@@ -133,15 +133,9 @@ const SettingsScreen = () => {
                   <Ionicons name="qr-code" size={24} color="black" />
                 </Pressable>
                 <Pressable style={{width:wp('7')}}>
-                <Ionicons name="chevron-down-circle" size={24} color="black" />  
-                </Pressable>	
+                <Ionicons name="chevron-down-circle" size={24} color="black" />
+                </Pressable>
               </View>
-              <Pressable style={styles.scan}>
-                <Ionicons name="qr-code" size={24} color="black" />
-              </Pressable>
-              <Pressable style={styles.down} onPress={toggleDrawer}>
-              <Ionicons name="chevron-down-circle" size={24} color="black" />  
-              </Pressable>	
             </View>
           </TouchableOpacity>
 

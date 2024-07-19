@@ -17,6 +17,7 @@ import { getUserData } from '../../../backend/userService';
 import RenderMessagedContactItem from '../../../components/renderMessagedContactItem';
 
 Applogo=require('../../../assets/AppLogo.png')
+Verified=require('../../../assets/verified.png')
 
 const useContacts = (session) => {
   const [contacts, setContacts] = useState([]);
@@ -184,7 +185,7 @@ const ChatsScreen = ({ navigation }) => {
         <View style={styles.details}>
         <View style={{flexDirection:'row',}}>
           <Text style={styles.appName}>Synk </Text>
-
+          <Image source={Verified} cachePolicy='memory-disk' style={styles.verify} tintColor="#7410d7" />
         </View>
           <Text
               style={styles.gistText}
@@ -245,7 +246,7 @@ const styles = StyleSheet.create({
     // backgroundColor: 'red',
     width:wp('100%'),
     // paddingHorizontal:10,
-    marginTop:20,
+    // marginTop:20,
 
   },
   contactItem: {
@@ -282,7 +283,9 @@ const styles = StyleSheet.create({
   },
   appName: {
     fontSize: wp('5%'),
-    // fontSize:24
+  },
+  verify:{
+    fontSize: wp('3%'),
   },
   gistText:{
     fontSize: wp('4%'),
@@ -310,7 +313,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   appName: {
-    fontSize: 18,
+    fontSize: wp("5%"),
+  },
+  verify:{
+    width: wp('5%'),
+
   },
   avatarContainer: {
     width: 45,

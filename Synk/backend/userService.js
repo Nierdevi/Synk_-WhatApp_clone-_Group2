@@ -186,16 +186,15 @@ const downloadAndCacheProfilePicture = async (url) => {
 
 
 const getcurrentUserData = async (userId) => {
-
-
-    let userData = await AsyncStorage.getItem('userData');
-    if (userData) {
-        console.log('Loading user data from local storage...');
-        console.log('user daya from local',userData)
-        return JSON.parse(userData);
-    }
-
     try {
+        // let userData = await AsyncStorage.getItem('userData');
+        // if (userData) {
+        //     console.log('Loading user data from local storage...');
+        //     console.log('user data from local', userData);
+        //     return JSON.parse(userData);
+        // }
+
+        console.log('Fetching user data from database...');
         const response = await databases.listDocuments('database_id', 'users', [
             Query.equal('userId', userId)
         ]);
@@ -205,6 +204,7 @@ const getcurrentUserData = async (userId) => {
         }
 
         userData = response.documents[0];
+        console.log('Fetched user data from database:', userData);
         await AsyncStorage.setItem('userData', JSON.stringify(userData));
         return userData;
 
