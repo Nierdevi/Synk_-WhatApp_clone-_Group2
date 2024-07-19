@@ -15,6 +15,7 @@ const ChatList = ({ messages, currentUserPhoneNumber}) => {
   const [selectedMediaUri, setSelectedMediaUri] = useState('');
   const [selectedMediaType, setSelectedMediaType] = useState('');
   const [selectedText, setSelectedText] = useState('');
+  const [loading, setLoading] = useState(true);
   const listRef = useRef(null);
   const scrollOffsetY = useRef(0);
 
@@ -23,6 +24,8 @@ const ChatList = ({ messages, currentUserPhoneNumber}) => {
       flatListRef.current.scrollToEnd({ animated: true });
     }
   }, [messages]);
+
+  
 
   const handleLongPress = (message) => {
     console.log('Long press detected on message:', message.messageText);
@@ -42,6 +45,7 @@ const ChatList = ({ messages, currentUserPhoneNumber}) => {
   // console.log("selectedText: ",selectedText)
   const renderItem = ({ item }) => {
     const isCurrentUser = item.senderId === currentUserPhoneNumber;
+    
 
     // console.log('Rendering item:', item.mediaUrl);
 

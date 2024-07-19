@@ -7,7 +7,7 @@ import FormData from 'form-data';
 
 const addUserToDatabase = async (userId, phoneNumber) => {
     try {
-        await databases.createDocument('6685cbc40036f4c6a5ad','6685cc6600212adefdbf', ID.unique(),  {
+        await databases.createDocument('database_id','users', ID.unique(),  {
             userId,
             phoneNumber,
         });
@@ -21,7 +21,7 @@ const addUserToDatabase = async (userId, phoneNumber) => {
 const addUsernameToDatabase = async (userId, username) => {
     try {
         // Query the database to find the document by userId
-        const response = await databases.listDocuments('6685cbc40036f4c6a5ad', '6685cc6600212adefdbf', [
+        const response = await databases.listDocuments('database_id', 'users', [
             Query.equal('userId', userId)
         ]);
 
@@ -33,7 +33,7 @@ const addUsernameToDatabase = async (userId, username) => {
         const userDocument = response.documents[0];
 
         // Update the document with the new username
-        await databases.updateDocument('6685cbc40036f4c6a5ad', '6685cc6600212adefdbf', userDocument.$id, {
+        await databases.updateDocument('database_id', 'users', userDocument.$id, {
             username,
         });
     } catch (error) {
@@ -44,7 +44,7 @@ const addUsernameToDatabase = async (userId, username) => {
 const addAboutToDatabase = async (userId, about) => {
     try {
         // Query the database to find the document by userId
-        const response = await databases.listDocuments('6685cbc40036f4c6a5ad', '6685cc6600212adefdbf', [
+        const response = await databases.listDocuments('database_id', 'users', [
             Query.equal('userId', userId)
         ]);
 
@@ -56,7 +56,7 @@ const addAboutToDatabase = async (userId, about) => {
         const userDocument = response.documents[0];
 
         // Update the document with the new username
-        await databases.updateDocument('6685cbc40036f4c6a5ad', '6685cc6600212adefdbf', userDocument.$id, {
+        await databases.updateDocument('database_id', 'users', userDocument.$id, {
             about,
         });
     } catch (error) {
@@ -68,8 +68,8 @@ const addAboutToDatabase = async (userId, about) => {
 const getUserDocument = async (userId) => {
     try {
         const response = await databases.listDocuments(
-            '6685cbc40036f4c6a5ad', // Your database ID
-            '6685cc6600212adefdbf', // Your collection ID
+            'database_id', // Your database ID
+            'users', // Your collection ID
             [Query.equal('userId', userId)] // Query to find the document
         );
 
@@ -87,8 +87,8 @@ const getUserDocument = async (userId) => {
 const getUserProfilePicture = async (userId) => {
     try {
         const response = await databases.listDocuments(
-            '6685cbc40036f4c6a5ad', // Your database ID
-            '6685cc6600212adefdbf', // Your collection ID
+            'database_id', // Your database ID
+            'users', // Your collection ID
             [Query.equal('userId', userId)] // Query to find the document
         );
 
@@ -119,7 +119,7 @@ const uploadProfilePicture = async (userId, uri) => {
         // if (currentProfilePictureUrl) {
         //     const fileId= await extractIdsFromUrl(currentProfilePictureUrl)
         //     console.log("fileId: ",fileId)
-        //     await storage.deleteFile('669270af0034381c55c3',); // Delete the file from storage
+        //     await storage.deleteFile('synk_bucket',); // Delete the file from storage
         // }
 
         const formData = new FormData();
@@ -131,11 +131,11 @@ const uploadProfilePicture = async (userId, uri) => {
         });
 
         const uploadResponse = await fetch(
-            'https://cloud.appwrite.io/v1/storage/buckets/669270af0034381c55c3/files',
+            'https://cloud.appwrite.io/v1/storage/buckets/synk_bucket/files',
             {
                 method: 'POST',
                 headers: {
-                    'X-Appwrite-Project': '66795f4000158aa9d802',
+                    'X-Appwrite-Project': '66992806000309150f65',
                     'Content-Type': 'multipart/form-data',
                 },
                 body: formData,
@@ -149,12 +149,12 @@ const uploadProfilePicture = async (userId, uri) => {
             throw new Error(uploadData.message || 'Failed to upload file');
         }
 
-        const newImageUrl = `https://cloud.appwrite.io/v1/storage/buckets/669270af0034381c55c3/files/${uploadData.$id}/view?project=66795f4000158aa9d802`;
+        const newImageUrl = `https://cloud.appwrite.io/v1/storage/buckets/synk_bucket/files/${uploadData.$id}/view?project=66992806000309150f65`;
 
 
         await databases.updateDocument(
-            '6685cbc40036f4c6a5ad', 
-            '6685cc6600212adefdbf', 
+            'database_id', 
+            'users', 
             documentId, 
             { profilePicture: newImageUrl }
         );
@@ -196,7 +196,7 @@ const getcurrentUserData = async (userId) => {
     }
 
     try {
-        const response = await databases.listDocuments('6685cbc40036f4c6a5ad', '6685cc6600212adefdbf', [
+        const response = await databases.listDocuments('database_id', 'users', [
             Query.equal('userId', userId)
         ]);
 
@@ -224,7 +224,7 @@ const getUserData = async (phoneNumber) => {
     }
 
     try {
-    const response = await databases.listDocuments('6685cbc40036f4c6a5ad', '6685cc6600212adefdbf', [
+    const response = await databases.listDocuments('database_id', 'users', [
         Query.equal('phoneNumber', phoneNumber)
     ]);
 

@@ -7,8 +7,8 @@ const createGroupChat = async (currentUserPhoneNumber, participants, groupName, 
     const groupId = ID.unique();
     console.log("Creating group with participants:", [currentUserPhoneNumber, ...participants]);
     const response = await databases.createDocument(
-      '6685cbc40036f4c6a5ad', // Your database ID
-      '6696627c000707e52294', // Replace with your new groupChats collection ID
+      'database_id', // Your database ID
+      'groups', // Replace with your new groupChats collection ID
       groupId,
       {
         groupId,
@@ -39,10 +39,10 @@ const uploadGrpProfile = async (uri) => {
     type: 'image/jpeg', // Adjust the type according to the image format
   });
 
-  const response = await fetch('https://cloud.appwrite.io/v1/storage/buckets/669270af0034381c55c3/files', { // Replace with your Appwrite storage endpoint
+  const response = await fetch('https://cloud.appwrite.io/v1/storage/buckets/synk_bucket/files', { // Replace with your Appwrite storage endpoint
     method: 'POST',
     headers: {
-      'X-Appwrite-Project': '66795f4000158aa9d802',
+      'X-Appwrite-Project': '66992806000309150f65',
       'Content-Type': 'multipart/form-data',
     },
     body: formData,
@@ -53,7 +53,7 @@ const uploadGrpProfile = async (uri) => {
   }
 
   const data = await response.json();
-  const profileUri = `https://cloud.appwrite.io/v1/storage/buckets/669270af0034381c55c3/files/${data.$id}/view?project=66795f4000158aa9d802`;
+  const profileUri = `https://cloud.appwrite.io/v1/storage/buckets/synk_bucket/files/${data.$id}/view?project=66992806000309150f65`;
   return profileUri;
 };
 
@@ -63,8 +63,8 @@ const createChat = async (groupId, currentUserPhoneNumber, participants,messageT
     console.log("group id in ..: ",groupId)
     console.log("user id: ",currentUserPhoneNumber)
     const response = await databases.createDocument(
-      '6685cbc40036f4c6a5ad',
-      '6697b81f001fb40f86af',
+      'database_id',
+      'g_chats',
       ID.unique(),
       {
         groupId,
@@ -87,8 +87,8 @@ const createChat = async (groupId, currentUserPhoneNumber, participants,messageT
 const fetchUserGroups = async (currentUserPhoneNumber) => {
   try {
     const response = await databases.listDocuments(
-      '6685cbc40036f4c6a5ad',
-      '6696627c000707e52294', // Replace with your groupChats collection ID
+      'database_id',
+      'groups', // Replace with your groupChats collection ID
       [
         Query.equal('participants', currentUserPhoneNumber),
         // Query.orderAsc(`${response.$updatedAt}`)
@@ -105,9 +105,9 @@ const fetchUserGroups = async (currentUserPhoneNumber) => {
 const fetchGroupMessages = async (groupId) => {
   try {
     const response = await databases.listDocuments(
-      '6685cbc40036f4c6a5ad',
-      '6697b81f001fb40f86af',
-      [Query.equal('chatId', groupId),
+      'database_id',
+      'g_chats',
+      [Query.equal('groupId', groupId),
         Query.orderDesc('createdAt'),
       ]
     );
@@ -121,6 +121,7 @@ const fetchGroupMessages = async (groupId) => {
 
 const sendGroupMessage = async (groupId, senderId, participants, messageText = '', mediaUri = '', type = 'text') => {
   try {
+    console.log("groupId in services: ",groupId)
     let mediaUrl = '';
 
     // If there's a mediaUri, upload the media and get the URL
@@ -158,11 +159,11 @@ const sendGroupMessage = async (groupId, senderId, participants, messageText = '
       });
 
       const uploadResponse = await fetch(
-        'https://cloud.appwrite.io/v1/storage/buckets/669270af0034381c55c3/files',
+        'https://cloud.appwrite.io/v1/storage/buckets/synk_bucket/files',
         {
           method: 'POST',
           headers: {
-            'X-Appwrite-Project': '66795f4000158aa9d802',
+            'X-Appwrite-Project': '66992806000309150f65',
             'Content-Type': 'multipart/form-data',
           },
           body: formData,
@@ -174,12 +175,12 @@ const sendGroupMessage = async (groupId, senderId, participants, messageText = '
         throw new Error(uploadData.message || 'Failed to upload media');
       }
 
-      mediaUrl = `https://cloud.appwrite.io/v1/storage/buckets/669270af0034381c55c3/files/${uploadData.$id}/view?project=66795f4000158aa9d802`;
+      mediaUrl = `https://cloud.appwrite.io/v1/storage/buckets/synk_bucket/files/${uploadData.$id}/view?project=66992806000309150f65`;
     }
 
     const response = await databases.createDocument(
-      '6685cbc40036f4c6a5ad',
-      '6697b81f001fb40f86af',
+      'database_id',
+      'g_chats',
       ID.unique(),
       {
         groupId,

@@ -41,11 +41,11 @@ const sendMessage = async (senderId, receiverId, messageText = '', mediaUri = ''
       // console.log("formData: ",formData)
 
       const uploadResponse = await fetch(
-        'https://cloud.appwrite.io/v1/storage/buckets/669270af0034381c55c3/files',
+        'https://cloud.appwrite.io/v1/storage/buckets/synk_bucket/files',
         {
           method: 'POST',
           headers: {
-            'X-Appwrite-Project': '66795f4000158aa9d802',
+            'X-Appwrite-Project': '66992806000309150f65',
             'Content-Type': 'multipart/form-data',
           },
           body: formData,
@@ -57,12 +57,12 @@ const sendMessage = async (senderId, receiverId, messageText = '', mediaUri = ''
         throw new Error(uploadData.message || 'Failed to upload media');
       }
 
-      mediaUrl = `https://cloud.appwrite.io/v1/storage/buckets/669270af0034381c55c3/files/${uploadData.$id}/view?project=66795f4000158aa9d802`;
+      mediaUrl = `https://cloud.appwrite.io/v1/storage/buckets/synk_bucket/files/${uploadData.$id}/view?project=66992806000309150f65`;
     }
     console.log("mediaUrl uploaded: ",mediaUrl)
     const response = await databases.createDocument(
-      '6685cbc40036f4c6a5ad',
-      '6685e691003e5ceef040',
+      'database_id',
+      'chats',
       ID.unique(),
       {
         chatId,
@@ -377,3 +377,222 @@ useEffect(() => {
 
   checkSession();
 }, [setSession]);
+
+
+
+
+
+import React, { useRef, useEffect, useState } from 'react';
+import { View, Text, StyleSheet, FlatList, Image, TouchableWithoutFeedback } from 'react-native';
+import { Video } from 'expo-av';
+import { primaryColors } from '../constants/colors';
+import DateTime from './DateTime';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import { LongPressGestureHandler, State } from 'react-native-gesture-handler';
+import FullScreenMediaModal from './FullScreenMediaModal ';
+import { fetchUserName } from '../backend/userService';
+
+const GroupChatList = ({ messages, currentUserPhoneNumber, contacts }) => {
+    // cconsloe
+  const flatListRef = useRef(null);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedMediaUri, setSelectedMediaUri] = useState('');
+  const [selectedMediaType, setSelectedMediaType] = useState('');
+  const [selectedText, setSelectedText] = useState('');
+  const listRef = useRef(null);
+  const scrollOffsetY = useRef(0);
+
+  console.log("group data: ", messages);
+  useEffect(() => {
+    if (flatListRef.current) {
+      flatListRef.current.scrollToEnd({ animated: true });
+    }
+  }, [messages]);
+
+  const handleLongPress = (message) => {
+    console.log('Long press detected on message:', message.messageText);
+  };
+
+  const handleMediaPress = (uri, type, messageText) => {
+    setSelectedMediaUri(uri);
+    setSelectedMediaType(type);
+    setSelectedText(messageText);
+    setModalVisible(true);
+  };
+
+  const handleScroll = (event) => {
+    scrollOffsetY.current = event.nativeEvent.contentOffset.y;
+  };
+
+  const getContactName = (phoneNumber) => {
+    const contact = contacts.find(c => c.normalizedPhoneNumbers && c.normalizedPhoneNumbers.includes(phoneNumber));
+    return contact ? contact.name : null;
+  };
+
+  const renderItem = ({ item }) => {
+    const isCurrentUser = item.senderId === currentUserPhoneNumber;
+    const contactName = getContactName(item.senderId);
+    const displayName = contactName || (item.username || item.senderId);
+    const profilePicture = item.profilePicture && typeof item.profilePicture === 'string' ? item.profilePicture : require('../assets/Avator.jpg');
+        console.log("profile url: ",profilePicture)
+    return (
+      <LongPressGestureHandler
+        onHandlerStateChange={({ nativeEvent }) => {
+          if (nativeEvent.state === State.ACTIVE) {
+            handleLongPress(item);
+          }
+        }}
+      >
+        <TouchableWithoutFeedback>
+          <View
+            style={[
+              styles.messageContainer,
+              isCurrentUser ? styles.currentUserContainer : styles.recipientContainer,
+            ]}
+          >
+            {!isCurrentUser && (
+              <Image source={{ uri: profilePicture }} style={styles.profilePicture} />
+            )}
+            <View
+              style={[
+                styles.message,
+                isCurrentUser ? styles.currentUserMessage : styles.recipientMessage,
+              ]}
+            >
+              {!isCurrentUser && <Text style={styles.senderName}>{displayName}</Text>}
+              {item.mediaUrl ? (
+                <>
+                  {item.type === 'image' ? (
+                    <TouchableWithoutFeedback onPress={() => handleMediaPress(item.mediaUrl, 'image', item.messageText)}>
+                      <Image source={{ uri: item.mediaUrl }} style={styles.media} />
+                    </TouchableWithoutFeedback>
+                  ) : item.type === 'video' ? (
+                    <TouchableWithoutFeedback onPress={() => handleMediaPress(item.mediaUrl, 'video', item.messageText)}>
+                      <View style={styles.mediaContainer}>
+                        <Video
+                          source={{ uri: item.mediaUrl }}
+                          style={styles.media}
+                          resizeMode="contain"
+                          isMuted
+                        />
+                        <Text style={styles.playIcon}>▶</Text>
+                      </View>
+                    </TouchableWithoutFeedback>
+                  ) : null}
+                </>
+              ) : null}
+              {item.messageText ? (
+                <Text style={styles.messageText}>{item.messageText} </Text>
+              ) : null}
+              <Text style={styles.timeText}>{DateTime(item.$createdAt)} </Text>
+            </View>
+          </View>
+        </TouchableWithoutFeedback>
+      </LongPressGestureHandler>
+    );
+  };
+
+  return (
+    <View style={{ flex: 1 }}>
+      <FlatList
+        ref={listRef}
+        data={messages}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.$id}
+        inverted
+        contentContainerStyle={styles.flatListContainer}
+        onScroll={handleScroll}
+        onContentSizeChange={() => listRef.current.scrollToOffset({ offset: scrollOffsetY.current, animated: false })}
+      />
+      <FullScreenMediaModal
+        visible={modalVisible}
+        mediaUri={selectedMediaUri}
+        mediaType={selectedMediaType}
+        onClose={() => setModalVisible(false)}
+        onRequestClose={() => setModalVisible(false)}
+        messageText={selectedText}
+      />
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  flatListContainer: {
+    flexGrow: 1,
+    paddingTop: 10,
+    paddingBottom: 10,
+    paddingHorizontal: 10,
+  },
+  messageContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  currentUserContainer: {
+    alignSelf: 'flex-end',
+  },
+  recipientContainer: {
+    alignSelf: 'flex-start',
+  },
+  profilePicture: {
+    width: wp('10%'),
+    height: wp('10%'),
+    borderRadius: 25,
+    marginRight: 10,
+  },
+  message: {
+    maxWidth: '80%',
+    padding: 7,
+    borderRadius: 10,
+  },
+  currentUserMessage: {
+    backgroundColor: primaryColors.purple,
+  },
+  recipientMessage: {
+    backgroundColor: '#3F3F46',
+  },
+  senderName: {
+    fontWeight: 'bold',
+    marginBottom: 5,
+    color: 'white',
+  },
+  messageText: {
+    fontSize: 16,
+    color: 'white',
+    marginTop: 5,
+    marginRight: 40,
+  },
+  timeText: {
+    color: 'white',
+    fontSize: wp('3%'),
+    alignSelf: 'flex-end',
+  },
+  media: {
+    width: wp('56%'),
+    height: hp('30%'),
+    borderRadius: 10,
+    marginBottom: 5,
+    overflow: 'hidden',
+  },
+  mediaContainer: {
+    position: 'relative',
+    width: wp('80%'),
+    height: wp('80%'),
+    borderRadius: 10,
+    overflow: 'hidden',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  playIcon: {
+    position: 'absolute',
+    fontSize: 30,
+    color: 'white',
+  },
+});
+
+export default GroupChatList;
+
+
+260b731b9e807e5b42463dc1d05fee1da556ad5aeac46f559a4dbb164797a130a7d37daa43a6287a92fa3ac59068ec47
+3b36072e37bb10b956a9571e2157e179
+06c7648469946ea2d1c768a6f9277061

@@ -189,7 +189,7 @@ const UpdatesScreen = ({ navigation }) => {
                     </View>
                 </ScrollView>
                 <View style={styles.bottomRightIcons}>
-                    <TouchableOpacity style={[styles.bottomIcon, { marginBottom: 10 }]}>
+                    <TouchableOpacity style={[styles.bottomIcon, { marginBottom: 10 }]} onPress={() => navigation.navigate('EditStatus')}>
                         <Ionicons name="pencil" size={24} color="#fff" />
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.bottomIcon}>
