@@ -51,12 +51,20 @@ const UpdatesStackNavigator = ({ navigation, route }) => {
       <ChatsStack.Screen 
         name="Explore" 
         component={ExploreMore} 
-        options={{ headerShown: true }} 
+        options={{ 
+          headerShown: true,
+          headerTitle: '',
+          headerLeft: () => null,
+        }} 
       />
       <ChatsStack.Screen 
         name="EditStatus" 
         component={EditStatusScreen} 
-        options={{ headerShown: true }} 
+        options={{ 
+          headerShown: true,
+          headerTitle: '', // Remove the title by setting it to an empty string
+          headerLeft: () => null, // Remove the back arrow icon
+        }} 
       />
     </ChatsStack.Navigator>
   );

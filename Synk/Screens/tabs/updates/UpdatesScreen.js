@@ -189,9 +189,9 @@ const UpdatesScreen = ({ navigation }) => {
                     </View>
                 </ScrollView>
                 <View style={styles.bottomRightIcons}>
-                    <TouchableOpacity style={[styles.bottomIcon, { marginBottom: 10 }]} onPress={() => navigation.navigate('EditStatus')}>
-                        <Ionicons name="pencil" size={24} color="#fff" />
-                    </TouchableOpacity>
+                <TouchableOpacity style={[styles.bottomIcon, styles.pencilIcon, { marginBottom: 10 }]} onPress={() => navigation.navigate('EditStatus')}>
+                    <Ionicons name="pencil" size={24} color="#fff" />
+                </TouchableOpacity>
                     <TouchableOpacity style={styles.bottomIcon}>
                         <Ionicons name="camera" size={24} color="#fff" />
                     </TouchableOpacity>
@@ -413,6 +413,13 @@ const styles = StyleSheet.create({
         right: 20,
         flexDirection: 'column',
         alignItems: 'flex-end'
+    },
+    pencilIcon: {
+        backgroundColor: primaryColors.purple,
+        borderRadius: 15,
+        width: 45,
+        height: 45,
+        right: 9,
     },
     bottomIcon: {
         backgroundColor: primaryColors.purple,
