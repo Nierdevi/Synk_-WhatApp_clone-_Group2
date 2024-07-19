@@ -1,5 +1,3 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, FlatList, ScrollView, StyleSheet } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import React, { useEffect, useState } from 'react';
 import { FlatList, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
