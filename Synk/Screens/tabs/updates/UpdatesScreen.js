@@ -18,19 +18,19 @@ const DefaultProfileImg = () => (
 
 const UpdatesScreen = ({ navigation }) => {
     const [statuses, setStatuses] = useState([
-        { id: 1, user: 'Alice', img: 'https://via.placeholder.com/50', total: 3, viewed: 1 },
-        { id: 2, user: 'Bob', img: 'https://via.placeholder.com/50', total: 2, viewed: 1 }
+        { id: 1, user: 'Synk', img: 'https://via.placeholder.com/50', total: 3, viewed: 1 }
     ]);
 
     const [channels, setChannels] = useState([]);
     const [followedChannels, setFollowedChannels] = useState([]);
 
     const suggestedChannels = [
-        { id: 3, name: 'CNN', img: 'https://upload.wikimedia.org/wikipedia/commons/6/66/CNN_International_logo.png', followers: '1.2k followers' },
-        { id: 4, name: 'BBC News', img: 'https://upload.wikimedia.org/wikipedia/commons/e/ed/BBC_News_2022.svg', followers: '900 followers' },
-        { id: 5, name: 'TechCrunch', img: 'https://upload.wikimedia.org/wikipedia/commons/a/ad/TechCrunch_logo.svg', followers: '1.5k followers' },
-        { id: 6, name: 'National Geographic', img: 'https://upload.wikimedia.org/wikipedia/commons/7/74/National_Geographic_logo_2021.svg', followers: '800 followers' },
-        { id: 7, name: 'ESPN', img: 'https://upload.wikimedia.org/wikipedia/commons/2/2f/ESPN_wordmark.svg', followers: '2k followers' }
+        { id: 3, name: 'Synk', img: '', followers: '6.7k followers' },
+        { id: 4, name: 'CNN', img: 'https://upload.wikimedia.org/wikipedia/commons/f/fb/Cnn_logo_red_background.png', followers: '3.2k followers' },
+        { id: 5, name: 'BBC News', img: 'https://www.newscaststudio.com/wp-content/uploads/2024/03/bbc-news-logo-new-1536x867.jpg', followers: '900 followers' },
+        { id: 6, name: 'TechCrunch', img: 'https://cdn.prod.website-files.com/60d07e2eecb304cb4350b53f/6630b429cd796ca047a8079d_techcrunch_logo.png', followers: '1.5k followers' },
+        { id: 7, name: 'National Geographic', img: 'https://upload.wikimedia.org/wikipedia/commons/2/22/Nat_Geo_HD.png', followers: '800 followers' },
+        { id: 8, name: 'ESPN', img: 'https://upload.wikimedia.org/wikipedia/commons/6/60/ESPN_logos.png', followers: '2k followers' }
     ];
 
     useEffect(() => {
@@ -59,7 +59,7 @@ const UpdatesScreen = ({ navigation }) => {
                     id: 2,
                     name: 'BBC News',
                     description: latestArticleBBC.title.split('.')[0] || 'Top stories',
-                    img: latestArticleBBC.urlToImage || 'https://upload.wikimedia.org/wikipedia/en/6/60/BBC_News_2023.svg', // Fallback image
+                    img: 'https://www.newscaststudio.com/wp-content/uploads/2024/03/bbc-news-logo-new-1536x867.jpg',
                     time: getTimeAgo(latestArticleBBC.publishedAt),
                     unread: dataBBC.articles.length
                 };
@@ -167,7 +167,7 @@ const UpdatesScreen = ({ navigation }) => {
                                     <View style={styles.suggestedChannelInfo}>
                                         <View style={styles.channelHeader}>
                                             <Text style={styles.suggestedChannelName}>{item.name}</Text>
-                                            <Ionicons name="checkmark-circle" size={16} color="purple" style={styles.verifiedIcon} />
+                                            <Ionicons name="checkmark-circle" size={16} color={primaryColors.purple} style={styles.verifiedIcon} />
                                         </View>
                                         <Text style={styles.followersCount}>{item.followers}</Text>
                                     </View>
@@ -189,10 +189,10 @@ const UpdatesScreen = ({ navigation }) => {
                     </View>
                 </ScrollView>
                 <View style={styles.bottomRightIcons}>
-                    <TouchableOpacity style={[styles.bottomIcon, { marginBottom: 10 }]} onPress={() => navigation.navigate('EditStatus')}>
-                        <Ionicons name="pencil" size={24} color="#fff" />
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.bottomIcon}>
+                <TouchableOpacity style={[styles.bottomIcon, styles.pencilIcon, { marginBottom: 10 }]} onPress={() => navigation.navigate('EditStatus')}>
+                    <Ionicons name="pencil" size={24} color="#fff" />
+                </TouchableOpacity>
+                    <TouchableOpacity style={styles.bottomIcon} onPress={() => navigation.navigate('CameraStatus')}>
                         <Ionicons name="camera" size={24} color="#fff" />
                     </TouchableOpacity>
                 </View>
@@ -414,9 +414,16 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         alignItems: 'flex-end'
     },
+    pencilIcon: {
+        backgroundColor: 'grey',
+        borderRadius: 15,
+        width: 45,
+        height: 45,
+        right: 9,
+    },
     bottomIcon: {
         backgroundColor: primaryColors.purple,
-        borderRadius: 30,
+        borderRadius: 15,
         width: 60,
         height: 60,
         justifyContent: 'center',
