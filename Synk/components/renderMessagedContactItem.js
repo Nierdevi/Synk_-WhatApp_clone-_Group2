@@ -33,8 +33,8 @@ useEffect(() => {
     if (contact) {
         try {
         const response = await databases.listDocuments(
-            "6685cbc40036f4c6a5ad",
-            "6685cc6600212adefdbf",
+            "database_id",
+            "users",
             [Query.equal("phoneNumber", contact.normalizedPhoneNumbers[0])]
         );
 
@@ -143,8 +143,8 @@ contactName: {
     fontSize: 18,
 },
 profilePicture: {
-    width: wp("14%"),
-    height: hp("6.5%"),
+    width: 55,
+    height: 55,
     borderRadius: 50,
     marginRight: 10,
 },

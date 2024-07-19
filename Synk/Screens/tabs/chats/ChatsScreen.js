@@ -16,6 +16,8 @@ import { Image } from 'expo-image';
 import { getUserData } from '../../../backend/userService';
 import RenderMessagedContactItem from '../../../components/renderMessagedContactItem';
 
+Applogo=require('../../../assets/AppLogo.png')
+Verified=require('../../../assets/verified.png')
 
 const useContacts = (session) => {
   const [contacts, setContacts] = useState([]);
@@ -108,7 +110,7 @@ const ChatsScreen = ({ navigation }) => {
 
   const checkPhoneNumberExists = async (phoneNumber) => {
     try {
-        const response = await databases.listDocuments('6685cbc40036f4c6a5ad', '6685cc6600212adefdbf', [
+        const response = await databases.listDocuments('database_id', 'users', [
             Query.equal('phoneNumber', phoneNumber),
         ]);
 
@@ -138,7 +140,8 @@ const ChatsScreen = ({ navigation }) => {
       }
     } catch (error) {
       console.error('Failed to handle contact press:', error);
-      Alert.alert('Error', 'An error occurred while trying to navigate to the chat room');
+        Alert.alert('Oops!', 'This contact isn\'t on Synk');
+      // Alert.alert('Error', 'An error occurred while trying to navigate to the chat room');
     }
   };
 
@@ -149,7 +152,7 @@ const ChatsScreen = ({ navigation }) => {
           <Text style={styles.avatarText}>{item.name[0]}</Text>
         </View>
         <View style={styles.contactDetails}>
-          <Text style={styles.contactName}>{item.name} </Text>
+          <Text style={styles.appName}>{item.name} </Text>
           {item.note && <Text style={styles.contactStatus}>{item.note}</Text>}
         </View>
       </TouchableOpacity>
@@ -157,17 +160,41 @@ const ChatsScreen = ({ navigation }) => {
   };
 
 
-
-
-
   const filteredContacts = contacts.filter(contact =>
     contact.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const hnadleOfficialSite=()=>{
+    Alert.alert("Oops!🤤","Under construction🐽");
+    return
+  }
 
   //main return funtction
 
   return (
     <View style={styles.container}>
+
+    <TouchableOpacity
+        style={styles.contactItem}
+        onPress={hnadleOfficialSite}
+        >
+        <Image
+            source={Applogo} 
+            style={styles.profilePicture}
+            cachePolicy="disk"
+        />
+        <View style={styles.details}>
+        <View style={{flexDirection:'row',}}>
+          <Text style={styles.appName}>Synk </Text>
+          <Image source={Verified} cachePolicy='memory-disk' style={styles.verify} tintColor="#7410d7" />
+        </View>
+          <Text
+              style={styles.gistText}
+          >Know more about Synk
+          </Text>
+        </View>
+    </TouchableOpacity>
+
       <FlatList
         data={messagedContacts}
         renderItem={({ item }) => (
@@ -220,7 +247,7 @@ const styles = StyleSheet.create({
     // backgroundColor: 'red',
     width:wp('100%'),
     // paddingHorizontal:10,
-    marginTop:20,
+    // marginTop:20,
 
   },
   contactItem: {
@@ -245,21 +272,25 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   contactDetails: {
-    justifyContent: 'center',
-    gap:5
+    // justifyContent: 'center',
+    // gap:5
   },
-  upperContactdetails:{
-    justifyContent:'space-between',
-    flexDirection:'row',
-    width:'90%'
+  details:{
+    justifyContent:'space-around',
+    // backgroundColor:'red',
+    // flexDirection:'row',
+    width:'90%',
+    flex:1
   },
-  contactName: {
-    fontSize: hp('2.5%'),
+  appName: {
+    fontSize: wp('5%'),
   },
-  lastMessageText: {
-    fontSize: hp('2%'),
-    color: 'gray',
-    width:wp("70%")
+  verify:{
+    fontSize: wp('3%'),
+  },
+  gistText:{
+    fontSize: wp('4%'),
+    color:'#27272A'
   },
   modalHeader: {
     flexDirection: 'row',
@@ -282,8 +313,12 @@ const styles = StyleSheet.create({
     width: wp("100%"),
     flexDirection: 'row',
   },
-  contactName: {
-    fontSize: 18,
+  appName: {
+    fontSize: wp("5%"),
+  },
+  verify:{
+    width: wp('5%'),
+
   },
   avatarContainer: {
     width: 45,
@@ -316,7 +351,7 @@ const styles = StyleSheet.create({
     fontSize: wp('4%'),
   },
   profilePicture: {
-    width: wp('15.5%'),
+    width: wp('15%'),
     height: hp('7%'),
     borderRadius: 50,
     marginRight: 10,

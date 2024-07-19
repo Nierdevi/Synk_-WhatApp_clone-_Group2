@@ -9,14 +9,20 @@ import { PopupMenu } from '../../../components/PopupMenu';
 import { fetchGroupMessages, sendGroupMessage } from '../../../backend/groupServices';
 import { fetchLastMessage } from '../../../backend/chatService';
 import GroupChatList from '../../../components/GroupChatList';
+import { getUser } from '../../../constants/userContext';
+import { useContacts } from '../../../backend/contacts ';
+
 
 const ChatRoom = ({ route, navigation }) => {
   const { groupData, groupId, participants, currentUserPhoneNumber, profilePicture } = route.params;
   const [messages, setMessages] = useState([]);
+  const { session } = getUser();
+  const contacts = useContacts(session); // Fetch contacts
   const [lastMessage, setLastMessage] = useState(null);
   const [menuVisible, setMenuVisible] = useState(false);
 
-  console.log("group data: ", participants);
+//   console.log("group data: ", contacts);
+// console.log('groupId in room: ',groupId)
 
   const menuItems = [
     { label: 'Report or Block', onPress: () => {} },
@@ -65,7 +71,6 @@ const ChatRoom = ({ route, navigation }) => {
   useEffect(() => {
     const loadMessages = async () => {
       if (groupId) {
-        console.log("groupid in room: ", groupId);
         const fetchedMessages = await fetchGroupMessages(groupId);
         const sortedMessages = fetchedMessages.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
         setMessages(sortedMessages);
@@ -84,9 +89,6 @@ const ChatRoom = ({ route, navigation }) => {
     };
 
     loadMessages();
-    const intervalId = setInterval(loadMessages, 1000);
-
-    return () => clearInterval(intervalId);
   }, [groupId, messages]);
 
   const handleSendMessage = async ({ text, mediaUri }) => {
@@ -119,7 +121,7 @@ const ChatRoom = ({ route, navigation }) => {
     >
       <PopupMenu visible={menuVisible} onClose={() => setMenuVisible(false)} menuItems={menuItems} style={styles.popupMenu} />
       <StatusBar backgroundColor="transparent" translucent={true} />
-      <GroupChatList messages={messages} currentUserPhoneNumber={currentUserPhoneNumber} contactName={groupData.groupName} />
+      <GroupChatList messages={messages} currentUserPhoneNumber={currentUserPhoneNumber} contacts={contacts} />
       <InputBox onSendMessage={handleSendMessage} />
     </KeyboardAvoidingView>
   );

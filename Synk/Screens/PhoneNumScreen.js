@@ -29,7 +29,7 @@ const PhoneNumScreen = ({ navigation }) => {
 
     const checkPhoneNumberExists = async (phoneNumber) => {
         try {
-            const response = await databases.listDocuments('6685cbc40036f4c6a5ad', '6685cc6600212adefdbf', [
+            const response = await databases.listDocuments('database_id', 'users', [
                 Query.equal('phoneNumber', phoneNumber),
             ]);
 
@@ -52,7 +52,7 @@ const PhoneNumScreen = ({ navigation }) => {
                 setSentToken(u);
                 console.log(u)
                 Alert.alert(
-                    "Resent sent", "Verify OTP",
+                    " Sent", "Verify OTP",
                     [{
                         text: "OK",
                         onPress: () => navigation.navigate('Verification', { token: u, countryCode, phoneNumber,Number })

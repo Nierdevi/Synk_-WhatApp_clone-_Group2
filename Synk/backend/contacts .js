@@ -107,7 +107,7 @@ const startContactRefresh = () => {
 // Real-time subscription to listen for database changes
 const subscribeToDatabaseChanges = (setContacts) => {
   const unsubscribe = client.subscribe(
-    'collections.[6685cc6600212adefdbf].documents',
+    'collections.[users].documents',
     response => {
       // Assuming the document structure matches your contacts data
       if (response.events.includes('database.documents.create') ||

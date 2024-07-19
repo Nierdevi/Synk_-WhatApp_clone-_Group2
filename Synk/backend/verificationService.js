@@ -27,8 +27,8 @@ const verifyUser = async (userId, otp) => {
         const currentAccount = await account.get();
         if (!currentAccount) throw new Error();
         const currentUSer = await databases.listDocuments(
-        '6685cbc40036f4c6a5ad',
-        '6685cc6600212adefdbf',
+        'database_id',
+        'users',
         [Query.equal("userId", currentAccount.$id)]
         );
 

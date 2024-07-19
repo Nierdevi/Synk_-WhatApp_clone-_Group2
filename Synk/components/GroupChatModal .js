@@ -21,7 +21,7 @@ const GroupChatModal = ({ visible, onClose, navigation ,close}) => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await databases.listDocuments('6685cbc40036f4c6a5ad', '6685cc6600212adefdbf');
+        const response = await databases.listDocuments('database_id', 'users');
         const appUsers = response.documents;
         // console.log("contacts in app: ", appUsers);
 
