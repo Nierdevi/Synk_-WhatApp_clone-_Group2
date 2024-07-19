@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import * as ImagePicker from 'expo-image-picker';
+import { Picker } from '@react-native-picker/picker';
 import React, { useEffect, useState } from 'react';
 import { FlatList, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { primaryColors } from '../../../constants/colors';
@@ -56,7 +56,7 @@ const ExploreMore = ({ navigation }) => {
                 />
                 {/* Country Dropdown */}
                 <View style={styles.dropdownContainer}>
-                    <ImagePicker
+                    <Picker
                         selectedValue={selectedCountry}
                         style={styles.dropdown}
                         onValueChange={(itemValue) => setSelectedCountry(itemValue)}
@@ -64,7 +64,7 @@ const ExploreMore = ({ navigation }) => {
                         {countries.map((country, index) => (
                             <Picker.Item key={index} label={country} value={country} />
                         ))}
-                    </ImagePicker>
+                    </Picker>
                 </View>
             </ScrollView>
 

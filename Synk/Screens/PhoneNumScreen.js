@@ -52,7 +52,7 @@ const PhoneNumScreen = ({ navigation }) => {
                 setSentToken(u);
                 console.log(u)
                 Alert.alert(
-                    "Resent sent", "Verify OTP",
+                    " Sent", "Verify OTP",
                     [{
                         text: "OK",
                         onPress: () => navigation.navigate('Verification', { token: u, countryCode, phoneNumber,Number })

@@ -121,6 +121,7 @@ const fetchGroupMessages = async (groupId) => {
 
 const sendGroupMessage = async (groupId, senderId, participants, messageText = '', mediaUri = '', type = 'text') => {
   try {
+    console.log("groupId in services: ",groupId)
     let mediaUrl = '';
 
     // If there's a mediaUri, upload the media and get the URL

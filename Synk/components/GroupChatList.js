@@ -24,6 +24,8 @@ const ChatList = ({ messages, currentUserPhoneNumber }) => {
     }
   }, [messages]);
 
+  // console.log("messages in chatList: ",messages)
+
   useEffect(() => {
     const loadUserProfiles = async () => {
       const profiles = { ...userProfiles };  // Start with existing profiles
@@ -62,6 +64,8 @@ const ChatList = ({ messages, currentUserPhoneNumber }) => {
   const renderItem = ({ item }) => {
     const isCurrentUser = item.senderId === currentUserPhoneNumber;
     const senderProfile = userProfiles[item.senderId] || {};
+
+    // console.log("messages mediaUrl: ",item.mediaUrl)
 
     return (
       <LongPressGestureHandler

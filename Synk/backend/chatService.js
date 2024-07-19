@@ -52,7 +52,7 @@ const createChat = async (senderPhoneNumber, recipientPhoneNumber) => {
     );
     // console.log(senderPhoneNumber)
     // console.log(recipientPhoneNumber)
-
+    console.log("chatroom in service: ",response)
     return response;
   } catch (error) {
     // handleNetworkError(error);
