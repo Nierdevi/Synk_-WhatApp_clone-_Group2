@@ -63,36 +63,35 @@ import {getUser} from '../constants/userContext';
     return length > 4 ? `${'*'.repeat(length - 4)}${number.slice(length - 4)}` : number;
   };
 
-  const verifyNumber = async()=>{
+  const verifyNumber = async () => {
     const otpCode = otp.join('');
-    // console.log(otpCode);
     if (otpCode.length !== 6) {
-      Alert.alert('Incomplete OTP', 'Please enter all 6 digits of the OTP.');
-      return;
+        Alert.alert('Incomplete OTP', 'Please enter all 6 digits of the OTP.');
+        return;
     }
 
     try {
-      const session = await verifyUser(token.userId, otpCode);
-      if (session) {
-          const userId = session.userId;
-          await addUserToDatabase(userId, countryCode + phoneNumber);
-          setSession(session)
-          await AsyncStorage.setItem('session', JSON.stringify(session));
-          console.log(session)
-          Alert.alert('Verification Successful', 'You have been successfully verified.', [
-              { text: 'OK', 
-                onPress: () => navigation.replace('Tabs') 
-              },
-          ]);
-      }
-  } catch (error) {
+        const session = await verifyUser(token.userId, otpCode);
+        if (session) {
+            const userId = session.userId;
+            const phoneNumberFull = countryCode + phoneNumber;
+            await addUserToDatabase(userId, phoneNumberFull);
 
-      console.log(error);
-      Alert.alert('Verification Failed', 'The OTP you entered is incorrect or expired. Please try again.');
-      
-  }
+            // Extend the session object to include the phone number
+            const extendedSession = { ...session, phoneNumber: phoneNumberFull };
 
- }
+            setSession(extendedSession);
+            await AsyncStorage.setItem('session', JSON.stringify(extendedSession));
+            console.log('Extended Session:', extendedSession);
+            Alert.alert('Verification Successful', 'You have been successfully verified.', [
+                { text: 'OK', onPress: () => navigation.replace('Tabs') },
+            ]);
+        }
+    } catch (error) {
+        console.error('Verification failed:', error);
+        Alert.alert('Verification Failed', 'The OTP you entered is incorrect or expired. Please try again.');
+    }
+};
 
 
  const resendCode = async () => {
