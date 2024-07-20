@@ -172,12 +172,15 @@ const UpdatesScreen = ({ navigation }) => {
                                         <Text style={styles.followersCount}>{item.followers}</Text>
                                     </View>
                                     {followedChannels.includes(item.id) ? (
-                                        <Text style={styles.followingText}>Following</Text>
-                                    ) : (
-                                        <TouchableOpacity style={styles.followButton} onPress={() => handleFollowChannel(item.id)}>
+                                            <Text style={styles.followingText}>Following</Text>
+                                        ) : (
+                                            <TouchableOpacity
+                                            style={styles.followButton}
+                                            onPress={() => handleFollowChannel(item.id)}
+                                            >
                                             <Text style={styles.followButtonText}>Follow</Text>
-                                        </TouchableOpacity>
-                                    )}
+                                            </TouchableOpacity>
+                                        )}
                                 </View>
                             )}
                             keyExtractor={item => item.id.toString()}

@@ -4,7 +4,7 @@
     "slug": "synk",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/AppLogo.png",
+    "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/SplashScreen.png",
@@ -13,7 +13,7 @@
     },
     "ios": {
       "supportsTablet": true,
-      "icon": "./assets/AppLogo.png"
+      "icon": "./assets/icon.png"
     },
     "android": {
       "package": "com.synkapp_inc.synk",
@@ -23,7 +23,8 @@
       },
       "permissions": [
         "INTERNET",
-        "ACCESS_NETWORK_STATE"
+        "ACCESS_NETWORK_STATE",
+        ["CAMERA", "RECORD_AUDIO"]
       ]
     },
     "web": {

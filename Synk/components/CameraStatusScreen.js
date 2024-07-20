@@ -1,52 +1,90 @@
-import { Camera } from 'expo-camera';
-import React, { useEffect, useRef, useState } from 'react';
-import { Button, StyleSheet, Text, View } from 'react-native';
+import { CameraView, useCameraPermissions } from 'expo-camera';
+import { useState, useRef } from 'react';
+import { Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons';
 
 const CameraStatusScreen = () => {
-  const [hasPermission, setHasPermission] = useState(null);
-  const [type, setType] = useState(Camera.Constants.Type.back);
+  const [facing, setFacing] = useState('back');
+  const [mode, setMode] = useState('picture');
+  const [permission, requestPermission] = useCameraPermissions();
   const cameraRef = useRef(null);
 
+  if (!permission) {
+    // Camera permissions are still loading.
+    return <View />;
+  }
+
+  if (!permission.granted) {
+    // Camera permissions are not granted yet.
+    return (
+      <View style={styles.container}>
+        <Text style={{ textAlign: 'center' }}>We need your permission to show the camera</Text>
+        <Button onPress={requestPermission} title="grant permission" />
+      </View>
+    );
+  }
+
+  const toggleCameraFacing = () => {
+    setFacing(current => (current === 'back' ? 'front' : 'back'));
+  };
+
+  const cameraMode = () => {
+    setMode(current => (current === 'picture' ? 'video' : 'picture'));
+  };
+
   const takePicture = async () => {
-    if (cameraRef.current) {
+    if (cameraRef.current && mode === 'picture') {
       let photo = await cameraRef.current.takePictureAsync();
       console.log(photo.uri); // Use this URI to display or send the photo
     }
   };
 
-  const flipCamera = () => {
-    setType(
-      type === Camera.Constants.Type.back
-        ? Camera.Constants.Type.front
-        : Camera.Constants.Type.back
-    );
-  };
-
-  const getCameraPermission = async () => {
-    const { status } = await Camera.requestCameraPermissionsAsync();
-    setHasPermission(status === 'granted');
-  };
-
-  useEffect(() => {
-    getCameraPermission();
-  }, []);
-
-  useEffect(() => {
-    console.log(Camera); // Check the Camera object
-  }, []);
-
-  if (hasPermission === null) {
-    return <View />;
+  const recordVideo = async () => {
+    try{
+    if (cameraRef.current && mode === 'video') {
+      if (cameraRef.current.isRecording) {
+        cameraRef.current.stopRecording();
+      } else {
+        let video = await cameraRef.current.recordAsync();
+        console.log(video.uri); // Use this URI to display or send the video
+      }
+    }
+  }catch(error){
+    console.log("couldnt record video: ",error)
   }
-  if (hasPermission === false) {
-    return <Text>No access to camera</Text>;
-  }
+  };
 
   return (
     <View style={styles.container}>
-      <Camera style={styles.camera} type={type} ref={cameraRef} />
-      <Button title="Flip Camera" onPress={flipCamera} />
-      <Button title="Take Picture" onPress={takePicture} />
+      <CameraView
+        style={styles.camera}
+        facing={facing}
+        mode={mode}
+        ref={cameraRef}
+      >
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.button} onPress={toggleCameraFacing}>
+            <MaterialIcons name="flip-camera-android" size={40} color="white" />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={cameraMode}>
+            <MaterialIcons
+              name={mode === 'picture' ? 'photo-camera' : 'videocam'}
+              size={40}
+              color="white"
+            />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={mode === 'picture' ? takePicture : recordVideo}
+          >
+            <MaterialIcons
+              name={mode === 'picture' ? 'camera' : 'videocam'}
+              size={40}
+              color="white"
+            />
+          </TouchableOpacity>
+        </View>
+      </CameraView>
     </View>
   );
 };
@@ -54,12 +92,26 @@ const CameraStatusScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'flex-end',
-    alignItems: 'center',
+    justifyContent: 'center',
   },
   camera: {
     flex: 1,
-    width: '100%',
+  },
+  buttonContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    backgroundColor: 'transparent',
+    margin: 64,
+    justifyContent: 'space-around',
+  },
+  button: {
+    alignSelf: 'flex-end',
+    alignItems: 'center',
+  },
+  text: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: 'white',
   },
 });
 
