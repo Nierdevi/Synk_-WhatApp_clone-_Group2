@@ -41,6 +41,9 @@
     "react": "18.2.0",
     "react-native": "0.74.3",
     "react-native-elements": "^3.4.3",
+    "react-native-emoji-board": "^1.2.1",
+    "react-native-emoji-picker": "^0.2.2",
+    "react-native-emoji-selector": "^0.2.0",
     "react-native-fs": "^2.20.0",
     "react-native-gesture-handler": "~2.16.1",
     "react-native-image-zoom-viewer": "^3.0.1",
@@ -60,5 +63,41 @@
     "@babel/core": "^7.20.0",
     "react-native-svg-transformer": "^1.4.0"
   },
-  "private": true
+  "private": true,
+  "expo": {
+    "name": "synk",
+    "slug": "synk",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "This app uses the camera to take photos."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "permissions": [
+        "CAMERA"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    }
+  }
 }

@@ -192,7 +192,7 @@ const UpdatesScreen = ({ navigation }) => {
                 <TouchableOpacity style={[styles.bottomIcon, styles.pencilIcon, { marginBottom: 10 }]} onPress={() => navigation.navigate('EditStatus')}>
                     <Ionicons name="pencil" size={24} color="#fff" />
                 </TouchableOpacity>
-                    <TouchableOpacity style={styles.bottomIcon} onPress={() => navigation.navigate('')}>
+                    <TouchableOpacity style={styles.bottomIcon} onPress={() => navigation.navigate('CameraStatus')}>
                         <Ionicons name="camera" size={24} color="#fff" />
                     </TouchableOpacity>
                 </View>
