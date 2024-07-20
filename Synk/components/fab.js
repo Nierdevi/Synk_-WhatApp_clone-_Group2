@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet,TouchableOpacity, Image } from 'react-native'
 import React from 'react'
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
-import { Ionicons, MaterialIcons  } from '@expo/vector-icons';
+import { Ionicons, MaterialIcons, MaterialCommunityIcons  } from '@expo/vector-icons';
 import { primaryColors } from '../constants/colors';
 
 
@@ -12,6 +12,7 @@ export default function Fab({type,color,handlePress}) {
       { type==="groups"&&<MaterialIcons name="group-add" size={24} color="white" />} 
       { type==="updates"&&<Ionicons name="camera" size={24} color="white" />} 
       { type==="calls"&&<MaterialIcons name="add-ic-call" size={24} color="white" />}
+      { type==="send"&&<MaterialCommunityIcons name="send-outline" size={24} color="white" />}
     </TouchableOpacity>
   )
 }

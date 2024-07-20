@@ -5,15 +5,15 @@ import { Alert } from 'react-native';
 const handleNetworkError = (error) => {
   console.error(error);
   if (error.message.includes('Network request failed')) {
-    Alert.alert('Network Error', 'Please check your network connection and try again.');
+    // Alert.alert('Network Error', 'Please check your network connection and try again.');
   }
 };
 
 const getExistingChat = async (senderPhoneNumber, recipientPhoneNumber) => {
   try {
     const response = await databases.listDocuments(
-      '6685cbc40036f4c6a5ad',
-      '6685e691003e5ceef040',
+      'database_id',
+      'chats',
       [
         Query.or(
           [
@@ -40,8 +40,8 @@ const createChat = async (senderPhoneNumber, recipientPhoneNumber) => {
     const chatId = ID.unique();
 
     const response = await databases.createDocument(
-      '6685cbc40036f4c6a5ad',
-      '6685e691003e5ceef040',
+      'database_id',
+      'chats',
       chatId,
       {
         chatId,
@@ -52,7 +52,7 @@ const createChat = async (senderPhoneNumber, recipientPhoneNumber) => {
     );
     // console.log(senderPhoneNumber)
     // console.log(recipientPhoneNumber)
-
+    console.log("chatroom in service: ",response)
     return response;
   } catch (error) {
     // handleNetworkError(error);
@@ -112,11 +112,11 @@ const sendMessage = async (senderId, receiverId, messageText = '', mediaUri = ''
       // console.log("formData: ",formData)
 
       const uploadResponse = await fetch(
-        'https://cloud.appwrite.io/v1/storage/buckets/669270af0034381c55c3/files',
+        'https://cloud.appwrite.io/v1/storage/buckets/synk_bucket/files',
         {
           method: 'POST',
           headers: {
-            'X-Appwrite-Project': '66795f4000158aa9d802',
+            'X-Appwrite-Project': '66992806000309150f65',
             'Content-Type': 'multipart/form-data',
           },
           body: formData,
@@ -128,12 +128,12 @@ const sendMessage = async (senderId, receiverId, messageText = '', mediaUri = ''
         throw new Error(uploadData.message || 'Failed to upload media');
       }
 
-      mediaUrl = `https://cloud.appwrite.io/v1/storage/buckets/669270af0034381c55c3/files/${uploadData.$id}/view?project=66795f4000158aa9d802`;
+      mediaUrl = `https://cloud.appwrite.io/v1/storage/buckets/synk_bucket/files/${uploadData.$id}/view?project=66992806000309150f65`;
     }
     console.log("mediaUrl uploaded: ",mediaUrl)
     const response = await databases.createDocument(
-      '6685cbc40036f4c6a5ad',
-      '6685e691003e5ceef040',
+      'database_id',
+      'chats',
       ID.unique(),
       {
         chatId,
@@ -159,8 +159,8 @@ const sendMessage = async (senderId, receiverId, messageText = '', mediaUri = ''
 const fetchMessages = async (chatId) => {
   try {
     const response = await databases.listDocuments(
-      '6685cbc40036f4c6a5ad',
-      '6685e691003e5ceef040',
+      'database_id',
+      'chats',
       [Query.equal('chatId', chatId),
         Query.orderDesc('createdAt'),
       ]
@@ -168,7 +168,7 @@ const fetchMessages = async (chatId) => {
 
     return response.documents;
   } catch (error) {
-    handleNetworkError(error);
+    // handleNetworkError(error);
     return [];
   }
 };
@@ -176,8 +176,8 @@ const fetchMessages = async (chatId) => {
 const addMessagedContact = async (userPhoneNumber, contactPhoneNumber) => {
   try {
     const existingContactResponse = await databases.listDocuments(
-      '6685cbc40036f4c6a5ad',
-      '668aec1c002358157dad',
+      'database_id',
+      'mess_contacts',
       [
         Query.or(
           [
@@ -190,8 +190,8 @@ const addMessagedContact = async (userPhoneNumber, contactPhoneNumber) => {
 
     if (existingContactResponse.documents.length === 0) {
       await databases.createDocument(
-        '6685cbc40036f4c6a5ad',
-        '668aec1c002358157dad',
+        'database_id',
+        'mess_contacts',
         ID.unique(),
         {
           userPhoneNumber,
@@ -203,8 +203,8 @@ const addMessagedContact = async (userPhoneNumber, contactPhoneNumber) => {
     } else {
       const existingContactId = existingContactResponse.documents[0].$id;
       await databases.updateDocument(
-        '6685cbc40036f4c6a5ad',
-        '668aec1c002358157dad',
+        'database_id',
+        'mess_contacts',
         existingContactId,
         {
           updatedAt: new Date().toISOString(),
@@ -220,8 +220,8 @@ const addMessagedContact = async (userPhoneNumber, contactPhoneNumber) => {
 const fetchUserMessages = async (userPhoneNumber) => {
   try {
     const response = await databases.listDocuments(
-      '6685cbc40036f4c6a5ad',
-      '668aec1c002358157dad',
+      'database_id',
+      'mess_contacts',
       [
         Query.or(
           [Query.equal('userPhoneNumber', userPhoneNumber), Query.equal('contactPhoneNumber', userPhoneNumber)]
@@ -230,7 +230,7 @@ const fetchUserMessages = async (userPhoneNumber) => {
     );
     return response.documents;
   } catch (error) {
-    handleNetworkError(error);
+    // handleNetworkError(error);
     return [];
   }
 };
@@ -238,8 +238,8 @@ const fetchUserMessages = async (userPhoneNumber) => {
 const fetchMessagedContacts = async (currentUserPhoneNumber) => {
   try {
     const response = await databases.listDocuments(
-      '6685cbc40036f4c6a5ad',
-      '668aec1c002358157dad',
+      'database_id',
+      'mess_contacts',
       [
         Query.or(
           [Query.equal('userPhoneNumber', currentUserPhoneNumber), Query.equal('contactPhoneNumber', currentUserPhoneNumber)]
@@ -282,8 +282,8 @@ const fetchMessagedContacts = async (currentUserPhoneNumber) => {
 const fetchLastMessage = async (chatId) => {
   try {
     const response = await databases.listDocuments(
-      '6685cbc40036f4c6a5ad', // Replace with your collection ID
-      '6685e691003e5ceef040', // Replace with your document ID
+      'database_id', // Replace with your collection ID
+      'chats', // Replace with your document ID
       [
         Query.equal('chatId', chatId),
         Query.orderDesc('createdAt'), // Fetch messages in descending order of createdAt
@@ -297,6 +297,7 @@ const fetchLastMessage = async (chatId) => {
       return null; // Return null if no message found
     }
   } catch (error) {
+    console.error("Failed to fetch last message:", error);
     // handleNetworkError(error);
     return null;
   }

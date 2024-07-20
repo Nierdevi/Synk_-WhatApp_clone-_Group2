@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View, Pressable,TextInput,Image} from 'react-native';
-import React,{useState,useEffect} from 'react';
+import { StyleSheet, Text, View, Pressable,TextInput,Image,use} from 'react-native';
+import React,{useState,useEffect,useCallback} from 'react';
 // import {Image} from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
@@ -9,20 +9,25 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { addUsernameToDatabase, getcurrentUserData,addAboutToDatabase,getUserProfilePicture,uploadProfilePicture } from '../../../backend/userService';
 import { primaryColors,SecondaryColors } from '../../../constants/colors';
 import { getUser } from '../../../constants/userContext';
+import FullScreenMediaModal from '../../../components/FullScreenMediaModal ';
+
 
 const ProfileScreen = () => {
   const navigation = useNavigation();
   const[about,setAbout]= useState(' ')
   const [username, setUsername] = useState(' '); // Initial username
-  const [newAbout, setnewAbout ]= useState(about); // Initial username
+  const [newAbout, setNewAbout ]= useState(about); // Initial username
   const [isUserEditing, setIsUserEditing] = useState(false);
   const [isAboutEditing, setIsAboutEditing] = useState(false);
   const [newUsername, setNewUsername] = useState(username);
   const [profilePicture, setProfilePicture] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
   const { session } = getUser();
 
   const currentUserId=session.userId;
   const currentUserPhoneNumber=session.phoneNumber;
+
+  // console.log("userid: ",currentUserId)
 
   const formatPhoneNumber = (phoneNumber) => {
     // Remove any non-digit characters
@@ -35,24 +40,25 @@ const ProfileScreen = () => {
     return phoneNumber; 
 };
 
-  useFocusEffect(
-    React.useCallback(() => {
-        const fetchUserData = async () => {
-            try {
-                const userData = await getcurrentUserData(currentUserId);
-                // console.log(userData);
-                setUsername(userData.username);
-                setNewUsername(userData.username);
-                setAbout(userData.about)
-                setnewAbout(userData.about)
-            } catch (error) {
-                console.error("Failed to fetch user data:", error);
-            }
-        };
+useFocusEffect(
+  useCallback(() => {
+      const fetchAndSetUserData = async () => {
+          try {
+              const userData = await getcurrentUserData(currentUserId);
+              console.log("useData in profile: ",userData)
+              setUsername(userData.username);
+              setNewUsername(userData.username);
+              setAbout(userData.about);
+              setNewAbout(userData.about);
+          } catch (error) {
+              console.error("Failed to fetch user data:", error);
+          }
+      };
 
-        fetchUserData();
-    }, [currentUserId])
+      fetchAndSetUserData();
+  }, [currentUserId])
 );
+
 
 useFocusEffect(
   React.useCallback(() => {
@@ -81,8 +87,8 @@ const handleImageSelect = async () => {
 
   const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 3],
+      allowsEditing: false,
+      aspect: [1,1],
       quality: 1,
   });
   console.log('ImagePicker result:', result);
@@ -102,6 +108,10 @@ const handleImageSelect = async () => {
       }
   }
 };
+
+const profilePicReview=()=>{
+  setModalVisible(true)
+}
 
   const handleUsernameEdit = () => {
     setIsUserEditing(true);
@@ -154,12 +164,18 @@ const handleStatusSavePress = async () => {
           <Ionicons name="camera-outline" size={24} color="black" />
         </Pressable>
       </View> */}
-
+      <FullScreenMediaModal
+        visible={modalVisible}
+        mediaUri={profilePicture}
+        mediaType='image'
+        onClose={() => setModalVisible(false)}
+        onRequestClose={() => setModalVisible(false)}
+      />
       <View style={styles.head}>
-        <Pressable onPress={handleImageSelect}>
-            <Image 
+        <Pressable onPress={profilePicReview}>
+            <Image
                 source={profilePicture ? { uri: profilePicture } : { uri: 'https://via.placeholder.com/50' }} 
-                style={styles.headerImage} 
+                style={styles.headerImage}
                 cachePolicy='memory-disk'
                 // resizeMode='cover'
             />

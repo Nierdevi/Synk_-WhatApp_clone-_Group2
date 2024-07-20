@@ -7,7 +7,7 @@ import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
 
 const FullScreenMediaModal = ({ visible, mediaUri, mediaType, messageText, onClose }) => {
   return (
-    <Modal visible={visible} transparent={true} animationType="slide" onRequestClose={onClose}>
+    <Modal visible={visible} transparent={true} animationType="fade" onRequestClose={onClose} >
     {/* {    console.log("selected Text:, ",messageText) } */}
       <StatusBar backgroundColor='black' />
       <View style={styles.container}>
