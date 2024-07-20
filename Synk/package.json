@@ -29,6 +29,7 @@
     "expo-av": "^14.0.6",
     "expo-camera": "^15.0.14",
     "expo-contacts": "~13.0.4",
+    "expo-dev-client": "^4.0.20",
     "expo-file-system": "~17.0.1",
     "expo-image": "~1.12.13",
     "expo-image-picker": "~15.0.7",
