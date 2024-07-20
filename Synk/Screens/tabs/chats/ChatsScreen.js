@@ -120,7 +120,7 @@ const ChatsScreen = ({ navigation }) => {
         throw error;
     }
 };
-
+// console.log("messaged Contacts: ",messagedContacts.chatId)
   const handleContactPress = async (item) => {
     try {
       const recipientPhoneNumber = item.normalizedPhoneNumbers[0];
@@ -165,7 +165,7 @@ const ChatsScreen = ({ navigation }) => {
   );
 
   const hnadleOfficialSite=()=>{
-    Alert.alert("Oops!🤤","Under construction🐽");
+    Alert.alert("Oops!🤤","Under development");
     return
   }
 

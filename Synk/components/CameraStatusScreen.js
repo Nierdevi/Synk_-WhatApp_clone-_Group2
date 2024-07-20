@@ -31,6 +31,10 @@ const CameraStatusScreen = () => {
     getCameraPermission();
   }, []);
 
+  useEffect(() => {
+    console.log(Camera); // Check the Camera object
+  }, []);
+
   if (hasPermission === null) {
     return <View />;
   }
