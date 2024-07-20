@@ -163,8 +163,8 @@ const styles = StyleSheet.create({
   },
   mediaContainer: {
     position: 'relative',
-    width: wp('80%'),
-    height: wp('80%'),
+    width: wp('56%'),
+    height: wp('30%'),
     borderRadius: 10,
     overflow: 'hidden',
     justifyContent: 'center',

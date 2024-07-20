@@ -175,7 +175,7 @@ const ChatsScreen = ({ navigation }) => {
     <View style={styles.container}>
 
     <TouchableOpacity
-        style={styles.contactItem}
+        style={styles.newsContainer}
         onPress={hnadleOfficialSite}
         >
         <Image
@@ -254,9 +254,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     // paddingHorizontal: 9,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f2f2f2',
-    // backgroundColor:'yellow',
+    borderBottomWidth: 2,
+    borderBottomColor: 'black',
+    backgroundColor:'yellow',
   },
   avatarContainer: {
     width: wp('15.5%'),
@@ -308,10 +308,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  contactItem: {
+  newsContainer: {
     padding: 10,
     width: wp("100%"),
     flexDirection: 'row',
+    borderBottomWidth: 1,
+    borderBottomColor: '#737373',
+    paddingBottom:4,
+    marginBottom:20
   },
   appName: {
     fontSize: wp("5%"),
