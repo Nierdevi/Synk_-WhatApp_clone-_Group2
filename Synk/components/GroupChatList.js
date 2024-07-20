@@ -28,7 +28,7 @@ const ChatList = ({ messages, currentUserPhoneNumber }) => {
 
   useEffect(() => {
     const loadUserProfiles = async () => {
-      const profiles = { ...userProfiles };  // Start with existing profiles
+      const profiles = { ...userProfiles };
       for (const message of messages) {
         if (!profiles[message.senderId]) {
           try {
@@ -36,7 +36,7 @@ const ChatList = ({ messages, currentUserPhoneNumber }) => {
             profiles[message.senderId] = { profilePicture: userData.profilePicture, userName: userData.name };
           } catch (error) {
             console.error(`Failed to fetch data for user ${message.senderId}:`, error);
-            profiles[message.senderId] = { profilePicture: '', userName: message.senderId };  // Use phone number if name fetching fails
+            profiles[message.senderId] = { profilePicture: '', userName: message.senderId };
           }
         }
       }
@@ -105,9 +105,9 @@ const ChatList = ({ messages, currentUserPhoneNumber }) => {
                 </>
               ) : null}
               {item.messageText ? (
-                <Text style={styles.messageText}>{item.messageText}</Text>
+                <Text style={styles.messageText}>{item.messageText} </Text>
               ) : null}
-              <Text style={styles.timeText}>{DateTime(item.$createdAt)}</Text>
+              <Text style={styles.timeText}>{DateTime(item.$createdAt)} </Text>
             </View>
           </View>
         </TouchableWithoutFeedback>
@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
   messageContainer: {
     flexDirection: 'row',
     alignItems: 'flex-end',
-    marginBottom: 10,
+    marginBottom: 20,
   },
   currentUserContainer: {
     justifyContent: 'flex-end',
@@ -184,12 +184,14 @@ const styles = StyleSheet.create({
   messageText: {
     fontSize: 16,
     color: 'white',
-    marginTop: 5,
+    // marginTop: 5,
+    marginRight:40
   },
   timeText: {
     color: 'white',
     fontSize: wp('3%'),
     alignSelf: 'flex-end',
+
   },
   media: {
     width: wp("56%"),

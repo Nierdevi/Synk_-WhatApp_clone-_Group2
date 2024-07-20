@@ -17,6 +17,7 @@ import { getUserData } from '../../../backend/userService';
 import RenderMessagedContactItem from '../../../components/renderMessagedContactItem';
 
 Applogo=require('../../../assets/AppLogo.png')
+Verified=require('../../../assets/verified.png')
 
 const useContacts = (session) => {
   const [contacts, setContacts] = useState([]);
@@ -119,7 +120,7 @@ const ChatsScreen = ({ navigation }) => {
         throw error;
     }
 };
-
+// console.log("messaged Contacts: ",messagedContacts.chatId)
   const handleContactPress = async (item) => {
     try {
       const recipientPhoneNumber = item.normalizedPhoneNumbers[0];
@@ -159,12 +160,14 @@ const ChatsScreen = ({ navigation }) => {
   };
 
 
-
-
-
   const filteredContacts = contacts.filter(contact =>
     contact.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const hnadleOfficialSite=()=>{
+    Alert.alert("Oops!🤤","Under development");
+    return
+  }
 
   //main return funtction
 
@@ -172,9 +175,8 @@ const ChatsScreen = ({ navigation }) => {
     <View style={styles.container}>
 
     <TouchableOpacity
-        style={styles.contactItem}
-        onPress={() =>
-            navigation.navigate("ChatRoom")}
+        style={styles.newsContainer}
+        onPress={hnadleOfficialSite}
         >
         <Image
             source={Applogo} 
@@ -184,7 +186,7 @@ const ChatsScreen = ({ navigation }) => {
         <View style={styles.details}>
         <View style={{flexDirection:'row',}}>
           <Text style={styles.appName}>Synk </Text>
-
+          <Image source={Verified} cachePolicy='memory-disk' style={styles.verify} tintColor="#7410d7" />
         </View>
           <Text
               style={styles.gistText}
@@ -245,16 +247,16 @@ const styles = StyleSheet.create({
     // backgroundColor: 'red',
     width:wp('100%'),
     // paddingHorizontal:10,
-    marginTop:20,
+    // marginTop:20,
 
   },
   contactItem: {
     flexDirection: 'row',
     alignItems: 'center',
     // paddingHorizontal: 9,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f2f2f2',
-    // backgroundColor:'yellow',
+    borderBottomWidth: 2,
+    borderBottomColor: 'black',
+    backgroundColor:'yellow',
   },
   avatarContainer: {
     width: wp('15.5%'),
@@ -282,7 +284,9 @@ const styles = StyleSheet.create({
   },
   appName: {
     fontSize: wp('5%'),
-    // fontSize:24
+  },
+  verify:{
+    fontSize: wp('3%'),
   },
   gistText:{
     fontSize: wp('4%'),
@@ -304,13 +308,21 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  contactItem: {
+  newsContainer: {
     padding: 10,
     width: wp("100%"),
     flexDirection: 'row',
+    borderBottomWidth: 1,
+    borderBottomColor: '#737373',
+    paddingBottom:4,
+    marginBottom:20
   },
   appName: {
-    fontSize: 18,
+    fontSize: wp("5%"),
+  },
+  verify:{
+    width: wp('5%'),
+
   },
   avatarContainer: {
     width: 45,

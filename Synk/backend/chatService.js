@@ -297,6 +297,7 @@ const fetchLastMessage = async (chatId) => {
       return null; // Return null if no message found
     }
   } catch (error) {
+    console.error("Failed to fetch last message:", error);
     // handleNetworkError(error);
     return null;
   }

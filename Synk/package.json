@@ -20,12 +20,14 @@
     "@react-navigation/native": "^6.1.17",
     "@react-navigation/stack": "^6.3.29",
     "appwrite": "^15.0.0",
+    "axios": "^1.7.2",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "dayjs": "^1.11.11",
     "expo": "~51.0.21",
     "expo-app-loading": "^1.0.3",
-    "expo-av": "~14.0.6",
+    "expo-av": "^14.0.6",
+    "expo-camera": "^15.0.14",
     "expo-contacts": "~13.0.4",
     "expo-file-system": "~17.0.1",
     "expo-image": "~1.12.13",
@@ -39,6 +41,9 @@
     "react": "18.2.0",
     "react-native": "0.74.3",
     "react-native-elements": "^3.4.3",
+    "react-native-emoji-board": "^1.2.1",
+    "react-native-emoji-picker": "^0.2.2",
+    "react-native-emoji-selector": "^0.2.0",
     "react-native-fs": "^2.20.0",
     "react-native-gesture-handler": "~2.16.1",
     "react-native-image-zoom-viewer": "^3.0.1",
@@ -57,5 +62,41 @@
     "@babel/core": "^7.24.0",
     "react-native-svg-transformer": "^1.4.0"
   },
-  "private": true
+  "private": true,
+  "expo": {
+    "name": "synk",
+    "slug": "synk",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "This app uses the camera to take photos."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "permissions": [
+        "CAMERA"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    }
+  }
 }

@@ -596,3 +596,159 @@ export default GroupChatList;
 260b731b9e807e5b42463dc1d05fee1da556ad5aeac46f559a4dbb164797a130a7d37daa43a6287a92fa3ac59068ec47
 3b36072e37bb10b956a9571e2157e179
 06c7648469946ea2d1c768a6f9277061
+
+
+
+import React, { useEffect, useState } from "react";
+import {
+Alert,
+FlatList,
+Modal,
+Pressable,
+StyleSheet,
+Text,
+TextInput,
+TouchableOpacity,
+View,
+} from "react-native";
+import {
+heightPercentageToDP as hp,
+widthPercentageToDP as wp,
+} from "react-native-responsive-screen";
+import { Entypo, Ionicons } from "@expo/vector-icons";
+import { Image } from "expo-image";
+import { primaryColors } from "../constants/colors";
+import DateTime from "./DateTime";
+import { databases } from "../backend/appwrite";
+import { Query } from "appwrite";
+
+const RenderMessagedContactItem = ({ item, contacts, navigation, session }) => {
+const contact = contacts.find((contact) =>
+    contact.normalizedPhoneNumbers?.includes(item.contactPhoneNumber)
+);
+
+const [profilePicture, setProfilePicture] = useState(require('../assets/Avator.jpg'));
+
+useEffect(() => {
+    const fetchProfilePicture = async () => {
+    if (contact) {
+        try {
+        const response = await databases.listDocuments(
+            "database_id",
+            "users",
+            [Query.equal("phoneNumber", contact.normalizedPhoneNumbers[0])]
+        );
+
+        if (response.documents.length > 0) {
+            const profilePictureUrl = response.documents[0].profilePicture;
+            setProfilePicture(profilePictureUrl);
+
+        userInfo=response.documents[0]
+
+        return userInfo
+        }
+        } catch (error) {
+        console.error("Failed to fetch profile picture:", error);
+        }
+    }
+    };
+
+    fetchProfilePicture();
+}, [contact]);
+
+if (!contact) return null;
+
+
+return (
+    <TouchableOpacity
+    style={styles.contactItem}
+    onPress={() =>
+        navigation.navigate("ChatRoom", {
+        contact,
+        currentUserPhoneNumber: session.phoneNumber,
+        profilePicture
+        })
+    }
+    >
+    <Image
+        source={profilePicture ? { uri: profilePicture } :  require('../assets/Avator.jpg')} 
+        style={styles.profilePicture}
+        cachePolicy="disk"
+    />
+    <View style={styles.contactDetails}>
+        <View style={styles.upperContactdetails}>
+        <Text style={styles.contactName}>{contact.name} </Text>
+        {item.lastMessage && (
+            <Text style={styles.lastMessageTime}>{DateTime(item.lastMessage.$createdAt)}</Text>
+        )}
+        </View>
+        {item.lastMessage && (
+        <Text
+            style={styles.lastMessageText}
+            numberOfLines={1}
+            ellipsizeMode="tail"
+        >
+            {item.lastMessage.messageText}
+        </Text>
+        )}
+    </View>
+    </TouchableOpacity>
+);
+};
+
+const styles = StyleSheet.create({
+container: {
+    flex: 1,
+    // backgroundColor: 'red',
+    width: wp("100%"),
+    // paddingHorizontal:10,
+    marginTop: 20,
+},
+contactItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    // paddingHorizontal: 9,
+    borderBottomWidth: 1,
+    borderBottomColor: "#f2f2f2",
+    // backgroundColor:'yellow',
+    width:wp('100%')
+},
+contactDetails: {
+    justifyContent: "center",
+    gap: 5,
+},
+upperContactdetails: {
+    justifyContent: "space-between",
+    flexDirection: "row",
+    // backgroundColor:'red',
+    width:wp('80%')
+},
+contactName: {
+    fontSize: hp("2.5%"),
+    // backgroundColor:'pink'
+},
+lastMessageText: {
+    fontSize: hp("2%"),
+    color: "gray",
+    width: wp("70%"),
+},
+lastMessageTime:{
+    width:wp('10%')
+},
+contactItem: {
+    padding: 10,
+    width: wp("100%"),
+    flexDirection: "row",
+},
+contactName: {
+    fontSize: 18,
+},
+profilePicture: {
+    width: 55,
+    height: 55,
+    borderRadius: 50,
+    marginRight: 10,
+},
+});
+
+export default RenderMessagedContactItem;
