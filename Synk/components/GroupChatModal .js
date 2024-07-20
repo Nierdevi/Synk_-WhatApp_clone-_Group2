@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, View, Text, FlatList, TouchableOpacity, StyleSheet, TextInput,Image, Alert } from 'react-native';
+import { Modal, View, Text, FlatList, TouchableOpacity, StyleSheet, TextInput,Image, Alert, Pressable } from 'react-native';
+import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import * as ImagePicker from 'expo-image-picker';
 import { CheckBox } from 'react-native-elements'; // Ensure you have installed this package
 import { databases } from '../backend/appwrite';
 import { getUser } from '../constants/userContext';
 import { useContacts } from '../backend/contacts ';
 import { uploadGrpProfile,createGroupChat,createChat } from '../backend/groupServices';
-
+import { MaterialIcons, Ionicons, Feather, FontAwesome6 } from '@expo/vector-icons';
+import { primaryColors } from '../constants/colors';
+import Fab from './fab';
 
 
 const GroupChatModal = ({ visible, onClose, navigation ,close}) => {
@@ -52,7 +55,7 @@ const GroupChatModal = ({ visible, onClose, navigation ,close}) => {
         : [...prevSelected, phoneNumber]
     );
   };
-  console.log("Selected Contacts:", selectedContacts);
+  // console.log("Selected Contacts:", selectedContacts);
 
 
   const handleCreateGroup = async () => {
@@ -65,7 +68,7 @@ const GroupChatModal = ({ visible, onClose, navigation ,close}) => {
       return
     }
 
-
+    // console.log("session: ",session)
     const participants = selectedContacts.map(phoneNumber => {
       const contact = filteredContacts.find(c => c.normalizedPhoneNumbers[0] === phoneNumber);
       // console.log("Found Contact:", contact);
@@ -81,6 +84,7 @@ const GroupChatModal = ({ visible, onClose, navigation ,close}) => {
       console.log("profile url",profilePicUrl)
       try {
         profilePicUrl = await uploadGrpProfile(profilePictureUri);
+        // setProfilePictureUri(profilePicUrl)
       } catch (error) {
         Alert.alert('Error', 'Failed to upload profile picture.');
         return;
@@ -107,6 +111,7 @@ const GroupChatModal = ({ visible, onClose, navigation ,close}) => {
         // Navigate to the chat room
         navigation.navigate('GroupRoom', {
           groupData:response,
+          groupId:response.groupId,
           chatResponse: chatResponse,
           participants: [currentUserPhoneNumber, ...participants],
           currentUserPhoneNumber,
@@ -140,6 +145,7 @@ const GroupChatModal = ({ visible, onClose, navigation ,close}) => {
       const uri = result.assets[0].uri;
       setProfilePictureUri(uri)
       console.log('Image URI:', uri);
+      console.log("state uri: ",profilePictureUri)
     }
   };
 
@@ -148,44 +154,55 @@ const GroupChatModal = ({ visible, onClose, navigation ,close}) => {
       <CheckBox
         checked={selectedContacts.includes(item.normalizedPhoneNumbers[0])}
         onPress={() => toggleContactSelection(item.item.normalizedPhoneNumbers[0])}
+        size={18}
       />
       <Text style={styles.contactName}>{item.name}</Text>
     </TouchableOpacity>
   );
 
+  const GroupCam=require("../assets/group-camera.png")
+
   return (
-    <Modal visible={visible} animationType="slide">
+    <Modal visible={visible} animationType="slide" onRequestClose={close}>
       <View style={styles.container}>
-        <Text style={styles.title}>Create Group</Text>
+        <View style={styles.header}>
+          <Pressable onPress={() => navigation.goBack()}>
+            <Ionicons name="arrow-back" size={24} color="#000" />
+          </Pressable>
+          <Text style={styles.title}>Create a new group</Text>
+        </View>
+
+        <View style={styles.upperContainer}>
+          <TouchableOpacity style={styles.profileContainer} onPress={pickImage}>
+            <Image source={profilePictureUri ? { uri: profilePictureUri }:GroupCam} style={styles.profilePicture} />
+          </TouchableOpacity>
+          <TextInput
+            style={styles.groupNameInput}
+            placeholder="Group Name"
+            value={groupName}
+            onChangeText={setGroupName}
+            selectionColor={primaryColors.purple}
+          />
+        </View>
+
         <TextInput
-          style={styles.input}
-          placeholder="Group Name"
-          value={groupName}
-          onChangeText={setGroupName}
-        />
-        <TextInput
-          style={styles.input}
+          style={styles.descriptionInput}
           placeholder="Description"
           value={description}
           onChangeText={setDescription}
+          selectionColor={primaryColors.purple}
+          multiline
         />
-        <TouchableOpacity onPress={pickImage} style={styles.imagePicker}>
-          <Text style={styles.imagePickerText}>Pick a Profile Picture</Text>
-        </TouchableOpacity>
-        {profilePictureUri ? (
-          <Image source={{ uri: profilePictureUri }} style={styles.profilePicture} />
-        ) : null}
+        <Text style={{fontSize:16,textAlign:'left',marginVertical:10}}>Select contact(s)</Text>
         <FlatList
           data={filteredContacts}
           keyExtractor={(item) => item.id}
           renderItem={renderItem}
         />
-        <TouchableOpacity style={styles.createGroupButton} onPress={handleCreateGroup}>
+        <Fab type="send" handlePress={handleCreateGroup}/>
+        {/* <TouchableOpacity style={styles.createGroupButton} onPress={handleCreateGroup}>
           <Text style={styles.buttonText}>Create Group</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-          <Text style={styles.buttonText}>Close</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
     </Modal>
   );
@@ -202,51 +219,60 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 20,
   },
-  input: {
+  descriptionInput: {
     borderBottomWidth: 1,
-    borderColor: '#ccc',
-    marginBottom: 20,
+    borderColor: primaryColors.purple,
+    marginTop:15,
     padding: 10,
     fontSize: 16,
+  },
+  header:{
+    flexDirection:'row',
+    gap:5
+  },
+  upperContainer:{
+    flexDirection:'row',
+    alignItems:'center',
+    gap:20
+  },
+  profileContainer:{
+    width: 60,
+    height:60,
+    borderRadius:50,
+    borderWidth:1,
+    alignItems:'center',
+    justifyContent:'center'
+  },
+  groupNameInput:{
+    borderBottomWidth: 1,
+    borderColor: primaryColors.purple,
+    padding: 10,
+    fontSize: 16,
+    flex:1
+
   },
   contactItem: {
     flexDirection: 'row',
     alignItems: 'center',
     padding: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+    // gap:7
+    // borderBottomWidth: 1,
+    // borderBottomColor: '#ccc',
   },
   contactName: {
-    fontSize: 16,
+    fontSize: 20,
     marginLeft: 10,
-  },
-  imagePicker: {
-    backgroundColor: '#007bff',
-    padding: 10,
-    marginBottom: 20,
-    alignItems: 'center',
-  },
-  imagePickerText: {
-    color: 'white',
-    fontSize: 16,
+    fontWeight:'300'
   },
   profilePicture: {
-    width: 100,
-    height: 100,
+    width: 60,
+    height: 60,
     borderRadius: 50,
-    alignSelf: 'center',
-    marginBottom: 20,
   },
   createGroupButton: {
     marginTop: 20,
     padding: 15,
     backgroundColor: '#007bff',
-    alignItems: 'center',
-    borderRadius: 5,
-  },
-  closeButton: {
-    marginTop: 10,
-    padding: 15,
     alignItems: 'center',
     borderRadius: 5,
   },

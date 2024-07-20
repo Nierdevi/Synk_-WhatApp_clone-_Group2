@@ -5,7 +5,7 @@ import { Alert } from 'react-native';
 const handleNetworkError = (error) => {
   console.error(error);
   if (error.message.includes('Network request failed')) {
-    Alert.alert('Network Error', 'Please check your network connection and try again.');
+    // Alert.alert('Network Error', 'Please check your network connection and try again.');
   }
 };
 
@@ -168,7 +168,7 @@ const fetchMessages = async (chatId) => {
 
     return response.documents;
   } catch (error) {
-    handleNetworkError(error);
+    // handleNetworkError(error);
     return [];
   }
 };
@@ -230,7 +230,7 @@ const fetchUserMessages = async (userPhoneNumber) => {
     );
     return response.documents;
   } catch (error) {
-    handleNetworkError(error);
+    // handleNetworkError(error);
     return [];
   }
 };

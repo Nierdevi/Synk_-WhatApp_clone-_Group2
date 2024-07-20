@@ -7,6 +7,7 @@ import { Feather } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
 import { PopupMenu } from '../../components/PopupMenu';
 import { useTheme } from '../../constants/themeContext';
+import { useNavigation } from '@react-navigation/native'; // Import useNavigation hook
 
 
 const isIOS = Platform.OS === 'ios';
@@ -17,12 +18,18 @@ export default function GroupHeader() {
     const insets = useSafeAreaInsets();
     const [menuVisible, setMenuVisible] = useState(false);
     //   console.log('Safe area insets:', insets);
+    const navigation = useNavigation(); // Access the navigation object
+
 
     const menuItems = [
-        { label: 'Clear call logs', onPress: () => {} },
-        { label: 'Settings', onPress: () => {} },
+        { label: 'Settings', onPress: () => {handleNavigateToSettings} },
         { label: 'Switch accounts', onPress: () => {} },
     ];
+
+    const handleNavigateToSettings = () => {
+      navigation.navigate('SettingsScreen'); // Navigate to SettingsScreen
+      setMenuVisible(false); // Close the popup menu after navigation
+    };
 
     return (
         <View style={[{ paddingTop: isIOS ? insets.top : insets.top + 10 }, styles.container,{backgroundColor:theme === 'dark' ?  primaryColors.black : primaryColors.white}]}>

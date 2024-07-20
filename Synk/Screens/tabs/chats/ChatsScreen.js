@@ -33,7 +33,7 @@ const useContacts = (session) => {
       } catch (error) {
         console.error('Failed to fetch contacts:', error);
         if (error.message.includes('Network request failed')) {
-          Alert.alert('Network Error', 'Please check your network connection and try again.');
+          // Alert.alert('Network Error', 'Please check your network connection and try again.');
         }
       }
     };
@@ -62,13 +62,13 @@ const useMessagedContacts = (session) => {
       } catch (error) {
         console.error('Failed to fetch messaged contacts:', error);
         if (error.message.includes('Network request failed')) {
-          Alert.alert('Network Error', 'Please check your network connection and try again.');
+          // Alert.alert('Network Error', 'Please check your network connection and try again.');
         }
       }
     };
 
     fetchMessagedContactsData();
-    const intervalId = setInterval(fetchMessagedContactsData, 1000); // 1000ms = 1 seconds
+    const intervalId = setInterval(fetchMessagedContactsData, 3000); // 1000ms = 1 seconds
 
     // Clean up interval on component unmount
     return () => clearInterval(intervalId);
@@ -253,10 +253,8 @@ const styles = StyleSheet.create({
   contactItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    // paddingHorizontal: 9,
-    borderBottomWidth: 2,
-    borderBottomColor: 'black',
-    backgroundColor:'yellow',
+    paddingHorizontal: 9,
+    marginBottom:20
   },
   avatarContainer: {
     width: wp('15.5%'),
