@@ -1,4 +1,5 @@
 import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 import moment from 'moment';
 import React, { useEffect, useRef, useState } from 'react';
 import { Alert, Image, Linking, ScrollView, Share, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -8,6 +9,7 @@ import { primaryColors } from '../../../constants/colors';
 
 const ChannelDetails = ({ route }) => {
     const { channel } = route.params;
+    const navigation = useNavigation();
     const [menuVisible, setMenuVisible] = useState(false);
     const [articles, setArticles] = useState([]);
     const [articleReactions, setArticleReactions] = useState({});
@@ -28,7 +30,8 @@ const ChannelDetails = ({ route }) => {
                 const data = await response.json();
 
                 const reactionsMap = data.results.reduce((acc, item) => {
-                    const randomReactions = Array.from({ length: Math.floor(Math.random() * 10) + 1 }, () => reactions[Math.floor(Math.random() * reactions.length)]);
+                    const shuffledReactions = [...reactions].sort(() => 0.5 - Math.random());
+                    const randomReactions = shuffledReactions.slice(0, Math.floor(Math.random() * reactions.length) + 1);
                     acc[item.url] = randomReactions;
                     return acc;
                 }, {});
@@ -60,7 +63,15 @@ const ChannelDetails = ({ route }) => {
         <Provider>
             <View style={styles.container}>
                 <View style={styles.topSection}>
-                    <Image source={{ uri: channel.img }} style={styles.channelImg} />
+                    <View style={styles.profilePictureContainer}>
+                        <Image source={{ uri: channel.img }} style={styles.channelImg} />
+                        <TouchableOpacity
+                            onPress={() => navigation.goBack()}
+                            style={styles.backIconContainer}
+                        >
+                            <Ionicons name="arrow-back" size={24} color="white" />
+                        </TouchableOpacity>
+                    </View>
                     <View style={styles.channelInfo}>
                         <Text style={styles.channelName}>{channel.name}</Text>
                         {channel.verified && (
@@ -82,7 +93,7 @@ const ChannelDetails = ({ route }) => {
                                 </TouchableOpacity>
                             }
                         >
-                            <Menu.Item onPress={() => {}} title="Channel Info" />
+                            <Menu.Item onPress={() => navigation.navigate('ChannelInfo')} title="Channel Info"/>
                             <Menu.Item onPress={() => {}} title="Unfollow" />
                             <Menu.Item onPress={() => {}} title="Share" />
                             <Menu.Item onPress={() => {}} title="Report" />
@@ -147,10 +158,21 @@ const styles = StyleSheet.create({
         width: '100%',
         marginBottom: 20,
     },
+    profilePictureContainer: {
+        position: 'relative',
+    },
     channelImg: {
         width: 50,
         height: 50,
         borderRadius: 25,
+    },
+    backIconContainer: {
+        position: 'absolute',
+        top: 5,
+        left: 5,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        borderRadius: 50,
+        padding: 5,
     },
     channelInfo: {
         flexDirection: 'column',
@@ -159,7 +181,7 @@ const styles = StyleSheet.create({
         marginLeft: 10,
     },
     channelName: {
-        fontSize: 20,
+        fontSize: 16,
         fontWeight: 'bold',
         marginRight: 5,
     },
