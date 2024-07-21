@@ -1,19 +1,6 @@
 import React, { useEffect, useState } from "react";
-import {
-Alert,
-FlatList,
-Modal,
-Pressable,
-StyleSheet,
-Text,
-TextInput,
-TouchableOpacity,
-View,
-} from "react-native";
-import {
-heightPercentageToDP as hp,
-widthPercentageToDP as wp,
-} from "react-native-responsive-screen";
+import {StyleSheet, Text, TouchableOpacity, View,} from "react-native";
+import {heightPercentageToDP as hp,widthPercentageToDP as wp,} from "react-native-responsive-screen";
 import { Entypo, Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { primaryColors } from "../constants/colors";
@@ -22,132 +9,159 @@ import { databases } from "../backend/appwrite";
 import { Query } from "appwrite";
 
 const RenderMessagedContactItem = ({ item, contacts, navigation, session }) => {
-const contact = contacts.find((contact) =>
+  const contact = contacts.find((contact) =>
     contact.normalizedPhoneNumbers?.includes(item.contactPhoneNumber)
-);
+  );
 
-const [profilePicture, setProfilePicture] = useState(require('../assets/Avator.jpg'));
+  const [profilePicture, setProfilePicture] = useState(require("../assets/Avator.jpg"));
 
-useEffect(() => {
+  useEffect(() => {
     const fetchProfilePicture = async () => {
-    if (contact) {
+      if (contact) {
         try {
-        const response = await databases.listDocuments(
+          const response = await databases.listDocuments(
             "database_id",
             "users",
             [Query.equal("phoneNumber", contact.normalizedPhoneNumbers[0])]
-        );
+          );
 
-        if (response.documents.length > 0) {
+          if (response.documents.length > 0) {
             const profilePictureUrl = response.documents[0].profilePicture;
             setProfilePicture(profilePictureUrl);
 
-        userInfo=response.documents[0]
+            const userInfo = response.documents[0];
 
-        return userInfo
-        }
+            return userInfo;
+          }
         } catch (error) {
-        console.error("Failed to fetch profile picture:", error);
+          console.error("Failed to fetch profile picture:", error);
         }
-    }
+      }
     };
 
     fetchProfilePicture();
-}, [contact]);
+  }, [contact]);
 
-if (!contact) return null;
+  if (!contact) return null;
 
+  const renderLastMessage = () => {
+    if (!item.lastMessage) return null;
 
-return (
-    <TouchableOpacity
-    style={styles.contactItem}
-    onPress={() =>
-        navigation.navigate("ChatRoom", {
-        contact,
-        currentUserPhoneNumber: session.phoneNumber,
-        profilePicture
-        })
+    const isCurrentUser = item.lastMessage.senderId === session.phoneNumber;
+    const prefix = isCurrentUser ? "You: " : "";
+
+    if (item.lastMessage.type === "text") {
+      return `${prefix}${item.lastMessage.messageText}`;
+    } else if (item.lastMessage.type === "image") {
+      return (
+        <View style={styles.mediaContainer}>
+          <Text style={{fontSize: wp("4%"),color:'gray'}}>{prefix}Image </Text>
+          <Ionicons name="image-outline" size={20} color="gray" />
+        </View>
+      );
+    } else if (item.lastMessage.type === "video") {
+      return (
+        <View style={styles.mediaContainer}>
+          <Text> style={{fontSize: wp("4%"),color:'gray'}}{prefix}Video </Text>
+          <Ionicons name="videocam-outline" size={20} color="gray" />
+        </View>
+      );
     }
+
+    return null;
+  };
+
+  return (
+    <TouchableOpacity
+      style={styles.contactItem}
+      onPress={() =>
+        navigation.navigate("ChatRoom", {
+          contact,
+          currentUserPhoneNumber: session.phoneNumber,
+          profilePicture,
+        })
+      }
     >
-    <Image
-        source={profilePicture ? { uri: profilePicture } :  require('../assets/Avator.jpg')} 
+      <Image
+        source={
+          profilePicture
+            ? { uri: profilePicture }
+            : require("../assets/Avator.jpg")
+        }
         style={styles.profilePicture}
         cachePolicy="disk"
-    />
-    <View style={styles.contactDetails}>
+      />
+      <View style={styles.contactDetails}>
         <View style={styles.upperContactdetails}>
-        <Text style={styles.contactName}>{contact.name} </Text>
-        {item.lastMessage && (
-            <Text style={styles.lastMessageTime}>{DateTime(item.lastMessage.$createdAt)}</Text>
-        )}
+          <Text style={styles.contactName}>{contact.name} </Text>
+          {item.lastMessage && (
+            <Text style={styles.lastMessageTime}>
+              {DateTime(item.lastMessage.$createdAt)}
+            </Text>
+          )}
         </View>
         {item.lastMessage && (
-        <Text
+          <Text
             style={styles.lastMessageText}
             numberOfLines={1}
             ellipsizeMode="tail"
-        >
-            {item.lastMessage.messageText}
-        </Text>
+          >
+            {renderLastMessage()}
+          </Text>
         )}
-    </View>
+      </View>
     </TouchableOpacity>
-);
+  );
 };
 
 const styles = StyleSheet.create({
-container: {
+  container: {
     flex: 1,
-    // backgroundColor: 'red',
     width: wp("100%"),
-    // paddingHorizontal:10,
     marginTop: 20,
-},
-contactItem: {
+  },
+  contactItem: {
     flexDirection: "row",
     alignItems: "center",
-    // paddingHorizontal: 9,
     borderBottomWidth: 1,
     borderBottomColor: "#f2f2f2",
-    // backgroundColor:'yellow',
-    width:wp('100%')
-},
-contactDetails: {
+    width: wp("100%"),
+    paddingHorizontal:15
+  },
+  contactDetails: {
     justifyContent: "center",
     gap: 5,
-},
-upperContactdetails: {
+  },
+  upperContactdetails: {
     justifyContent: "space-between",
     flexDirection: "row",
-    // backgroundColor:'red',
-    width:wp('80%')
-},
-contactName: {
+    width: wp("80%"),
+  },
+  contactName: {
     fontSize: hp("2.5%"),
-    // backgroundColor:'pink'
-},
-lastMessageText: {
-    fontSize: hp("2%"),
+  },
+  lastMessageText: {
+    fontSize: wp("4%"),
     color: "gray",
     width: wp("70%"),
-},
-lastMessageTime:{
-    width:wp('10%')
-},
-contactItem: {
-    padding: 10,
-    width: wp("100%"),
-    flexDirection: "row",
-},
-contactName: {
-    fontSize: 18,
-},
-profilePicture: {
+  },
+  lastMessageTime: {
+    width: wp("10%"),
+  },
+  profilePicture: {
     width: 55,
     height: 55,
     borderRadius: 50,
     marginRight: 10,
-},
+  },
+  mediaContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    fontSize:10,
+  },
+  mediaIcon: {
+    marginLeft: 5,
+  },
 });
 
 export default RenderMessagedContactItem;

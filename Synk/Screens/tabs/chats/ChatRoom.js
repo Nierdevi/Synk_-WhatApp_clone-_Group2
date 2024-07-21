@@ -122,6 +122,28 @@ useFocusEffect(
     // return () => clearInterval(intervalId);
   }, [currentUserPhoneNumber, recipientPhoneNumber, isFocused]);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      const existingChat = await getExistingChat(currentUserPhoneNumber, recipientPhoneNumber);
+      if (existingChat) {
+        const chatId = existingChat.$id;
+        const fetchedMessages = await fetchMessages(chatId);
+        const sortedMessages = fetchedMessages.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+        setMessages(sortedMessages);
+        try {
+          const lastMessageData = await fetchLastMessage(chatId);
+          setLastMessage(lastMessageData);
+        } catch (error) {
+          console.error('Failed to fetch last message:', error);
+        }
+      }
+    };
+
+    const intervalId = setInterval(fetchData, 1000); // Fetch messages every 3 seconds
+
+    return () => clearInterval(intervalId); // Clean up the interval on component unmount
+  }, [currentUserPhoneNumber, recipientPhoneNumber]);
+
   // const handleSendMessage = async (messageText) => {
   //   if (messageText.trim()) {
   //     const response = await sendMessage(currentUserPhoneNumber, recipientPhoneNumber, messageText);

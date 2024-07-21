@@ -3,19 +3,86 @@ import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native
 import { Image } from 'expo-image';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import DateTime from './DateTime';
-import { fetchUserGroups } from '../backend/groupServices';
+import { fetchUserGroupsWithLastMessages } from '../backend/groupServices';
+import { Ionicons } from '@expo/vector-icons';
+// import { subscribeToGroupMessages } from '../backend/realTimeServices'; // Ensure correct import
+import { useIsFocused } from '@react-navigation/native';
+import { subscribeToGroupMessages } from '../backend/realtimeService';
+
 
 const RenderGroupsIn = ({ navigation, session }) => {
   const [groups, setGroups] = useState([]);
+  const isFocused = useIsFocused();
 
   useEffect(() => {
     const loadUserGroups = async () => {
-      const userGroups = await fetchUserGroups(session.phoneNumber);
-    //   console.log("User group info:", userGroups.groupId);
+      const userGroups = await fetchUserGroupsWithLastMessages(session.phoneNumber);
       setGroups(userGroups);
+
+      // Subscribe to each group's messages
+      userGroups.forEach(group => {
+        subscribeToGroupMessages(group.groupId, newMessage => {
+          handleNewMessage(newMessage);
+        });
+      });
     };
-    loadUserGroups();
-  }, [session.phoneNumber]);
+
+
+      loadUserGroups();
+      const intervalId = setInterval(loadUserGroups, 3000); // 1000ms = 1 seconds
+
+      // Clean up interval on component unmount
+      return () => clearInterval(intervalId);
+  }, [session.phoneNumber, isFocused]);
+
+  const handleNewMessage = (newMessage) => {
+    console.log('New message received:', newMessage); // Debugging line
+    setGroups(prevGroups => {
+      const updatedGroups = prevGroups.map(group => {
+        if (group.groupId === newMessage.groupId) {
+          return { ...group, lastMessage: newMessage };
+        }
+        return group;
+      });
+
+      // Re-sort groups by the latest message time
+      updatedGroups.sort((a, b) => {
+        const aTime = a.lastMessage?.createdAt || 0;
+        const bTime = b.lastMessage?.createdAt || 0;
+        return new Date(bTime) - new Date(aTime);
+      });
+
+      return updatedGroups;
+    });
+  };
+
+  const renderLastMessage = (lastMessage) => {
+    if (!lastMessage) return null;
+
+    const isCurrentUser = lastMessage.senderId === session.phoneNumber;
+    const prefix = isCurrentUser ? "You: " : "";
+
+    switch (lastMessage.type) {
+      case 'text':
+        return `${prefix}${lastMessage.messageText}`;
+      case 'image':
+        return (
+          <View style={styles.mediaContainer}>
+            <Text style={{fontSize: wp("4%"),color:'gray'}}>{prefix}Image </Text>
+            <Ionicons name="image-outline" size={20} color="gray" />
+          </View>
+        );
+      case 'video':
+        return (
+          <View style={styles.mediaContainer}>
+            <Text  style={{fontSize: wp("4%"),color:'gray'}}>{prefix}Video </Text>
+            <Ionicons name="videocam-outline" size={20} color="gray" />
+          </View>
+        );
+      default:
+        return null;
+    }
+  };
 
   const renderGroupItem = ({ item }) => {
     const displayName = item.groupName || "Group Chat";
@@ -36,25 +103,25 @@ const RenderGroupsIn = ({ navigation, session }) => {
         }
       >
         <Image
-          source={profilePicture }
+          source={profilePicture}
           style={styles.profilePicture}
           cachePolicy="disk"
         />
         <View style={styles.contactDetails}>
           <View style={styles.upperContactdetails}>
-            <Text style={styles.contactName}>{displayName}</Text>
+            <Text style={styles.contactName}>{displayName} </Text>
             {lastMessage.createdAt && (
-              <Text style={styles.lastMessageTime}>{DateTime(lastMessage.createdAt)}</Text>
+              <Text style={styles.lastMessageTime}>{DateTime(lastMessage.createdAt)} </Text>
             )}
           </View>
-          {lastMessage.messageText && (
+          {lastMessage && (
             <Text
               style={styles.lastMessageText}
               numberOfLines={1}
               ellipsizeMode="tail"
             >
-              {lastMessage.messageText}
-            </Text>
+              {renderLastMessage(lastMessage)} 
+              </Text>
           )}
         </View>
       </TouchableOpacity>
@@ -112,6 +179,10 @@ const styles = StyleSheet.create({
     height: hp("6.5%"),
     borderRadius: 50,
     marginRight: 10,
+  },
+  mediaContainer: {
+    flexDirection: "row",
+    alignItems: "center",
   },
 });
 

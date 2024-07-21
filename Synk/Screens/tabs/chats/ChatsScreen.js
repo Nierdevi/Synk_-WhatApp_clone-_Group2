@@ -31,7 +31,7 @@ const useContacts = (session) => {
       } catch (error) {
         console.error('Failed to fetch contacts:', error);
         if (error.message.includes('Network request failed')) {
-          Alert.alert('Network Error', 'Please check your network connection and try again.');
+          // Alert.alert('Network Error', 'Please check your network connection and try again.');
         }
       }
     };
@@ -60,13 +60,13 @@ const useMessagedContacts = (session) => {
       } catch (error) {
         console.error('Failed to fetch messaged contacts:', error);
         if (error.message.includes('Network request failed')) {
-          Alert.alert('Network Error', 'Please check your network connection and try again.');
+          // Alert.alert('Network Error', 'Please check your network connection and try again.');
         }
       }
     };
 
     fetchMessagedContactsData();
-    const intervalId = setInterval(fetchMessagedContactsData, 1000); // 1000ms = 1 seconds
+    const intervalId = setInterval(fetchMessagedContactsData, 3000); // 1000ms = 1 seconds
 
     // Clean up interval on component unmount
     return () => clearInterval(intervalId);
@@ -118,7 +118,7 @@ const ChatsScreen = ({ navigation }) => {
         throw error;
     }
 };
-
+// console.log("messaged Contacts: ",messagedContacts.chatId)
   const handleContactPress = async (item) => {
     try {
       const recipientPhoneNumber = item.normalizedPhoneNumbers[0];
@@ -163,7 +163,7 @@ const ChatsScreen = ({ navigation }) => {
   );
 
   const hnadleOfficialSite=()=>{
-    Alert.alert("Oops!🤤","Under construction🐽");
+    Alert.alert("Oops!🤤","Under development");
     return
   }
 
@@ -173,7 +173,7 @@ const ChatsScreen = ({ navigation }) => {
     <View style={styles.container}>
 
     <TouchableOpacity
-        style={styles.contactItem}
+        style={styles.newsContainer}
         onPress={hnadleOfficialSite}
         >
         <Image
@@ -251,10 +251,8 @@ const styles = StyleSheet.create({
   contactItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    // paddingHorizontal: 9,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f2f2f2',
-    // backgroundColor:'yellow',
+    paddingHorizontal: 9,
+    marginBottom:20
   },
   avatarContainer: {
     width: wp('15.5%'),
@@ -306,10 +304,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  contactItem: {
+  newsContainer: {
     padding: 10,
     width: wp("100%"),
     flexDirection: 'row',
+    borderBottomWidth: 1,
+    borderBottomColor: '#737373',
+    paddingBottom:4,
+    marginBottom:20
   },
   appName: {
     fontSize: wp("5%"),

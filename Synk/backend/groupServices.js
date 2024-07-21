@@ -91,7 +91,7 @@ const fetchUserGroups = async (currentUserPhoneNumber) => {
       'groups', // Replace with your groupChats collection ID
       [
         Query.equal('participants', currentUserPhoneNumber),
-        // Query.orderAsc(`${response.$updatedAt}`)
+        Query.orderDesc('createdAt')
 
       ]
     );
@@ -193,6 +193,7 @@ const sendGroupMessage = async (groupId, senderId, participants, messageText = '
       }
     );
 
+
     return response;
   } catch (error) {
     console.log(error);
@@ -202,4 +203,55 @@ const sendGroupMessage = async (groupId, senderId, participants, messageText = '
 
 
 
-export { createGroupChat, uploadGrpProfile, createChat, fetchUserGroups,fetchGroupMessages,sendGroupMessage };
+const fetchUserGroupsWithLastMessages = async (phoneNumber) => {
+  try {
+    // Fetch the user's groups from the groups collection
+    const response = await databases.listDocuments('database_id', 'groups', [
+      Query.equal('participants', phoneNumber),
+      Query.orderDesc('createdAt'),
+    ]);
+
+    const groups = response.documents;
+
+    // Fetch the last messages for each group from the g_chats collection
+    const groupsWithLastMessages = await fetchLastMessagesForGroups(groups);
+
+    return groupsWithLastMessages;
+  } catch (error) {
+    console.error('Error fetching user groups:', error);
+    return [];
+  }
+};
+
+const fetchLastMessagesForGroups = async (groups) => {
+  try {
+    const groupLastMessages = await Promise.all(
+      groups.map(async (group) => {
+        try {
+          const lastMessageResponse = await databases.listDocuments('database_id', 'g_chats', [
+            Query.equal('groupId', group.groupId),
+            Query.orderDesc('createdAt'),
+            Query.limit(1),
+          ]);
+
+          const lastMessage = lastMessageResponse.documents[0] || null;
+
+          return { ...group, lastMessage };
+        } catch (error) {
+          console.error('Error fetching last message for group:', group.groupId, error);
+          return { ...group, lastMessage: null };
+        }
+      })
+    );
+
+    return groupLastMessages;
+  } catch (error) {
+    console.error('Error fetching last messages for groups:', error);
+    return groups.map(group => ({ ...group, lastMessage: null }));
+  }
+};
+
+
+
+
+export { createGroupChat, uploadGrpProfile, createChat, fetchUserGroups,fetchGroupMessages,sendGroupMessage, fetchUserGroupsWithLastMessages};

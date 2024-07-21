@@ -54,12 +54,6 @@ const ChatRoom = ({ route, navigation }) => {
       ),
       headerRight: () => (
         <View style={styles.headerRight}>
-          <TouchableOpacity style={styles.iconButton}>
-            <MaterialIcons name="call" size={24} color="black" />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.iconButton}>
-            <Feather name="video" size={24} color="black" />
-          </TouchableOpacity>
           <TouchableOpacity style={styles.iconButton} onPress={() => { setMenuVisible(true) }}>
             <MaterialIcons name="more-vert" size={24} color="black" />
           </TouchableOpacity>
@@ -154,10 +148,8 @@ const styles = StyleSheet.create({
   headerRight: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
     flex: 1,
     marginHorizontal: 15,
-    width: wp('25%')
   },
   usenameContainer: {
     flex: 1,

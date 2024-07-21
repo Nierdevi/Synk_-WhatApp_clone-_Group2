@@ -1,7 +1,7 @@
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import React from 'react';
-import CameraStatusScreen from '../../../components/CameraStatusScreen';
+import CameraComponent from '../../../components/CameraComponent';
 import { useTheme } from '../../../constants/themeContext';
 import SettingsScreen from '../Settings/SettingsScreen';
 import ChannelsScreen from './ChannelDetails';
@@ -66,15 +66,15 @@ const UpdatesStackNavigator = ({ navigation, route }) => {
           headerShown: false,
         }} 
       />
-      <ChatsStack.Screen 
+      {/* <ChatsStack.Screen 
         name="CameraStatus" 
-        component={CameraStatusScreen} 
+        component={CameraComponent} 
         options={{ 
           headerShown: false,
+          headerTitle: '', // Remove the title by setting it to an empty string
+          headerLeft: () => null, // Remove the back arrow icon
         }} 
-      />
-      <ChatsStack.Screen name="SettingsScreen" component={SettingsScreen} options={{ headerShown: false }} />
-
+      /> */}
     </ChatsStack.Navigator>
   );
 };
