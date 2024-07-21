@@ -6,6 +6,10 @@ import * as FileSystem from 'expo-file-system';
 import * as ImagePicker from 'expo-image-picker';
 import { MaterialIcons, MaterialCommunityIcons  } from '@expo/vector-icons';
 import { primaryColors } from '../constants/colors';
+import ImageEditingComponent from './ImageEditingComponent';
+
+
+
 
 const CameraComponent = ({ isVisible, onClose }) => {
   const [hasPermission, setHasPermission] = useState(null);
@@ -14,6 +18,7 @@ const CameraComponent = ({ isVisible, onClose }) => {
   const [flash, setFlash] = useState('off');
   const [isRecording, setIsRecording] = useState(false);
   const [recordTime, setRecordTime] = useState(0);
+  const [editingVisible, setEditingVisible] = useState(false);
   const cameraRef = useRef(null);
   const timerRef = useRef(null);
 
@@ -244,7 +249,7 @@ const styles = StyleSheet.create({
     // textDecorationLine: 'underline',
   },
   selectedModeBackground:{
-    backgroundColor:primaryColors.purple,
+    backgroundColor:'#111827',
     paddingHorizontal:7,
     paddingVerticalL:10,
     borderRadius:20
