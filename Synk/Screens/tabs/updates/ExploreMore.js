@@ -24,6 +24,7 @@ const ExploreMore = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [searchExpanded, setSearchExpanded] = useState(false);
 
   const countries = [
     'Afghanistan', 'Albania', 'Algeria', 'Andorra', 'Angola', 'Antigua and Barbuda',
@@ -146,6 +147,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'white',
     padding: 10,
+    marginTop: 40,
   },
   titleContainer: {
     flexDirection: 'row',
