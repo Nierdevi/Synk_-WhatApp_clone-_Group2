@@ -16,16 +16,19 @@ const DefaultProfileImg = () => (
     </View>
 );
 
+
 const UpdatesScreen = ({ navigation }) => {
     const [statuses, setStatuses] = useState([
         { id: 1, user: 'Synk', img: 'https://via.placeholder.com/50', total: 3, viewed: 1 }
     ]);
+    Applogo=require('../../../assets/AppLogo.png')
+    console.log(Applogo)
 
     const [channels, setChannels] = useState([]);
     const [followedChannels, setFollowedChannels] = useState([]);
 
     const suggestedChannels = [
-        { id: 3, name: 'Synk', img: '', followers: '6.7k followers' },
+        { id: 3, name: 'Synk', img: Applogo, followers: '6.7k followers' },
         { id: 4, name: 'CNN', img: 'https://upload.wikimedia.org/wikipedia/commons/f/fb/Cnn_logo_red_background.png', followers: '3.2k followers' },
         { id: 5, name: 'BBC News', img: 'https://www.newscaststudio.com/wp-content/uploads/2024/03/bbc-news-logo-new-1536x867.jpg', followers: '900 followers' },
         { id: 6, name: 'TechCrunch', img: 'https://cdn.prod.website-files.com/60d07e2eecb304cb4350b53f/6630b429cd796ca047a8079d_techcrunch_logo.png', followers: '1.5k followers' },
