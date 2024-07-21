@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { View, Image, TouchableOpacity, Text, StyleSheet, Modal, TextInput } from 'react-native';
+import { View, Text, StyleSheet, Modal, TextInput, TouchableOpacity, Image, Alert } from 'react-native';
 import { CropView } from 'react-native-image-crop-tools';
 import { SketchCanvas } from '@terrylinla/react-native-sketch-canvas';
 
@@ -7,11 +7,13 @@ const ImageEditingComponent = ({ isVisible, imageUri, onClose, onSave }) => {
   const [currentMode, setCurrentMode] = useState('crop');
   const [textInput, setTextInput] = useState('');
   const [texts, setTexts] = useState([]);
-  const cropViewRef = useRef(null);
+  const [editedImageUri, setEditedImageUri] = useState(imageUri);
+  const [cropVisible, setCropVisible] = useState(false);
+  const canvasRef = useRef(null);
 
   const handleSave = () => {
     // Save the edited image (implementation depends on your app's requirements)
-    onSave(imageUri);
+    onSave(editedImageUri);
   };
 
   const handleTextAdd = () => {
@@ -19,6 +21,15 @@ const ImageEditingComponent = ({ isVisible, imageUri, onClose, onSave }) => {
       setTexts([...texts, textInput]);
       setTextInput('');
     }
+  };
+
+  const handleCrop = () => {
+    setCropVisible(true);
+  };
+
+  const onCropComplete = (croppedImageUri) => {
+    setEditedImageUri(croppedImageUri);
+    setCropVisible(false);
   };
 
   return (
@@ -33,18 +44,29 @@ const ImageEditingComponent = ({ isVisible, imageUri, onClose, onSave }) => {
           </TouchableOpacity>
         </View>
         {currentMode === 'crop' ? (
-          <CropView
-            sourceUrl={imageUri}
-            style={styles.image}
-            ref={cropViewRef}
-            onImageCrop={(res) => console.log(res)}
-          />
+          <>
+            <View style={styles.imageContainer}>
+              <Image source={{ uri: editedImageUri }} style={styles.image} />
+            </View>
+            <TouchableOpacity style={styles.cropButton} onPress={handleCrop}>
+              <Text style={styles.cropButtonText}>Crop Image</Text>
+            </TouchableOpacity>
+            {cropVisible && (
+              <CropView
+                sourceUrl={editedImageUri}
+                style={styles.cropView}
+                ref={(ref) => { this.cropViewRef = ref; }}
+                onImageCrop={onCropComplete}
+              />
+            )}
+          </>
         ) : (
           <SketchCanvas
+            ref={canvasRef}
             style={styles.canvas}
             strokeColor={'black'}
             strokeWidth={7}
-            localSourceImage={{ filename: imageUri, mode: 'AspectFill' }}
+            localSourceImage={{ filename: editedImageUri, mode: 'AspectFill' }}
           />
         )}
         <View style={styles.bottomBar}>
@@ -86,9 +108,32 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 18,
   },
-  image: {
+  imageContainer: {
     flex: 1,
-    backgroundColor: 'black',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  image: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'contain',
+  },
+  cropButton: {
+    marginTop: 10,
+    backgroundColor: 'white',
+    padding: 10,
+    borderRadius: 5,
+  },
+  cropButtonText: {
+    color: 'black',
+    fontSize: 16,
+  },
+  cropView: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
   },
   canvas: {
     flex: 1,
