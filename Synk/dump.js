@@ -784,8 +784,8 @@ const CameraStatusScreen = () => {
   //   );
   // };
 
-  function flipCamera() {
-    setType(current => (current === 'back' ? 'front' : 'back'));
+  function toggleCameraFacing() {
+    setFacing(current => (current === 'back' ? 'front' : 'back'));
   }
 
   const getCameraPermission = async () => {
@@ -825,4 +825,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CameraStatusScreen;
+export default CameraComponent;

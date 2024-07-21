@@ -24,7 +24,7 @@
       "permissions": [
         "INTERNET",
         "ACCESS_NETWORK_STATE",
-        ["CAMERA", "RECORD_AUDIO"]
+        "CAMERA", "RECORD_AUDIO"
       ]
     },
     "web": {
