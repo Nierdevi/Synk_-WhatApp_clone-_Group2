@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { View, Text, StyleSheet, Modal, TextInput, TouchableOpacity, Image, Alert } from 'react-native';
 import ImageDraw from 'react-native-image-draw';
 import ImageCropPicker from 'react-native-image-crop-picker';
+import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 
 const ImageEditingComponent = ({ isVisible, imageUri, onClose, onSave }) => {
   const [currentMode, setCurrentMode] = useState('draw');
@@ -11,8 +12,12 @@ const ImageEditingComponent = ({ isVisible, imageUri, onClose, onSave }) => {
   const imageDrawRef = useRef(null);
 
   const handleSave = async () => {
-    const savedImage = await imageDrawRef.current.save();
-    onSave(savedImage);
+    try {
+      const savedImage = await imageDrawRef.current.save();
+      onSave(savedImage);
+    } catch (error) {
+      Alert.alert('Error', 'Could not save the image.');
+    }
   };
 
   const handleTextAdd = () => {
@@ -23,15 +28,18 @@ const ImageEditingComponent = ({ isVisible, imageUri, onClose, onSave }) => {
   };
 
   const handleCrop = () => {
-    ImageCropPicker.openCropper({
+    if(editedImageUri){
+    ImagePicker.openCropper({
       path: editedImageUri,
       cropping: true,
-    }).then((image) => {
-      setEditedImageUri(image.path);
-    }).catch((error) => {
-      console.error(error);
-      Alert.alert('Error', 'Failed to crop the image.');
-    });
+    })
+      .then((image) => {
+        setEditedImageUri(image.path);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+    }
   };
 
   return (
@@ -39,10 +47,10 @@ const ImageEditingComponent = ({ isVisible, imageUri, onClose, onSave }) => {
       <View style={styles.container}>
         <View style={styles.topBar}>
           <TouchableOpacity onPress={onClose}>
-            <Text style={styles.topBarText}>Cancel</Text>
+            <MaterialIcons name="close" size={30} color="white" />
           </TouchableOpacity>
           <TouchableOpacity onPress={handleSave}>
-            <Text style={styles.topBarText}>Save</Text>
+            <MaterialIcons name="check" size={30} color="white" />
           </TouchableOpacity>
         </View>
         <View style={styles.imageContainer}>
@@ -60,19 +68,20 @@ const ImageEditingComponent = ({ isVisible, imageUri, onClose, onSave }) => {
         </View>
         <View style={styles.bottomBar}>
           <TouchableOpacity onPress={() => setCurrentMode('draw')}>
-            <Text style={[styles.bottomBarText, currentMode === 'draw' && styles.selected]}>Draw</Text>
+            <MaterialCommunityIcons name="pencil" size={30} color={currentMode === 'draw' ? 'yellow' : 'white'} />
           </TouchableOpacity>
           <TouchableOpacity onPress={handleCrop}>
-            <Text style={styles.bottomBarText}>Crop</Text>
+            <MaterialCommunityIcons name="crop" size={30} color="white" />
           </TouchableOpacity>
           <TouchableOpacity onPress={handleTextAdd}>
-            <Text style={styles.bottomBarText}>Add Text</Text>
+            <MaterialCommunityIcons name="text" size={30} color="white" />
           </TouchableOpacity>
           <TextInput
             style={styles.textInput}
             value={textInput}
             onChangeText={setTextInput}
             placeholder="Enter text"
+            placeholderTextColor="gray"
           />
         </View>
         {texts.map((text, index) => (
@@ -92,10 +101,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     padding: 10,
-  },
-  topBarText: {
-    color: 'white',
-    fontSize: 18,
+    backgroundColor: '#000',
   },
   imageContainer: {
     flex: 1,
@@ -113,16 +119,9 @@ const styles = StyleSheet.create({
   },
   bottomBar: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    padding: 10,
     alignItems: 'center',
-  },
-  bottomBarText: {
-    color: 'white',
-    fontSize: 18,
-  },
-  selected: {
-    fontWeight: 'bold',
+    padding: 10,
+    backgroundColor: '#000',
   },
   textInput: {
     backgroundColor: 'white',
@@ -130,6 +129,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 10,
     borderRadius: 5,
+    marginLeft: 10,
   },
   text: {
     color: 'white',
