@@ -10,7 +10,6 @@ import ImageEditingComponent from './ImageEditingComponent';
 
 
 
-
 const CameraComponent = ({ isVisible, onClose }) => {
   const [hasPermission, setHasPermission] = useState(null);
   const [facing, setFacing] = useState('back');
@@ -19,6 +18,8 @@ const CameraComponent = ({ isVisible, onClose }) => {
   const [isRecording, setIsRecording] = useState(false);
   const [recordTime, setRecordTime] = useState(0);
   const [editingVisible, setEditingVisible] = useState(false);
+  const [imageUri, setImageUri] = useState(null);
+
   const cameraRef = useRef(null);
   const timerRef = useRef(null);
 
@@ -59,7 +60,9 @@ const CameraComponent = ({ isVisible, onClose }) => {
       const uri = result.assets[0].uri;
       // setMediaUri(uri)
       // setModalVisible(true);
+      setImageUri(uri)
       console.log("uri: ",uri)
+      setEditingVisible(true)
     }
   };
 
@@ -184,6 +187,7 @@ const CameraComponent = ({ isVisible, onClose }) => {
               color="white"
             />
           </TouchableOpacity> */}
+                <ImageEditingComponent isVisible={editingVisible} onClose={()=>{setEditingVisible(false)}} imageUri={imageUri}/>
         </View>
       </View>
     </Modal>

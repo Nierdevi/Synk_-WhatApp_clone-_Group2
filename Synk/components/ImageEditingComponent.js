@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { View, Text, StyleSheet, Modal, TextInput, TouchableOpacity, Image, Alert } from 'react-native';
+import { View, Text, StyleSheet, Modal, TextInput, TouchableOpacity, Image } from 'react-native';
 import { CropView } from 'react-native-image-crop-tools';
 import { SketchCanvas } from '@terrylinla/react-native-sketch-canvas';
 
@@ -9,7 +9,7 @@ const ImageEditingComponent = ({ isVisible, imageUri, onClose, onSave }) => {
   const [texts, setTexts] = useState([]);
   const [editedImageUri, setEditedImageUri] = useState(imageUri);
   const [cropVisible, setCropVisible] = useState(false);
-  const canvasRef = useRef(null);
+  const cropViewRef = useRef(null);
 
   const handleSave = () => {
     // Save the edited image (implementation depends on your app's requirements)
@@ -27,8 +27,8 @@ const ImageEditingComponent = ({ isVisible, imageUri, onClose, onSave }) => {
     setCropVisible(true);
   };
 
-  const onCropComplete = (croppedImageUri) => {
-    setEditedImageUri(croppedImageUri);
+  const onImageCrop = (uri) => {
+    setEditedImageUri(uri);
     setCropVisible(false);
   };
 
@@ -53,16 +53,15 @@ const ImageEditingComponent = ({ isVisible, imageUri, onClose, onSave }) => {
             </TouchableOpacity>
             {cropVisible && (
               <CropView
-                sourceUrl={editedImageUri}
+                 sourceUrl={editedImageUri}
                 style={styles.cropView}
-                ref={(ref) => { this.cropViewRef = ref; }}
-                onImageCrop={onCropComplete}
+                ref={cropViewRef}
+                onImageCrop={(res) => onImageCrop(res.uri)}
               />
             )}
           </>
         ) : (
           <SketchCanvas
-            ref={canvasRef}
             style={styles.canvas}
             strokeColor={'black'}
             strokeWidth={7}
@@ -123,12 +122,15 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     padding: 10,
     borderRadius: 5,
+    alignSelf: 'center',
   },
   cropButtonText: {
     color: 'black',
     fontSize: 16,
   },
   cropView: {
+    flex: 1,
+    backgroundColor: 'white',
     position: 'absolute',
     top: 0,
     left: 0,

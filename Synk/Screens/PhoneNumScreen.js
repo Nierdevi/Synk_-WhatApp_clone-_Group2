@@ -61,7 +61,7 @@ const PhoneNumScreen = ({ navigation }) => {
                     "Sent", "Verify OTP",
                     [{
                         text: "OK",
-                        onPress: () => navigation.navigate('Verification', { token: u, countryCode, phoneNumber: Number })
+                        onPress: () => navigation.navigate('Verification', { token: u, countryCode, phoneNumber: phoneNumber,Number:Number })
                     }],
                     { cancelable: false }
                 );
