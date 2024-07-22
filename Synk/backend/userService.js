@@ -216,12 +216,12 @@ const getcurrentUserData = async (userId) => {
 
 
 const getUserData = async (phoneNumber) => {
-    let otherUserData = await AsyncStorage.getItem(`userData_${phoneNumber}`);
-    if (otherUserData) {
-        console.log('Loading other user data from local storage...');
-        console.log('Other user data from local storage:', otherUserData);
-        return JSON.parse(otherUserData);
-    }
+    // let otherUserData = await AsyncStorage.getItem(`userData_${phoneNumber}`);
+    // if (otherUserData) {
+    //     console.log('Loading other user data from local storage...');
+    //     console.log('Other user data from local storage:', otherUserData);
+    //     return JSON.parse(otherUserData);
+    // }
 
     try {
     const response = await databases.listDocuments('database_id', 'users', [
