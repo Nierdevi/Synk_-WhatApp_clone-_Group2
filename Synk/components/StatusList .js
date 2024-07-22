@@ -7,36 +7,48 @@ import { getUser } from '../constants/userContext';
 const StatusList = () => {
   const [statuses, setStatuses] = useState([]);
   const { session } = getUser();
-  const contacts = useContacts(session);
+  const contacts =useContacts(session)
 
   useEffect(() => {
     const fetchStatuses = async () => {
-        try {
-          const allStatuses = await getStatuses();
-          console.log("All statuses:", allStatuses);
-      
-          const normalizedPhoneNumbers = contacts.flatMap(contact => 
-            Array.isArray(contact.normalizedPhoneNumbers) ? contact.normalizedPhoneNumbers : []
-          );
-          const filteredStatuses = allStatuses.filter(status =>
-            status && status.phoneNumber &&
-            normalizedPhoneNumbers.includes(status.phoneNumber)
-          );
-      
-          console.log("Filtered statuses:", filteredStatuses);
-          setStatuses(filteredStatuses);
-        } catch (error) {
-          console.error('Error fetching statuses:', error);
-        }
-      };
+      try {
+        const allStatuses = await getStatuses();
 
-    fetchStatuses();
+        const normalizedPhoneNumbers = contacts.flatMap(contact =>
+          Array.isArray(contact.normalizedPhoneNumbers) ? contact.normalizedPhoneNumbers : []
+        );
+
+        const filteredStatuses = allStatuses.filter(status =>
+          status.phoneNumber && normalizedPhoneNumbers.includes(status.phoneNumber)
+        );
+
+        const statusesCount = filteredStatuses.reduce((acc, status) => {
+          acc[status.phoneNumber] = (acc[status.phoneNumber] || 0) + 1;
+          return acc;
+        }, {});
+
+        const statusesWithCount = filteredStatuses.map(status => ({
+          ...status,
+          count: statusesCount[status.phoneNumber],
+        }));
+
+        setStatuses(statusesWithCount);
+      } catch (error) {
+        console.error('Error fetching statuses:', error);
+      }
+    };
+
+    if (contacts.length > 0) {
+      fetchStatuses();
+    }
   }, [contacts]);
 
   const renderItem = ({ item }) => (
-    <TouchableOpacity>
+    <TouchableOpacity style={styles.itemContainer}>
       <Image source={{ uri: item.mediaUrl }} style={styles.thumbnail} />
       <Text style={styles.phoneNumber}>{item.currentUserPhoneNumber}</Text>
+      <Text style={styles.statusCount}>{item.count} statuses</Text>
+      <View style={[styles.stroke, { width: item.count * 10 }]} />
     </TouchableOpacity>
   );
 
@@ -57,6 +69,7 @@ const styles = StyleSheet.create({
   },
   itemContainer: {
     marginHorizontal: 5,
+    alignItems: 'center',
   },
   thumbnail: {
     width: 100,
@@ -65,6 +78,16 @@ const styles = StyleSheet.create({
   },
   phoneNumber: {
     textAlign: 'center',
+    marginTop: 5,
+  },
+  statusCount: {
+    textAlign: 'center',
+    marginTop: 5,
+    color: 'gray',
+  },
+  stroke: {
+    height: 2,
+    backgroundColor: 'blue',
     marginTop: 5,
   },
 });
