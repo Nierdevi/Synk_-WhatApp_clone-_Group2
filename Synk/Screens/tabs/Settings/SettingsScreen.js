@@ -19,6 +19,7 @@ const SettingsScreen = () => {
 
   const currentUserId=session.userId;
 
+
     useFocusEffect(
         React.useCallback(() => {
             const fetchUserData = async () => {
@@ -132,7 +133,7 @@ const SettingsScreen = () => {
                 <Pressable style={{width:wp('7')}}>
                   <Ionicons name="qr-code" size={24} color={primaryColors.purple} />
                 </Pressable>
-                <Pressable style={{width:wp('7')}}>
+                <Pressable onPress={toggleDrawer} style={{width:wp('7')}}>
                 <Ionicons name="chevron-down-circle" size={24} color={primaryColors.purple} />
                 </Pressable>
               </View>

@@ -24,7 +24,7 @@ const MainLayout = () => {
 
     useEffect(() => {
         const checkSession = async () => {
-            // await AsyncStorage.removeItem('session')
+            //await AsyncStorage.removeItem('session')
             try {
                 const storedSession = await AsyncStorage.getItem('session');
                 if (storedSession) {
