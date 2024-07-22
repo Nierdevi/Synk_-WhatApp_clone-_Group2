@@ -39,7 +39,7 @@ const ImageEditingComponent = ({ isVisible, imageUri, onClose, onSave }) => {
       .catch((error) => {
         console.error(error);
       });
-    }
+    }else return
   };
 
   return (

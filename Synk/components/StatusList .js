@@ -11,23 +11,24 @@ const StatusList = () => {
 
   useEffect(() => {
     const fetchStatuses = async () => {
-      try {
-        // Fetch all statuses
-        const allStatuses = await getStatuses();
-
-        // Filter statuses based on normalized phone numbers in contacts
-        const normalizedPhoneNumbers = contacts
-          .flatMap(contact => contact.normalizedPhoneNumbers[0] || []);
-        
-        const filteredStatuses = allStatuses.filter(status =>
-          normalizedPhoneNumbers.includes(status.phoneNumber)
-        );
-
-        setStatuses(filteredStatuses);
-      } catch (error) {
-        console.error('Error fetching statuses:', error);
-      }
-    };
+        try {
+          const allStatuses = await getStatuses();
+          console.log("All statuses:", allStatuses);
+      
+          const normalizedPhoneNumbers = contacts.flatMap(contact => 
+            Array.isArray(contact.normalizedPhoneNumbers) ? contact.normalizedPhoneNumbers : []
+          );
+          const filteredStatuses = allStatuses.filter(status =>
+            status && status.phoneNumber &&
+            normalizedPhoneNumbers.includes(status.phoneNumber)
+          );
+      
+          console.log("Filtered statuses:", filteredStatuses);
+          setStatuses(filteredStatuses);
+        } catch (error) {
+          console.error('Error fetching statuses:', error);
+        }
+      };
 
     fetchStatuses();
   }, [contacts]);
