@@ -41,29 +41,34 @@ const PhoneNumScreen = ({ navigation }) => {
     };
 
     const handleSubmit = async () => {
+        if (!Number) {
+            Alert.alert('Invalid Input', 'Please enter a valid phone number.');
+            return;
+        }
+
         try {
             const phoneNumberExists = await checkPhoneNumberExists(Number);
 
             if (phoneNumberExists) {
                 Alert.alert('Phone Number Exists', 'The phone number you entered already exists.');
                 return;
-            }else{
+            } else {
                 const u = await createUser(Number);
                 setSentToken(u);
-                console.log(u)
+                console.log('User created:', u);
+
                 Alert.alert(
-                    " Sent", "Verify OTP",
+                    "Sent", "Verify OTP",
                     [{
                         text: "OK",
-                        onPress: () => navigation.navigate('Verification', { token: u, countryCode, phoneNumber,Number })
+                        onPress: () => navigation.navigate('Verification', { token: u, countryCode, phoneNumber: phoneNumber,Number:Number })
                     }],
                     { cancelable: false }
                 );
-
-                
             }
         } catch (error) {
-            console.log(error);
+            console.log('Error during submission:', error);
+            Alert.alert('Submission Failed', 'An error occurred. Please try again.');
         }
     };
 

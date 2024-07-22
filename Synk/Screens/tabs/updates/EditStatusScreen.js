@@ -25,7 +25,7 @@ const EditStatusScreen = ({ navigation }) => {
     ];
 
     return (
-        <View style={[styles.container, { backgroundColor: 'whitesmoke' }]}>
+        <View style={styles.container}>
             {/* Header */}
             <View style={styles.header}>
                 <TouchableOpacity style={[styles.icon, styles.happyIcon]} onPress={() => navigation.goBack()}>
@@ -35,7 +35,7 @@ const EditStatusScreen = ({ navigation }) => {
                     <TouchableOpacity style={[styles.icon, styles.happyIcon]} onPress={() => {/* Implement emoji picker */}}>
                         <Ionicons name="happy" size={24} color={primaryColors.purple} />
                     </TouchableOpacity>
-                    <TouchableOpacity style={[styles.icon, styles.smileyIcon]} onPress={() => {/* Implement emoji picker */}}>
+                    <TouchableOpacity style={[styles.icon, styles.smileyIcon]} onPress={() => {/* Implement font picker */}}>
                         <FontAwesome5 name="font" size={24} color={primaryColors.purple} />
                     </TouchableOpacity>
                     <TouchableOpacity style={[styles.icon, styles.paletteIcon]} onPress={() => {/* Implement color picker */}}>
@@ -114,6 +114,7 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 16,
         backgroundColor: 'whitesmoke',
+        marginTop: 30, // Ensure no margin at the top
     },
     header: {
         flexDirection: 'row',

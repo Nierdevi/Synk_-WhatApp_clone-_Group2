@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Alert, FlatList, Modal, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View  } from 'react-native';
+import { Alert, FlatList, Modal, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import Fab from '../../../components/fab';
 import { getUser } from '../../../constants/userContext';
@@ -8,13 +8,14 @@ import { Query } from 'appwrite';
 import { databases } from '../../../backend/appwrite';
 
 import { Entypo, Ionicons } from '@expo/vector-icons';
+import { Image } from 'expo-image';
 import { fetchMessagedContacts } from '../../../backend/chatService';
 import { fetchAndNormalizeContacts, loadCachedContacts } from '../../../backend/contacts ';
-import DateTime from '../../../components/DateTime';
-import { primaryColors } from '../../../constants/colors';
-import { Image } from 'expo-image';
-import { getUserData } from '../../../backend/userService';
 import RenderMessagedContactItem from '../../../components/renderMessagedContactItem';
+import { primaryColors } from '../../../constants/colors';
+
+
+
 
 Applogo=require('../../../assets/AppLogo.png')
 Verified=require('../../../assets/verified.png')

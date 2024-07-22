@@ -1,74 +1,58 @@
-import moment from 'moment';
-import React, { useEffect, useState } from 'react';
-import { FlatList, Image, Linking, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React from 'react';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Provider } from 'react-native-paper';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { primaryColors } from '../../../constants/colors';
 
-const ChannelInfo = ({ route }) => {
-    const { channel } = route.params;
-    const [posts, setPosts] = useState([]);
+const ChannelInfo = ({ route, navigation }) => {
+    // Destructure the channel data from route.params
+    const { channel } = route.params || {};
 
-    useEffect(() => {
-        // Fetch channel posts (mocked for now)
-        const fetchPosts = async () => {
-            // Simulate fetching posts for the channel
-            const fetchedPosts = [
-                { id: 1, title: 'Breaking News', time: '2024-07-01', image: 'https://via.placeholder.com/150' },
-                { id: 2, title: 'Latest Updates', time: '2024-07-02', image: 'https://via.placeholder.com/150' },
-            ];
-            setPosts(fetchedPosts);
-        };
-
-        fetchPosts();
-    }, []);
-
-    const handleContact = () => {
-        // Implement contact logic, e.g., open a chat
-        Linking.openURL(`https://wa.me/${channel.contactNumber}`);
-    };
-
-    const renderPost = ({ item }) => (
-        <View style={styles.postItem}>
-            <Image source={{ uri: item.image }} style={styles.postImage} />
-            <Text style={styles.postTitle}>{item.title}</Text>
-            <Text style={styles.postTime}>{moment(item.time).fromNow()}</Text>
-        </View>
-    );
+    // Conditional rendering if channel data is missing
+    if (!channel) {
+        return (
+            <View style={styles.container}>
+                <Text style={styles.loadingText}>Loading...</Text>
+            </View>
+        );
+    }
 
     return (
         <Provider>
             <View style={styles.container}>
-                <Image source={{ uri: channel.img }} style={styles.channelImg} />
-                <View style={styles.channelDetails}>
-                    <Text style={styles.channelName}>{channel.name}</Text>
-                    {channel.verified && (
-                        <Ionicons name="checkmark-circle" size={16} color="blue" style={styles.verifiedBadge} />
-                    )}
-                    <Text style={styles.followersCount}>{channel.followers} followers</Text>
-                    <Text style={styles.channelDescription}>{channel.description}</Text>
+                <Image source={{ uri: channel.profilePicture }} style={styles.profilePicture} />
+                <Text style={styles.channelName}>{channel.name}</Text>
+                <Text style={styles.followersCount}>{channel.followers} followers</Text>
+                
+                <View style={styles.buttonRow}>
+                    <TouchableOpacity style={styles.button}>
+                        <Text style={styles.buttonText}>Following</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.iconButton} onPress={() => { /* Implement share functionality */ }}>
+                        <Ionicons name="share-social" size={24} color={primaryColors.purple} />
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.iconButton} onPress={() => { /* Implement forward functionality */ }}>
+                        <Ionicons name="arrow-forward" size={24} color={primaryColors.purple} />
+                    </TouchableOpacity>
                 </View>
-                <TouchableOpacity style={styles.contactButton} onPress={handleContact}>
-                    <Text style={styles.contactText}>Contact</Text>
+
+                <Text style={styles.description}>{channel.description}</Text>
+
+                <TouchableOpacity style={styles.optionButton} onPress={() => { /* Implement mute notifications functionality */ }}>
+                    <Text style={styles.optionButtonText}>Mute Notifications</Text>
                 </TouchableOpacity>
-                <View style={styles.menu}>
-                    <TouchableOpacity style={styles.menuItem}>
-                        <Text style={styles.menuText}>Share</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.menuItem}>
-                        <Text style={styles.menuText}>Report</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.menuItem}>
-                        <Text style={styles.menuText}>Block</Text>
-                    </TouchableOpacity>
-                </View>
-                <FlatList
-                    data={posts}
-                    renderItem={renderPost}
-                    keyExtractor={item => item.id.toString()}
-                    style={styles.postsList}
-                    contentContainerStyle={styles.postsContainer}
-                />
+                <TouchableOpacity style={styles.optionButton} onPress={() => { /* Implement public channel functionality */ }}>
+                    <Text style={styles.optionButtonText}>Public Channel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.optionButton} onPress={() => { /* Implement profile privacy functionality */ }}>
+                    <Text style={styles.optionButtonText}>Profile Privacy</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.optionButton} onPress={() => { /* Implement unfollow channel functionality */ }}>
+                    <Text style={styles.optionButtonText}>Unfollow Channel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.optionButton} onPress={() => { /* Implement report functionality */ }}>
+                    <Text style={styles.optionButtonText}>Report</Text>
+                </TouchableOpacity>
             </View>
         </Provider>
     );
@@ -77,88 +61,66 @@ const ChannelInfo = ({ route }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 20,
         backgroundColor: '#fff',
-        alignItems: 'center',
+        padding: 20,
     },
-    channelImg: {
-        width: 80,
-        height: 80,
-        borderRadius: 40,
-        marginBottom: 10,
-    },
-    channelDetails: {
-        alignItems: 'center',
-        marginBottom: 20,
+    profilePicture: {
+        width: 100,
+        height: 100,
+        borderRadius: 50,
+        alignSelf: 'center',
+        marginTop: 20,
     },
     channelName: {
-        fontSize: 22,
+        fontSize: 24,
         fontWeight: 'bold',
-    },
-    verifiedBadge: {
-        marginLeft: 5,
+        textAlign: 'center',
+        marginTop: 10,
     },
     followersCount: {
         fontSize: 16,
         color: '#555',
-        marginTop: 2,
-    },
-    channelDescription: {
-        fontSize: 14,
-        color: '#777',
         textAlign: 'center',
-        marginVertical: 10,
+        marginTop: 5,
     },
-    contactButton: {
+    buttonRow: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 15,
+    },
+    button: {
         backgroundColor: primaryColors.purple,
         padding: 10,
         borderRadius: 5,
-        marginBottom: 20,
+        marginHorizontal: 10,
     },
-    contactText: {
+    buttonText: {
         color: '#fff',
-        fontWeight: 'bold',
+        fontSize: 16,
     },
-    menu: {
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        width: '100%',
+    iconButton: {
+        marginHorizontal: 10,
     },
-    menuItem: {
-        padding: 10,
+    description: {
+        padding: 20,
+        fontSize: 16,
+        color: '#555',
+        textAlign: 'center',
     },
-    menuText: {
-        color: primaryColors.purple,
-    },
-    postsList: {
-        width: '100%',
-        marginTop: 20,
-    },
-    postsContainer: {
-        paddingBottom: 20,
-    },
-    postItem: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: 15,
-        padding: 10,
+    optionButton: {
+        padding: 15,
         borderBottomWidth: 1,
         borderBottomColor: '#ddd',
     },
-    postImage: {
-        width: 50,
-        height: 50,
-        borderRadius: 5,
-        marginRight: 10,
-    },
-    postTitle: {
+    optionButtonText: {
         fontSize: 16,
-        fontWeight: 'bold',
-        flex: 1,
+        color: '#333',
     },
-    postTime: {
-        fontSize: 12,
-        color: '#888',
+    loadingText: {
+        fontSize: 18,
+        textAlign: 'center',
+        marginTop: 20,
     },
 });
 

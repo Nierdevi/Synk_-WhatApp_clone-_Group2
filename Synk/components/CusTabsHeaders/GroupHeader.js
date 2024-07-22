@@ -8,18 +8,28 @@ import { Entypo } from '@expo/vector-icons';
 import { PopupMenu } from '../../components/PopupMenu';
 import { useTheme } from '../../constants/themeContext';
 import { useNavigation } from '@react-navigation/native'; // Import useNavigation hook
+import CameraComponent from '../CameraComponent';
 
 
 const isIOS = Platform.OS === 'ios';
 
 export default function GroupHeader() {
 
+    const [isCameraVisible, setIsCameraVisible] = useState(false);
     const {theme,toggleTheme}=useTheme();
     const insets = useSafeAreaInsets();
     const [menuVisible, setMenuVisible] = useState(false);
     //   console.log('Safe area insets:', insets);
     const navigation = useNavigation(); // Access the navigation object
 
+
+    const openCamera = () => {
+      setIsCameraVisible(true);
+    };
+  
+    const closeCamera = () => {
+      setIsCameraVisible(false);
+    };
 
     const menuItems = [
         { label: 'Settings', onPress: () => {handleNavigateToSettings} },
@@ -37,7 +47,7 @@ export default function GroupHeader() {
 
             <View style={styles.option}>
 
-                <TouchableOpacity>
+                <TouchableOpacity onPress={openCamera}>
                     <Feather name="camera" size={22} color={theme === 'dark' ?  primaryColors.white : primaryColors.black} />
                 </TouchableOpacity>
 
@@ -49,7 +59,7 @@ export default function GroupHeader() {
                     <PopupMenu visible={menuVisible} onClose={() => setMenuVisible(false)} menuItems={menuItems}  style={styles.popupMenu}/>
                     <Entypo name="dots-three-vertical" size={20} color={theme === 'dark' ?  primaryColors.white : primaryColors.black} />
                 </Pressable>
-
+                <CameraComponent isVisible={isCameraVisible} onClose={closeCamera} />
             </View>
 
         </View>

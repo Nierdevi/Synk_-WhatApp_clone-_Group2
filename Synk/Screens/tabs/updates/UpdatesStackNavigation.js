@@ -1,15 +1,15 @@
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import React from 'react';
-import CameraStatusScreen from '../../../components/CameraStatusScreen';
+import CameraComponent from '../../../components/CameraComponent';
 import { useTheme } from '../../../constants/themeContext';
+import SettingsScreen from '../Settings/SettingsScreen';
 import ChannelsScreen from './ChannelDetails';
 import ChannelInfo from './ChannelInfo';
 import EditStatusScreen from './EditStatusScreen';
 import ExploreMore from './ExploreMore';
 import StatusView from './StatusView';
 import UpdatesScreen from './UpdatesScreen';
-
 
 const ChatsStack = createStackNavigator();
 
@@ -48,35 +48,33 @@ const UpdatesStackNavigator = ({ navigation, route }) => {
       <ChatsStack.Screen 
         name="ChannelInfo" 
         component={ChannelInfo} 
-        options={{ headerShown: true }} 
+        options={{ 
+          headerShown: false,
+        }} 
       />
       <ChatsStack.Screen 
         name="Explore" 
         component={ExploreMore} 
         options={{ 
-          headerShown: true,
-          headerTitle: '',
-          headerLeft: () => null,
+          headerShown: false,
         }} 
       />
       <ChatsStack.Screen 
         name="EditStatus" 
         component={EditStatusScreen} 
         options={{ 
-          headerShown: true,
-          headerTitle: '', // Remove the title by setting it to an empty string
-          headerLeft: () => null, // Remove the back arrow icon
+          headerShown: false,
         }} 
       />
-      <ChatsStack.Screen 
+      {/* <ChatsStack.Screen 
         name="CameraStatus" 
-        component={CameraStatusScreen} 
+        component={CameraComponent} 
         options={{ 
-          headerShown: true,
+          headerShown: false,
           headerTitle: '', // Remove the title by setting it to an empty string
           headerLeft: () => null, // Remove the back arrow icon
         }} 
-      />
+      /> */}
     </ChatsStack.Navigator>
   );
 };

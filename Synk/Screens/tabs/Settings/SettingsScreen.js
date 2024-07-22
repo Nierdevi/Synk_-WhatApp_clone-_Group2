@@ -1,15 +1,15 @@
-import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
-import { View, Text, StyleSheet, TouchableOpacity, Image, Pressable, Modal } from 'react-native';
-import { MaterialIcons, Ionicons, Feather, FontAwesome6 } from '@expo/vector-icons';
+import { Feather, FontAwesome6, Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import React, { useState } from 'react';
+import { Image, Modal, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-import React,{ useState } from 'react';
+import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
-import { useFocusEffect } from '@react-navigation/native';
+import AppLogo from '../../../assets/AppLogo.png';
+import { getcurrentUserData, getUserProfilePicture } from '../../../backend/userService';
+import { primaryColors } from '../../../constants/colors';
 import { getUser } from '../../../constants/userContext';
-import { getcurrentUserData,getUserProfilePicture } from '../../../backend/userService';
-import { SecondaryColors } from '../../../constants/colors';
-import AppLogo from '../../../assets/AppLogo.png'
+
 const SettingsScreen = () => {
   const navigation = useNavigation();
   const [username, setUsername] = useState('');
@@ -130,10 +130,10 @@ const SettingsScreen = () => {
               </View>
               <View style={{flexDirection:'row',alignItems:'center',gap:10}}>
                 <Pressable style={{width:wp('7')}}>
-                  <Ionicons name="qr-code" size={24} color="black" />
+                  <Ionicons name="qr-code" size={24} color={primaryColors.purple} />
                 </Pressable>
                 <Pressable style={{width:wp('7')}}>
-                <Ionicons name="chevron-down-circle" size={24} color="black" />
+                <Ionicons name="chevron-down-circle" size={24} color={primaryColors.purple} />
                 </Pressable>
               </View>
             </View>
@@ -165,7 +165,7 @@ const SettingsScreen = () => {
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.section} onPress={handleNavigateToSChat}>
-            <Ionicons name="chatbox-outline" size={24} color="black" />
+            <Ionicons name="chatbox-ellipses-outline" size={24} color="black" />
             <View style={styles.sect}>
               <Text style={styles.sectionTitle}>Chats</Text>
               <Text style={styles.sectionDescription}>Theme, wallpapers, chat history</Text>
@@ -248,7 +248,7 @@ const SettingsScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor:SecondaryColors.secPurple,
+    backgroundColor: 'white',
     paddingTop: -40,
   },
   head: {
@@ -284,7 +284,7 @@ const styles = StyleSheet.create({
   section: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#eee',
+    backgroundColor: 'white',
     padding: 15,
     marginBottom: 10,
     borderRadius: 8,

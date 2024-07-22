@@ -22,23 +22,28 @@ const verifyUser = async (userId, otp) => {
     }
 };
 
- const getCurrentUser = async () => {
+const getCurrentUser = async () => {
     try {
         const currentAccount = await account.get();
-        if (!currentAccount) throw new Error();
-        const currentUSer = await databases.listDocuments(
-        'database_id',
-        'users',
-        [Query.equal("userId", currentAccount.$id)]
+        if (!currentAccount) throw new Error('Failed to get current account.');
+
+        const response = await databases.listDocuments(
+            'database_id',
+            'users',
+            [Query.equal("userId", currentAccount.$id)]
         );
 
-        if (!currentUSer) throw Error;
-        console.log(currentUSer)
-        return currentUSer.documents[0];
+        if (!response.documents || response.documents.length === 0) {
+            throw new Error('No user found with the given user ID.');
+        }
+
+        console.log(response.documents[0]);
+        return response.documents[0];
     } catch (error) {
-        // Alert.alert("Oops!","Failed to get current user")
-        throw new Error(error);
+        console.error('Error getting current user:', error);
+        throw new Error('Failed to get current user: ' + error.message);
     }
 };
+
 
 export { createUser, verifyUser,getCurrentUser };

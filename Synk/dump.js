@@ -752,3 +752,77 @@ profilePicture: {
 });
 
 export default RenderMessagedContactItem;
+
+
+
+import { CameraView } from 'expo-camera';
+import React, { useEffect, useRef, useState } from 'react';
+import { Button, StyleSheet, Text, View } from 'react-native';
+
+const CameraStatusScreen = () => {
+  const [hasPermission, setHasPermission] = useState(null);
+  const [type, setType] = useState('back');
+  const cameraRef = useRef(null);
+
+  const takePicture = async () => {
+    if (cameraRef.current) {
+      let photo = await cameraRef.current.takePictureAsync();
+      console.log(photo.uri); // Use this URI to display or send the photo
+    }
+  };
+
+  useEffect(() => {
+    console.log('Camera Object:', Camera);
+  }, []);
+  
+
+  // const flipCamera = () => {
+  //   setType(
+  //     type === Camera.Constants.Type.back
+  //       ? Camera.Constants.Type.front
+  //       : Camera.Constants.Type.back
+  //   );
+  // };
+
+  function toggleCameraFacing() {
+    setFacing(current => (current === 'back' ? 'front' : 'back'));
+  }
+
+  const getCameraPermission = async () => {
+    const { status } = await Camera.requestCameraPermissionsAsync();
+    setHasPermission(status === 'granted');
+  };
+
+  useEffect(() => {
+    getCameraPermission();
+  }, []);
+
+  if (hasPermission === null) {
+    return <View />;
+  }
+  if (hasPermission === false) {
+    return <Text>No access to camera</Text>;
+  }
+
+  return (
+    <View style={styles.container}>
+      <CameraView style={styles.camera} type={type} ref={cameraRef} />
+      <Button title="Flip Camera" onPress={flipCamera} />
+      <Button title="Take Picture" onPress={takePicture} />
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+  },
+  camera: {
+    flex: 1,
+    width: '100%',
+  },
+});
+
+export default CameraComponent;

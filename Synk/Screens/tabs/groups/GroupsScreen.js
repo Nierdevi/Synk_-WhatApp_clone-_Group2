@@ -38,6 +38,7 @@ export default function GroupsScreen({ navigation }) {
         onClose={() => setModalVisible(false)}
         close={()=>setModalVisible(false)}
         navigation={navigation}
+
       />
       <RenderGroupsIn navigation={navigation} session={session} />
     </View>
