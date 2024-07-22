@@ -826,3 +826,33 @@ const styles = StyleSheet.create({
 });
 
 export default CameraComponent;
+
+
+const viewStatus = async (statusId, viewerPhoneNumber) => {
+  try {
+      // Fetch the status document
+      const status = await databases.getDocument('database_id', 'status', statusId);
+
+      // Update the viewers list
+      const viewers = status.viewers || [];
+      if (!viewers.includes(viewerPhoneNumber)) {
+          const updatedViewers = [...viewers, viewerPhoneNumber];
+          await databases.updateDocument('database_id', 'status', statusId, { viewers: updatedViewers });
+      }
+  } catch (error) {
+      console.error('Failed to update status viewers:', error);
+  }
+};
+
+const getStatuses = async (phoneNumbers) => { // Modified to take an array of phone numbers
+  try {
+      const response = await databases.listDocuments('database_id', 'status', [
+          Query.contains('phoneNumber', phoneNumbers), // Changed to Query.in for multiple phone numbers
+          // Query.greaterThan('expiryAt', Date.now())
+      ]);
+      console.log("statuses: ",response.documents)
+      return response.documents;
+  } catch (error) {
+      console.error("Failed to get statuses:", error);
+  }
+};

@@ -6,11 +6,14 @@ import * as FileSystem from 'expo-file-system';
 import * as ImagePicker from 'expo-image-picker';
 import { MaterialIcons, MaterialCommunityIcons  } from '@expo/vector-icons';
 import { primaryColors } from '../constants/colors';
+import { addStatus } from '../backend/statusService';
+import { getUser } from '../constants/userContext';
 // import ImageEditingComponent from './ImageEditingComponent';
 
 
 
 const CameraComponent = ({ isVisible, onClose }) => {
+  const {session}=getUser();
   const [hasPermission, setHasPermission] = useState(null);
   const [facing, setFacing] = useState('back');
   const [mode, setMode] = useState('picture');
@@ -22,6 +25,8 @@ const CameraComponent = ({ isVisible, onClose }) => {
 
   const cameraRef = useRef(null);
   const timerRef = useRef(null);
+
+  // console.log("phone number: ",session.phoneNumber)
 
   useEffect(() => {
     const getCameraPermission = async () => {
@@ -62,7 +67,14 @@ const CameraComponent = ({ isVisible, onClose }) => {
       // setModalVisible(true);
       setImageUri(uri)
       console.log("uri: ",uri)
-      setEditingVisible(true)
+
+      const uploadedStatus =await addStatus(session.phoneNumber,imageUri,'image')
+        if(uploadedStatus){
+          console.log("status uploaded:",uploadedStatus)
+        }else{
+          console.log("failed to upload")
+        }
+      // setEditingVisible(true)
     }
   };
 
@@ -71,6 +83,12 @@ const CameraComponent = ({ isVisible, onClose }) => {
       let photo = await cameraRef.current.takePictureAsync();
       console.log(photo.uri); // Use this URI to display or send the photo
       await saveFile(photo.uri, 'picture');
+      const uploadedStatus =await addStatus(session.phoneNumber,imageUri,'image')
+        if(uploadedStatus){
+          console.log("status uploaded:",uploadedStatus)
+        }else{
+          console.log("failed to upload")
+        }
     }
   };
 
