@@ -75,6 +75,6 @@ yarn-error.*
 
 # @end expo-cli
 
-./dump.js
-./GroupDump.js
-./package-lock.json
+./dump
+./GroupDump
+./package-lock
