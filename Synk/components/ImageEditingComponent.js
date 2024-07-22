@@ -1,19 +1,18 @@
 import React, { useState, useRef } from 'react';
-import { View, Text, StyleSheet, Modal, TextInput, TouchableOpacity, Image } from 'react-native';
-import { CropView } from 'react-native-image-crop-tools';
-import { SketchCanvas } from '@terrylinla/react-native-sketch-canvas';
+import { View, Text, StyleSheet, Modal, TextInput, TouchableOpacity, Image, Alert } from 'react-native';
+import ImageDraw from 'react-native-image-draw';
+import ImageCropPicker from 'react-native-image-crop-picker';
 
 const ImageEditingComponent = ({ isVisible, imageUri, onClose, onSave }) => {
-  const [currentMode, setCurrentMode] = useState('crop');
+  const [currentMode, setCurrentMode] = useState('draw');
   const [textInput, setTextInput] = useState('');
   const [texts, setTexts] = useState([]);
   const [editedImageUri, setEditedImageUri] = useState(imageUri);
-  const [cropVisible, setCropVisible] = useState(false);
-  const cropViewRef = useRef(null);
+  const imageDrawRef = useRef(null);
 
-  const handleSave = () => {
-    // Save the edited image (implementation depends on your app's requirements)
-    onSave(editedImageUri);
+  const handleSave = async () => {
+    const savedImage = await imageDrawRef.current.save();
+    onSave(savedImage);
   };
 
   const handleTextAdd = () => {
@@ -24,12 +23,15 @@ const ImageEditingComponent = ({ isVisible, imageUri, onClose, onSave }) => {
   };
 
   const handleCrop = () => {
-    setCropVisible(true);
-  };
-
-  const onImageCrop = (uri) => {
-    setEditedImageUri(uri);
-    setCropVisible(false);
+    ImageCropPicker.openCropper({
+      path: editedImageUri,
+      cropping: true,
+    }).then((image) => {
+      setEditedImageUri(image.path);
+    }).catch((error) => {
+      console.error(error);
+      Alert.alert('Error', 'Failed to crop the image.');
+    });
   };
 
   return (
@@ -43,37 +45,25 @@ const ImageEditingComponent = ({ isVisible, imageUri, onClose, onSave }) => {
             <Text style={styles.topBarText}>Save</Text>
           </TouchableOpacity>
         </View>
-        {currentMode === 'crop' ? (
-          <>
-            <View style={styles.imageContainer}>
-              <Image source={{ uri: editedImageUri }} style={styles.image} />
-            </View>
-            <TouchableOpacity style={styles.cropButton} onPress={handleCrop}>
-              <Text style={styles.cropButtonText}>Crop Image</Text>
-            </TouchableOpacity>
-            {cropVisible && (
-              <CropView
-                 sourceUrl={editedImageUri}
-                style={styles.cropView}
-                ref={cropViewRef}
-                onImageCrop={(res) => onImageCrop(res.uri)}
-              />
-            )}
-          </>
-        ) : (
-          <SketchCanvas
-            style={styles.canvas}
-            strokeColor={'black'}
-            strokeWidth={7}
-            localSourceImage={{ filename: editedImageUri, mode: 'AspectFill' }}
-          />
-        )}
+        <View style={styles.imageContainer}>
+          {currentMode === 'draw' ? (
+            <ImageDraw
+              ref={imageDrawRef}
+              image={editedImageUri}
+              style={styles.imageDraw}
+              strokeColor={'black'}
+              strokeWidth={7}
+            />
+          ) : (
+            <Image source={{ uri: editedImageUri }} style={styles.image} />
+          )}
+        </View>
         <View style={styles.bottomBar}>
-          <TouchableOpacity onPress={() => setCurrentMode('crop')}>
-            <Text style={[styles.bottomBarText, currentMode === 'crop' && styles.selected]}>Crop</Text>
-          </TouchableOpacity>
           <TouchableOpacity onPress={() => setCurrentMode('draw')}>
             <Text style={[styles.bottomBarText, currentMode === 'draw' && styles.selected]}>Draw</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={handleCrop}>
+            <Text style={styles.bottomBarText}>Crop</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={handleTextAdd}>
             <Text style={styles.bottomBarText}>Add Text</Text>
@@ -112,33 +102,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  imageDraw: {
+    width: '100%',
+    height: '100%',
+  },
   image: {
     width: '100%',
     height: '100%',
     resizeMode: 'contain',
-  },
-  cropButton: {
-    marginTop: 10,
-    backgroundColor: 'white',
-    padding: 10,
-    borderRadius: 5,
-    alignSelf: 'center',
-  },
-  cropButtonText: {
-    color: 'black',
-    fontSize: 16,
-  },
-  cropView: {
-    flex: 1,
-    backgroundColor: 'white',
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-  },
-  canvas: {
-    flex: 1,
   },
   bottomBar: {
     flexDirection: 'row',

@@ -14,6 +14,9 @@ import { fetchAndNormalizeContacts, loadCachedContacts } from '../../../backend/
 import RenderMessagedContactItem from '../../../components/renderMessagedContactItem';
 import { primaryColors } from '../../../constants/colors';
 
+
+
+
 Applogo=require('../../../assets/AppLogo.png')
 Verified=require('../../../assets/verified.png')
 

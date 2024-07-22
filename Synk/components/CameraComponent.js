@@ -6,7 +6,7 @@ import * as FileSystem from 'expo-file-system';
 import * as ImagePicker from 'expo-image-picker';
 import { MaterialIcons, MaterialCommunityIcons  } from '@expo/vector-icons';
 import { primaryColors } from '../constants/colors';
-import ImageEditingComponent from './ImageEditingComponent';
+// import ImageEditingComponent from './ImageEditingComponent';
 
 
 
@@ -187,7 +187,7 @@ const CameraComponent = ({ isVisible, onClose }) => {
               color="white"
             />
           </TouchableOpacity> */}
-                <ImageEditingComponent isVisible={editingVisible} onClose={()=>{setEditingVisible(false)}} imageUri={imageUri}/>
+                {/* <ImageEditingComponent isVisible={editingVisible} onClose={()=>{setEditingVisible(false)}} imageUri={imageUri}/> */}
         </View>
       </View>
     </Modal>
