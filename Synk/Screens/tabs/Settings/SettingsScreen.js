@@ -276,7 +276,8 @@ const styles = StyleSheet.create({
   username: {
     fontSize: wp('6%'),
     color: '#000',
-    fontWeight:'500'
+    fontWeight:'500',
+    paddingTop: 12,
   },
   status: {
     fontSize: wp('4%'),
