@@ -277,7 +277,6 @@ const styles = StyleSheet.create({
     fontSize: wp('6%'),
     color: '#000',
     fontWeight:'500',
-    paddingTop: 12,
   },
   status: {
     fontSize: wp('4%'),

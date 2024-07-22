@@ -32,7 +32,7 @@ export default function ChatsHeader() {
   const menuItems = [
     { label: 'New broadcast', onPress: () => {} },
     { label: 'Linked Devices', onPress: () => {} },
-    { label: 'Starred messages', onPress: () => {} },
+    //{ label: 'Starred messages', onPress: () => {} },
     { label: 'Settings', onPress: () => handleNavigateToSettings() }, // Navigate to SettingsScreen
     { label: 'Switch accounts', onPress: () => {toggleDrawer(); }},
   ]; 
