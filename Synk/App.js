@@ -23,8 +23,8 @@ const MainLayout = () => {
     const [initialRoute, setInitialRoute] = useState('welcome');
 
     useEffect(() => {
-        // const checkSession = async () => {
-        //     await AsyncStorage.removeItem('session')
+        const checkSession = async () => {
+            // await AsyncStorage.removeItem('session')
             try {
                 const storedSession = await AsyncStorage.getItem('session');
                 if (storedSession) {
