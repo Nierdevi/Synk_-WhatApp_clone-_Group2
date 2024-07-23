@@ -1,6 +1,5 @@
 import React, { useState,useEffect } from 'react';
-import { View, StyleSheet, Text, TouchableOpacity, ScrollView, FlatList } from 'react-native';
-import { MaterialIcons, Ionicons } from '@expo/vector-icons';
+import { View, StyleSheet, } from 'react-native';
 import Fab from '../../../components/fab';
 import { primaryColors, SecondaryColors } from '../../../constants/colors';
 import GroupChatModal from '../../../components/GroupChatModal ';
@@ -16,16 +15,11 @@ export default function GroupsScreen({ navigation }) {
   useEffect(() => {
     const loadUserGroups = async () => {
       const userGroups = await fetchUserGroups(session.phoneNumber);
-      // console.log(userGroups);
     };
     loadUserGroups();
   }, [session.phoneNumber]);
 
 
-
-  const handleNavigateToGroupRoom = () => {
-    navigation.navigate('GroupRoom');
-  };
 
 
 

@@ -7,8 +7,7 @@ import { useContacts } from '../backend/contacts ';
 import { getUser } from '../constants/userContext';
 import { useNavigation } from '@react-navigation/native';
 import { getUserData } from '../backend/userService';
-import SegmentedBorder from './SegmentedBorder';
-
+// import SegmentedBorder from './SegmentedBorder';
 
 const StatusList = () => {
   const [statuses, setStatuses] = useState([]);
@@ -19,25 +18,15 @@ const StatusList = () => {
   useEffect(() => {
     const fetchStatuses = async () => {
       try {
-        // Fetch all statuses
         const allStatuses = await getStatuses();
-        console.log('All statuses fetched:', allStatuses);
-
-        // Extract normalized phone numbers from contacts
         const normalizedPhoneNumbers = contacts.flatMap(contact =>
           Array.isArray(contact.normalizedPhoneNumbers) ? contact.normalizedPhoneNumbers : []
         );
 
-        // console.log('Normalized phone numbers:', normalizedPhoneNumbers);
-
-        // Filter statuses to include only those from contacts
         const filteredStatuses = allStatuses.filter(status =>
           status.phoneNumber && normalizedPhoneNumbers.includes(status.phoneNumber)
         );
 
-        console.log('Filtered statuses:', filteredStatuses);
-
-        // Fetch user data for each status
         const userDataPromises = filteredStatuses.map(async status => {
           const userData = await getUserData(status.phoneNumber);
           return { ...status, userData };
@@ -63,8 +52,6 @@ const StatusList = () => {
       }
     };
 
-    console.log("statuses: ",statuses)
-
     if (contacts.length > 0) {
       fetchStatuses();
     }
@@ -87,13 +74,13 @@ const StatusList = () => {
         style={styles.itemContainer}
         onPress={() => navigation.navigate('ViewStatus', { status: item })}
       >
-      <SegmentedBorder segments={statuses.length} >
-        <Image
-          source={userData && userData.profilePicture ? { uri: userData.profilePicture } : require('../assets/Avator.jpg')}
-          style={styles.thumbnail}
-        />
-        </SegmentedBorder>
-        <Text style={styles.phoneNumber}>{contactName } </Text>
+        {/* <SegmentedBorder segments={statuses.length}>
+        </SegmentedBorder> */}
+          <Image
+            source={userData && userData.profilePicture ? { uri: userData.profilePicture } : require('../assets/Avator.jpg')}
+            style={styles.thumbnail}
+          />
+        <Text style={styles.phoneNumber}>{contactName}</Text>
       </TouchableOpacity>
     );
   };
@@ -102,7 +89,7 @@ const StatusList = () => {
     <FlatList
       data={statuses}
       renderItem={renderItem}
-      keyExtractor={item => item.$id}
+      keyExtractor={(item, index) => item.userData.phoneNumber + '-' + index}
       horizontal
       contentContainerStyle={styles.list}
     />

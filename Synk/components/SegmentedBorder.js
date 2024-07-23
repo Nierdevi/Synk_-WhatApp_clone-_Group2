@@ -1,50 +1,59 @@
 import React from 'react';
-import { View, StyleSheet, Image, Text } from 'react-native';
+import { View, StyleSheet, Image } from 'react-native';
 
 const SegmentedBorder = ({ segments, children }) => {
-  const segmentCount = Math.max(segments, 1);
-  const segmentAngle = 360 / segmentCount;
-  const radius = 30; // Half of the fixed width/height
-
-  const segmentStyles = Array.from({ length: segmentCount }).map((_, index) => ({
-    transform: [
-      { rotate: `${index * segmentAngle}deg` },
-      { translateX: radius - 4 },
-    ],
-  }));
+  const segmentAngle = 360 / segments;
+  const radius = 30; // Half of the width/height of the image plus border
 
   return (
     <View style={styles.container}>
       <View style={styles.imageWrapper}>
         {children}
-        {segmentStyles.map((style, index) => (
-          <View key={index} style={[styles.segment, style]} />
-        ))}
       </View>
+      {Array.from({ length: segments }).map((_, index) => (
+        <View
+          key={index}
+          style={[
+            styles.segment,
+            {
+              transform: [
+                { rotate: `${index * segmentAngle}deg` },
+                { translateX: radius }
+              ]
+            }
+          ]}
+        />
+      ))}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    justifyContent: 'center',
-    alignItems: 'center',
     position: 'relative',
-    width: 60,
-    height: 60,
+    width: 70,
+    height: 70,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   imageWrapper: {
-    position: 'relative',
     width: 60,
     height: 60,
     borderRadius: 30,
+    overflow: 'hidden',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   segment: {
     position: 'absolute',
-    width: 4,
-    height: 30,
-    backgroundColor: 'rgba(0, 0, 255, 0.5)', // Adjust color as needed
-    borderRadius: 2,
+    width: 60,
+    height: 60,
+    borderWidth: 3,
+    borderRadius: 30,
+    borderColor: '#00f', // Color for the border segments
+    borderTopWidth: 0,
+    borderRightWidth: 0,
+    borderBottomWidth: 0,
   },
 });
 

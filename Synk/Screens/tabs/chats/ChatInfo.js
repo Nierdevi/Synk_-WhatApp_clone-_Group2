@@ -29,7 +29,7 @@ const ChatInfo = ({ navigation,route }) => {
     const fetchUserData= async()=>{
       try{
         const userData = await getUserData(recipientPhoneNumber)
-        console.log(userData.about)
+        // console.log(userData.about)
         setAbout(userData.about)
 
       }catch(error){
