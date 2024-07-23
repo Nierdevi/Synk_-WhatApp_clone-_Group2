@@ -32,7 +32,7 @@ export default function GroupHeader() {
     };
 
     const menuItems = [
-        { label: 'Settings', onPress: () => {handleNavigateToSettings} },
+        { label: 'Settings', onPress: () => handleNavigateToSettings() },
         { label: 'Switch accounts', onPress: () => {} },
     ];
 
