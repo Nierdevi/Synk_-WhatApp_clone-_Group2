@@ -153,116 +153,6 @@ messageText: {
 
 
 
-  import React, { useRef, useEffect ,useState} from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableWithoutFeedback,Image  } from 'react-native';
-import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
-import { primaryColors } from '../constants/colors';
-import DateTime from './DateTime';
-import { LongPressGestureHandler, State } from 'react-native-gesture-handler';
-
-const ChatList = ({ messages, currentUserPhoneNumber }) => {
-  const flatListRef = useRef(null);
-  const [isAutoScrolling, setIsAutoScrolling] = useState(true);
-
-  useEffect(() => {
-    if (flatListRef.current) {
-      flatListRef.current.scrollToEnd({ animated: true });
-    }
-  }, [messages]);
-
-  const handleLongPress = (message) => {
-    // Implement your logic for handling long press (e.g., show options like copy, pin, forward)
-    console.log('Long press detected on message:', message.messageText);
-  };
-
-  const renderItem = ({ item }) => {
-    const isCurrentUser = item.senderId === currentUserPhoneNumber;
-
-    return (
-      <LongPressGestureHandler
-        onHandlerStateChange={({ nativeEvent }) => {
-          if (nativeEvent.state === State.ACTIVE) {
-            handleLongPress(item);
-          }
-        }}
-      >
-          <View
-            style={[
-              styles.message,
-              isCurrentUser ? styles.currentUserMessage : styles.recipientMessage,
-            ]}
-          >{item.type === 'text' ? (
-              <Text style={styles.messageText}>{item.messageText}</Text>
-            ) : item.type === '{image' || 'text' ? (
-              <Image source={{ uri: item.mediaUrl }} style={styles.mediaImage}  />
-            ) : null}
-            {/* <Text style={styles.messageText}>{item.messageText}</Text> */}
-            {/* {item.type === 'text'} */}
-            <Text style={styles.timeText}>{DateTime(item.$createdAt)}</Text>
-          </View>
-      </LongPressGestureHandler>
-    );
-  };
-
-  return (
-    <FlatList
-      ref={flatListRef}
-      data={messages}
-      renderItem={renderItem}
-      keyExtractor={(item) => item.$id}
-      inverted
-      contentContainerStyle={styles.flatListContainer}
-      onContentSizeChange={() => {
-        if (isAutoScrolling && flatListRef.current) {
-          flatListRef.current.scrollToEnd({ animated: true });
-        }
-      }}
-      onScrollBeginDrag={() => setIsAutoScrolling(false)}
-      onMomentumScrollEnd={() => setIsAutoScrolling(true)}
-    />
-  );
-};
-
-const styles = StyleSheet.create({
-  flatListContainer: {
-    flexGrow: 1,
-    paddingTop: 10,
-    paddingBottom: 10,
-    paddingHorizontal:10,
-  },
-  message: {
-    maxWidth: '80%',
-    padding: 5,
-    marginBottom: 10,
-    borderRadius: 10,
-  },
-  currentUserMessage: {
-    alignSelf: 'flex-end',
-    backgroundColor: primaryColors.purple || '#6A1B9A',
-  },
-  recipientMessage: {
-    alignSelf: 'flex-start',
-    backgroundColor: '#3F3F46',
-  },
-  messageText: {
-    fontSize: 16,
-    color: 'white',
-    marginRight:25
-  },
-  timeText: {
-    color: 'white',
-    fontSize: wp('3%'),
-    alignSelf: 'flex-end',
-  },
-  mediaImage: {
-    width: wp("56%"),
-    height:hp('30%'), // Set your desired height
-    borderRadius: 10,
-    marginBottom: 5,
-  },
-});
-
-export default ChatList;
 
 
 
@@ -382,215 +272,6 @@ useEffect(() => {
 
 
 
-import React, { useRef, useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, Image, TouchableWithoutFeedback } from 'react-native';
-import { Video } from 'expo-av';
-import { primaryColors } from '../constants/colors';
-import DateTime from './DateTime';
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { LongPressGestureHandler, State } from 'react-native-gesture-handler';
-import FullScreenMediaModal from './FullScreenMediaModal ';
-import { fetchUserName } from '../backend/userService';
-
-const GroupChatList = ({ messages, currentUserPhoneNumber, contacts }) => {
-    // cconsloe
-  const flatListRef = useRef(null);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [selectedMediaUri, setSelectedMediaUri] = useState('');
-  const [selectedMediaType, setSelectedMediaType] = useState('');
-  const [selectedText, setSelectedText] = useState('');
-  const listRef = useRef(null);
-  const scrollOffsetY = useRef(0);
-
-  console.log("group data: ", messages);
-  useEffect(() => {
-    if (flatListRef.current) {
-      flatListRef.current.scrollToEnd({ animated: true });
-    }
-  }, [messages]);
-
-  const handleLongPress = (message) => {
-    console.log('Long press detected on message:', message.messageText);
-  };
-
-  const handleMediaPress = (uri, type, messageText) => {
-    setSelectedMediaUri(uri);
-    setSelectedMediaType(type);
-    setSelectedText(messageText);
-    setModalVisible(true);
-  };
-
-  const handleScroll = (event) => {
-    scrollOffsetY.current = event.nativeEvent.contentOffset.y;
-  };
-
-  const getContactName = (phoneNumber) => {
-    const contact = contacts.find(c => c.normalizedPhoneNumbers && c.normalizedPhoneNumbers.includes(phoneNumber));
-    return contact ? contact.name : null;
-  };
-
-  const renderItem = ({ item }) => {
-    const isCurrentUser = item.senderId === currentUserPhoneNumber;
-    const contactName = getContactName(item.senderId);
-    const displayName = contactName || (item.username || item.senderId);
-    const profilePicture = item.profilePicture && typeof item.profilePicture === 'string' ? item.profilePicture : require('../assets/Avator.jpg');
-        console.log("profile url: ",profilePicture)
-    return (
-      <LongPressGestureHandler
-        onHandlerStateChange={({ nativeEvent }) => {
-          if (nativeEvent.state === State.ACTIVE) {
-            handleLongPress(item);
-          }
-        }}
-      >
-        <TouchableWithoutFeedback>
-          <View
-            style={[
-              styles.messageContainer,
-              isCurrentUser ? styles.currentUserContainer : styles.recipientContainer,
-            ]}
-          >
-            {!isCurrentUser && (
-              <Image source={{ uri: profilePicture }} style={styles.profilePicture} />
-            )}
-            <View
-              style={[
-                styles.message,
-                isCurrentUser ? styles.currentUserMessage : styles.recipientMessage,
-              ]}
-            >
-              {!isCurrentUser && <Text style={styles.senderName}>{displayName}</Text>}
-              {item.mediaUrl ? (
-                <>
-                  {item.type === 'image' ? (
-                    <TouchableWithoutFeedback onPress={() => handleMediaPress(item.mediaUrl, 'image', item.messageText)}>
-                      <Image source={{ uri: item.mediaUrl }} style={styles.media} />
-                    </TouchableWithoutFeedback>
-                  ) : item.type === 'video' ? (
-                    <TouchableWithoutFeedback onPress={() => handleMediaPress(item.mediaUrl, 'video', item.messageText)}>
-                      <View style={styles.mediaContainer}>
-                        <Video
-                          source={{ uri: item.mediaUrl }}
-                          style={styles.media}
-                          resizeMode="contain"
-                          isMuted
-                        />
-                        <Text style={styles.playIcon}>▶</Text>
-                      </View>
-                    </TouchableWithoutFeedback>
-                  ) : null}
-                </>
-              ) : null}
-              {item.messageText ? (
-                <Text style={styles.messageText}>{item.messageText} </Text>
-              ) : null}
-              <Text style={styles.timeText}>{DateTime(item.$createdAt)} </Text>
-            </View>
-          </View>
-        </TouchableWithoutFeedback>
-      </LongPressGestureHandler>
-    );
-  };
-
-  return (
-    <View style={{ flex: 1 }}>
-      <FlatList
-        ref={listRef}
-        data={messages}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.$id}
-        inverted
-        contentContainerStyle={styles.flatListContainer}
-        onScroll={handleScroll}
-        onContentSizeChange={() => listRef.current.scrollToOffset({ offset: scrollOffsetY.current, animated: false })}
-      />
-      <FullScreenMediaModal
-        visible={modalVisible}
-        mediaUri={selectedMediaUri}
-        mediaType={selectedMediaType}
-        onClose={() => setModalVisible(false)}
-        onRequestClose={() => setModalVisible(false)}
-        messageText={selectedText}
-      />
-    </View>
-  );
-};
-
-const styles = StyleSheet.create({
-  flatListContainer: {
-    flexGrow: 1,
-    paddingTop: 10,
-    paddingBottom: 10,
-    paddingHorizontal: 10,
-  },
-  messageContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  currentUserContainer: {
-    alignSelf: 'flex-end',
-  },
-  recipientContainer: {
-    alignSelf: 'flex-start',
-  },
-  profilePicture: {
-    width: wp('10%'),
-    height: wp('10%'),
-    borderRadius: 25,
-    marginRight: 10,
-  },
-  message: {
-    maxWidth: '80%',
-    padding: 7,
-    borderRadius: 10,
-  },
-  currentUserMessage: {
-    backgroundColor: primaryColors.purple,
-  },
-  recipientMessage: {
-    backgroundColor: '#3F3F46',
-  },
-  senderName: {
-    fontWeight: 'bold',
-    marginBottom: 5,
-    color: 'white',
-  },
-  messageText: {
-    fontSize: 16,
-    color: 'white',
-    marginTop: 5,
-    marginRight: 40,
-  },
-  timeText: {
-    color: 'white',
-    fontSize: wp('3%'),
-    alignSelf: 'flex-end',
-  },
-  media: {
-    width: wp('56%'),
-    height: hp('30%'),
-    borderRadius: 10,
-    marginBottom: 5,
-    overflow: 'hidden',
-  },
-  mediaContainer: {
-    position: 'relative',
-    width: wp('80%'),
-    height: wp('80%'),
-    borderRadius: 10,
-    overflow: 'hidden',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  playIcon: {
-    position: 'absolute',
-    fontSize: 30,
-    color: 'white',
-  },
-});
-
-export default GroupChatList;
 
 
 260b731b9e807e5b42463dc1d05fee1da556ad5aeac46f559a4dbb164797a130a7d37daa43a6287a92fa3ac59068ec47
@@ -622,136 +303,7 @@ import DateTime from "./DateTime";
 import { databases } from "../backend/appwrite";
 import { Query } from "appwrite";
 
-const RenderMessagedContactItem = ({ item, contacts, navigation, session }) => {
-const contact = contacts.find((contact) =>
-    contact.normalizedPhoneNumbers?.includes(item.contactPhoneNumber)
-);
 
-const [profilePicture, setProfilePicture] = useState(require('../assets/Avator.jpg'));
-
-useEffect(() => {
-    const fetchProfilePicture = async () => {
-    if (contact) {
-        try {
-        const response = await databases.listDocuments(
-            "database_id",
-            "users",
-            [Query.equal("phoneNumber", contact.normalizedPhoneNumbers[0])]
-        );
-
-        if (response.documents.length > 0) {
-            const profilePictureUrl = response.documents[0].profilePicture;
-            setProfilePicture(profilePictureUrl);
-
-        userInfo=response.documents[0]
-
-        return userInfo
-        }
-        } catch (error) {
-        console.error("Failed to fetch profile picture:", error);
-        }
-    }
-    };
-
-    fetchProfilePicture();
-}, [contact]);
-
-if (!contact) return null;
-
-
-return (
-    <TouchableOpacity
-    style={styles.contactItem}
-    onPress={() =>
-        navigation.navigate("ChatRoom", {
-        contact,
-        currentUserPhoneNumber: session.phoneNumber,
-        profilePicture
-        })
-    }
-    >
-    <Image
-        source={profilePicture ? { uri: profilePicture } :  require('../assets/Avator.jpg')} 
-        style={styles.profilePicture}
-        cachePolicy="disk"
-    />
-    <View style={styles.contactDetails}>
-        <View style={styles.upperContactdetails}>
-        <Text style={styles.contactName}>{contact.name} </Text>
-        {item.lastMessage && (
-            <Text style={styles.lastMessageTime}>{DateTime(item.lastMessage.$createdAt)}</Text>
-        )}
-        </View>
-        {item.lastMessage && (
-        <Text
-            style={styles.lastMessageText}
-            numberOfLines={1}
-            ellipsizeMode="tail"
-        >
-            {item.lastMessage.messageText}
-        </Text>
-        )}
-    </View>
-    </TouchableOpacity>
-);
-};
-
-const styles = StyleSheet.create({
-container: {
-    flex: 1,
-    // backgroundColor: 'red',
-    width: wp("100%"),
-    // paddingHorizontal:10,
-    marginTop: 20,
-},
-contactItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    // paddingHorizontal: 9,
-    borderBottomWidth: 1,
-    borderBottomColor: "#f2f2f2",
-    // backgroundColor:'yellow',
-    width:wp('100%')
-},
-contactDetails: {
-    justifyContent: "center",
-    gap: 5,
-},
-upperContactdetails: {
-    justifyContent: "space-between",
-    flexDirection: "row",
-    // backgroundColor:'red',
-    width:wp('80%')
-},
-contactName: {
-    fontSize: hp("2.5%"),
-    // backgroundColor:'pink'
-},
-lastMessageText: {
-    fontSize: hp("2%"),
-    color: "gray",
-    width: wp("70%"),
-},
-lastMessageTime:{
-    width:wp('10%')
-},
-contactItem: {
-    padding: 10,
-    width: wp("100%"),
-    flexDirection: "row",
-},
-contactName: {
-    fontSize: 18,
-},
-profilePicture: {
-    width: 55,
-    height: 55,
-    borderRadius: 50,
-    marginRight: 10,
-},
-});
-
-export default RenderMessagedContactItem;
 
 
 
@@ -826,3 +378,108 @@ const styles = StyleSheet.create({
 });
 
 export default CameraComponent;
+
+
+const viewStatus = async (statusId, viewerPhoneNumber) => {
+  try {
+      // Fetch the status document
+      const status = await databases.getDocument('database_id', 'status', statusId);
+
+      // Update the viewers list
+      const viewers = status.viewers || [];
+      if (!viewers.includes(viewerPhoneNumber)) {
+          const updatedViewers = [...viewers, viewerPhoneNumber];
+          await databases.updateDocument('database_id', 'status', statusId, { viewers: updatedViewers });
+      }
+  } catch (error) {
+      console.error('Failed to update status viewers:', error);
+  }
+};
+
+const getStatuses = async (phoneNumbers) => { // Modified to take an array of phone numbers
+  try {
+      const response = await databases.listDocuments('database_id', 'status', [
+          Query.contains('phoneNumber', phoneNumbers), // Changed to Query.in for multiple phone numbers
+          // Query.greaterThan('expiryAt', Date.now())
+      ]);
+      console.log("statuses: ",response.documents)
+      return response.documents;
+  } catch (error) {
+      console.error("Failed to get statuses:", error);
+  }
+};
+
+
+
+import React, { useEffect, useState } from 'react';
+import { View, Text, FlatList, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import { getStatuses } from '../backend/statusService';
+import { useContacts } from '../backend/contacts ';
+import { getUser } from '../constants/userContext';
+
+const StatusList = () => {
+  const [statuses, setStatuses] = useState([]);
+  const { session } = getUser();
+  const contacts = useContacts(session);
+
+  useEffect(() => {
+    const fetchStatuses = async () => {
+        try {
+          const allStatuses = await getStatuses();
+          console.log("All statuses:", allStatuses);
+      
+          const normalizedPhoneNumbers = contacts.flatMap(contact => 
+            Array.isArray(contact.normalizedPhoneNumbers) ? contact.normalizedPhoneNumbers : []
+          );
+          const filteredStatuses = allStatuses.filter(status =>
+            status && status.phoneNumber &&
+            normalizedPhoneNumbers.includes(status.phoneNumber)
+          );
+      
+          console.log("Filtered statuses:", filteredStatuses);
+          setStatuses(filteredStatuses);
+        } catch (error) {
+          console.error('Error fetching statuses:', error);
+        }
+      };
+
+    fetchStatuses();
+  }, [contacts]);
+
+  const renderItem = ({ item }) => (
+    <TouchableOpacity>
+      <Image source={{ uri: item.mediaUrl }} style={styles.thumbnail} />
+      <Text style={styles.phoneNumber}>{item.currentUserPhoneNumber}</Text>
+    </TouchableOpacity>
+  );
+
+  return (
+    <FlatList
+      data={statuses}
+      renderItem={renderItem}
+      keyExtractor={item => item.$id}
+      horizontal
+      contentContainerStyle={styles.list}
+    />
+  );
+};
+
+const styles = StyleSheet.create({
+  list: {
+    paddingVertical: 10,
+  },
+  itemContainer: {
+    marginHorizontal: 5,
+  },
+  thumbnail: {
+    width: 100,
+    height: 100,
+    borderRadius: 10,
+  },
+  phoneNumber: {
+    textAlign: 'center',
+    marginTop: 5,
+  },
+});
+
+export default StatusList;

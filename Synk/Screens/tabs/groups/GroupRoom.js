@@ -47,7 +47,7 @@ const ChatRoom = ({ route, navigation }) => {
             style={styles.profilePicture}
             cachePolicy='disk'
           />
-          <TouchableOpacity style={styles.usenameContainer} onPress={() => { navigation.navigate('ChatInfo', {}) }}>
+          <TouchableOpacity style={styles.usenameContainer} onPress={() => { navigation.navigate('GroupInfo', {}) }}>
             <Text style={styles.name}>{groupData.groupName}</Text>
           </TouchableOpacity>
         </View>

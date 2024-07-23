@@ -2,15 +2,12 @@ import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { Camera, CameraView } from 'expo-camera';
 import * as FileSystem from 'expo-file-system';
 import * as ImagePicker from 'expo-image-picker';
-import React, { useEffect, useRef, useState } from 'react';
-import { Alert, Modal, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
-// import ImageEditingComponent from './ImageEditingComponent';
 
 
 
 
 const CameraComponent = ({ isVisible, onClose }) => {
+  const {session}=getUser();
   const [hasPermission, setHasPermission] = useState(null);
   const [facing, setFacing] = useState('back');
   const [mode, setMode] = useState('picture');
@@ -18,8 +15,12 @@ const CameraComponent = ({ isVisible, onClose }) => {
   const [isRecording, setIsRecording] = useState(false);
   const [recordTime, setRecordTime] = useState(0);
   const [editingVisible, setEditingVisible] = useState(false);
+  const [imageUri, setImageUri] = useState(null);
+
   const cameraRef = useRef(null);
   const timerRef = useRef(null);
+
+  // console.log("phone number: ",session.phoneNumber)
 
   useEffect(() => {
     const getCameraPermission = async () => {
@@ -58,7 +59,16 @@ const CameraComponent = ({ isVisible, onClose }) => {
       const uri = result.assets[0].uri;
       // setMediaUri(uri)
       // setModalVisible(true);
+      setImageUri(uri)
       console.log("uri: ",uri)
+
+      const uploadedStatus =await addStatus(session.phoneNumber,imageUri,'image')
+        if(uploadedStatus){
+          console.log("status uploaded:",uploadedStatus)
+        }else{
+          console.log("failed to upload")
+        }
+      // setEditingVisible(true)
     }
   };
 
@@ -67,6 +77,12 @@ const CameraComponent = ({ isVisible, onClose }) => {
       let photo = await cameraRef.current.takePictureAsync();
       console.log(photo.uri); // Use this URI to display or send the photo
       await saveFile(photo.uri, 'picture');
+      const uploadedStatus =await addStatus(session.phoneNumber,imageUri,'image')
+        if(uploadedStatus){
+          console.log("status uploaded:",uploadedStatus)
+        }else{
+          console.log("failed to upload")
+        }
     }
   };
 
@@ -183,6 +199,7 @@ const CameraComponent = ({ isVisible, onClose }) => {
               color="white"
             />
           </TouchableOpacity> */}
+                {/* <ImageEditingComponent isVisible={editingVisible} onClose={()=>{setEditingVisible(false)}} imageUri={imageUri}/> */}
         </View>
       </View>
     </Modal>

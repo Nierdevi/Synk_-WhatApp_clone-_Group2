@@ -235,7 +235,7 @@ const handleStatusSavePress = async () => {
                         <TextInput
                             style={styles.profileValueInput}
                             value={newAbout}
-                            onChangeText={setnewAbout}
+                            onChangeText={setNewAbout}
                             onSubmitEditing={handleStatusSavePress}
                         />
                     ) : (

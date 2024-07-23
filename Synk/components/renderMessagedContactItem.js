@@ -126,7 +126,8 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#f2f2f2",
     width: wp("100%"),
-    paddingHorizontal:15
+    paddingHorizontal:15,
+    marginBottom:15
   },
   contactDetails: {
     justifyContent: "center",

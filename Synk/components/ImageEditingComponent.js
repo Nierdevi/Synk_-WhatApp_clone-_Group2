@@ -1,17 +1,23 @@
 import React, { useState, useRef } from 'react';
-import { View, Image, TouchableOpacity, Text, StyleSheet, Modal, TextInput } from 'react-native';
-import { CropView } from 'react-native-image-crop-tools';
-import { SketchCanvas } from '@terrylinla/react-native-sketch-canvas';
+import { View, Text, StyleSheet, Modal, TextInput, TouchableOpacity, Image, Alert } from 'react-native';
+import ImageDraw from 'react-native-image-draw';
+import ImageCropPicker from 'react-native-image-crop-picker';
+import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 
 const ImageEditingComponent = ({ isVisible, imageUri, onClose, onSave }) => {
-  const [currentMode, setCurrentMode] = useState('crop');
+  const [currentMode, setCurrentMode] = useState('draw');
   const [textInput, setTextInput] = useState('');
   const [texts, setTexts] = useState([]);
-  const cropViewRef = useRef(null);
+  const [editedImageUri, setEditedImageUri] = useState(imageUri);
+  const imageDrawRef = useRef(null);
 
-  const handleSave = () => {
-    // Save the edited image (implementation depends on your app's requirements)
-    onSave(imageUri);
+  const handleSave = async () => {
+    try {
+      const savedImage = await imageDrawRef.current.save();
+      onSave(savedImage);
+    } catch (error) {
+      Alert.alert('Error', 'Could not save the image.');
+    }
   };
 
   const handleTextAdd = () => {
@@ -21,47 +27,61 @@ const ImageEditingComponent = ({ isVisible, imageUri, onClose, onSave }) => {
     }
   };
 
+  const handleCrop = () => {
+    if(editedImageUri){
+    ImagePicker.openCropper({
+      path: editedImageUri,
+      cropping: true,
+    })
+      .then((image) => {
+        setEditedImageUri(image.path);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+    }else return
+  };
+
   return (
     <Modal visible={isVisible} animationType="slide" onRequestClose={onClose}>
       <View style={styles.container}>
         <View style={styles.topBar}>
           <TouchableOpacity onPress={onClose}>
-            <Text style={styles.topBarText}>Cancel</Text>
+            <MaterialIcons name="close" size={30} color="white" />
           </TouchableOpacity>
           <TouchableOpacity onPress={handleSave}>
-            <Text style={styles.topBarText}>Save</Text>
+            <MaterialIcons name="check" size={30} color="white" />
           </TouchableOpacity>
         </View>
-        {currentMode === 'crop' ? (
-          <CropView
-            sourceUrl={imageUri}
-            style={styles.image}
-            ref={cropViewRef}
-            onImageCrop={(res) => console.log(res)}
-          />
-        ) : (
-          <SketchCanvas
-            style={styles.canvas}
-            strokeColor={'black'}
-            strokeWidth={7}
-            localSourceImage={{ filename: imageUri, mode: 'AspectFill' }}
-          />
-        )}
+        <View style={styles.imageContainer}>
+          {currentMode === 'draw' ? (
+            <ImageDraw
+              ref={imageDrawRef}
+              image={editedImageUri}
+              style={styles.imageDraw}
+              strokeColor={'black'}
+              strokeWidth={7}
+            />
+          ) : (
+            <Image source={{ uri: editedImageUri }} style={styles.image} />
+          )}
+        </View>
         <View style={styles.bottomBar}>
-          <TouchableOpacity onPress={() => setCurrentMode('crop')}>
-            <Text style={[styles.bottomBarText, currentMode === 'crop' && styles.selected]}>Crop</Text>
-          </TouchableOpacity>
           <TouchableOpacity onPress={() => setCurrentMode('draw')}>
-            <Text style={[styles.bottomBarText, currentMode === 'draw' && styles.selected]}>Draw</Text>
+            <MaterialCommunityIcons name="pencil" size={30} color={currentMode === 'draw' ? 'yellow' : 'white'} />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={handleCrop}>
+            <MaterialCommunityIcons name="crop" size={30} color="white" />
           </TouchableOpacity>
           <TouchableOpacity onPress={handleTextAdd}>
-            <Text style={styles.bottomBarText}>Add Text</Text>
+            <MaterialCommunityIcons name="text" size={30} color="white" />
           </TouchableOpacity>
           <TextInput
             style={styles.textInput}
             value={textInput}
             onChangeText={setTextInput}
             placeholder="Enter text"
+            placeholderTextColor="gray"
           />
         </View>
         {texts.map((text, index) => (
@@ -81,30 +101,27 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     padding: 10,
+    backgroundColor: '#000',
   },
-  topBarText: {
-    color: 'white',
-    fontSize: 18,
+  imageContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  imageDraw: {
+    width: '100%',
+    height: '100%',
   },
   image: {
-    flex: 1,
-    backgroundColor: 'black',
-  },
-  canvas: {
-    flex: 1,
+    width: '100%',
+    height: '100%',
+    resizeMode: 'contain',
   },
   bottomBar: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    padding: 10,
     alignItems: 'center',
-  },
-  bottomBarText: {
-    color: 'white',
-    fontSize: 18,
-  },
-  selected: {
-    fontWeight: 'bold',
+    padding: 10,
+    backgroundColor: '#000',
   },
   textInput: {
     backgroundColor: 'white',
@@ -112,6 +129,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 10,
     borderRadius: 5,
+    marginLeft: 10,
   },
   text: {
     color: 'white',

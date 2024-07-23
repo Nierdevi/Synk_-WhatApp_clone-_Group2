@@ -3,6 +3,10 @@ import { FlatList, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View }
 import { Divider, Menu, Provider } from 'react-native-paper';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { primaryColors } from '../../../constants/colors';
+import Fab from '../../../components/fab'
+import CameraComponent from '../../../components/CameraComponent';
+import StatusList from '../../../components/StatusList ';
+
 
 const DefaultProfileImg = () => (
   <View style={styles.statusContainer}>
@@ -18,6 +22,8 @@ const DefaultProfileImg = () => (
 
 
 const UpdatesScreen = ({ navigation }) => {
+    const [isCameraVisible, setIsCameraVisible] = useState(false);
+
   const [statuses, setStatuses] = useState([
       { id: 1, user: 'Synk', img: 'https://via.placeholder.com/50', total: 3, viewed: 1 }
   ]);
@@ -26,7 +32,15 @@ const UpdatesScreen = ({ navigation }) => {
   const [followedChannels, setFollowedChannels] = useState([]);
 
   const Applogo=require('../../../assets/AppLogo.png')
-  console.log(Applogo)
+//   console.log(Applogo)
+
+  const openCamera = () => {
+    setIsCameraVisible(true);
+  };
+
+  const closeCamera = () => {
+    setIsCameraVisible(false);
+  };
 
   const suggestedChannels = [
       { id: 3, name: 'Synk', img: Applogo, followers: '6.7k followers' },
@@ -109,7 +123,7 @@ const UpdatesScreen = ({ navigation }) => {
           <View style={styles.container}>
               <ScrollView>
                   <View style={styles.section}>
-                      <Text style={styles.title}>Status</Text>
+                      {/* <Text style={styles.title}>Status</Text>
                       <FlatList
                           horizontal
                           data={[{ id: 'default', user: 'My Status', img: 'https://via.placeholder.com/50' }, ...statuses]}
@@ -130,7 +144,8 @@ const UpdatesScreen = ({ navigation }) => {
                           )}
                           keyExtractor={item => item.id.toString()}
                           showsHorizontalScrollIndicator={false}
-                      />
+                      /> */}
+                  <StatusList />
                   </View>
                   <View style={styles.section}>
                       <View style={styles.channelsHeader}>
@@ -198,12 +213,10 @@ const UpdatesScreen = ({ navigation }) => {
                   </View>
               </ScrollView>
               <View style={styles.bottomRightIcons}>
-              <TouchableOpacity style={[styles.bottomIcon, styles.pencilIcon, { marginBottom: 10 }]} onPress={() => navigation.navigate('EditStatus')}>
-                  <Ionicons name="pencil" size={24} color="#fff" />
-              </TouchableOpacity>
-                  <TouchableOpacity style={styles.bottomIcon} onPress={() => navigation.navigate('CameraStatus')}>
-                      <Ionicons name="camera" size={24} color="#fff" />
-                  </TouchableOpacity>
+                <TouchableOpacity style={[styles.bottomIcon, styles.pencilIcon, { marginBottom: 10 }]} onPress={() => navigation.navigate('EditStatus')}>
+                    <Ionicons name="pencil" size={24} color="#fff" />
+                </TouchableOpacity>
+                <Fab type="chats" handlePress={openCamera}  />
               </View>
               <Menu
                   visible={menuVisible}
@@ -219,6 +232,7 @@ const UpdatesScreen = ({ navigation }) => {
                   <Divider />
                   <Menu.Item onPress={() => {}} title="Settings" />
               </Menu>
+              <CameraComponent isVisible={isCameraVisible} onClose={closeCamera} />
           </View>
       </Provider>
   );
@@ -421,7 +435,10 @@ const styles = StyleSheet.create({
       bottom: 20,
       right: 20,
       flexDirection: 'column',
-      alignItems: 'flex-end'
+      alignItems: 'flex-end',
+      height:140,
+      marginRight:-16,
+      marginBottom:-20
   },
   pencilIcon: {
       backgroundColor: 'grey',
