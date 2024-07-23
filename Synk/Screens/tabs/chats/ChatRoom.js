@@ -59,7 +59,7 @@ useFocusEffect(
       headerLeft: () => (
         <View style={styles.headerLeft}>
           <TouchableOpacity style={styles.iconButton} onPress={()=>{navigation.goBack()}}>
-          <Ionicons name="arrow-back-outline" size={24} color="black" style={{marginRight:6}}/>
+            <Ionicons name="arrow-back-outline" size={24} color="black" style={{marginRight:6}}/>
           </TouchableOpacity>
             <Image
                 source={profilePicture ? { uri: profilePicture } : require('../../../assets/Avator.jpg')} 
@@ -249,6 +249,9 @@ const styles = StyleSheet.create({
     justifyContent:'flex-end',
     top: 1,
     right:3,
+  },
+  iconButton:{
+    paddingLeft:10,
   },
 });
 

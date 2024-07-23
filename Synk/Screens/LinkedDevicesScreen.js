@@ -1,14 +1,19 @@
 import React from 'react';
 import { StyleSheet, Text, View, Pressable, TouchableOpacity, Alert } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { Video } from 'expo-av';
 import { SecondaryColors } from '../constants/colors';
 
 const LinkedDevicesScreen = ({ navigation }) => {
 
     const handlePress = () => {
-        Alert.alert('You pressed the colored text!');
+        Alert.alert('end-to-end encrypted pressed');
     };
+
+    const handlePress1 = () => {
+        // Handle the link press
+        Alert.alert('Learn more pressed');
+      };
 
   return (
     <View style={styles.container}>
@@ -28,18 +33,27 @@ const LinkedDevicesScreen = ({ navigation }) => {
             />
         </View>
         <View style={styles.me}>
-            <Text style={[styles.Text, {paddingBottom: 10,}]}>Use Synk on Web,Desktop and other devices.</Text>
+            <Text>Use Synk on Web,Desktop and other devices.</Text>
+            <TouchableOpacity onPress={handlePress1}>
+                <Text style={styles.Text}>Learn more</Text>
+            </TouchableOpacity>
             <TouchableOpacity style={styles.button}>
                 <Text style={styles.Text2}>Link a device</Text>
             </TouchableOpacity>
         </View>
+
+        <View style={styles.mine}>
+            <Text style={styles.tom}>Device Status</Text>
+            <Text style={styles.tom}>Tap a device to log out.</Text>
+        </View>
         <View style={styles.dot}>
-            <Text>Your personal messages are 
-                <TouchableOpacity onPress={handlePress} style={{top: -5}}>
-                    <Text style={{color:'red',}}> end-to-end </Text> 
+            <MaterialIcons name="lock" size={14} color="black" style={{bottom: 15}}/>
+            <View>
+                <Text style={{fontSize:13,}}>Your personal messages are                                      on all your devices.</Text>
+                <TouchableOpacity onPress={handlePress} style={styles.yoo}>
+                    <Text style={{color:'red',fontSize: 13,}}> end-to-end encrypted </Text> 
                 </TouchableOpacity>
-                on all your devices.
-            </Text>
+            </View>
         </View>
     </View>
   );
@@ -70,7 +84,6 @@ headerTitle: {
 videoContainer: {
     alignItems: 'center',
     height: '400',
-    backgroundColor:'red',
 },
 backgroundVideo: {
     width: '100%',
@@ -81,6 +94,7 @@ me:{
     justifyContent: 'center',
     backgroundColor:'white',
     paddingBottom: 10,
+    marginBottom:10,
 },
 button:{
     backgroundColor: '#eba834',
@@ -92,8 +106,26 @@ button:{
 },
 dot:{
     padding: 20,
-    flexDirection:'row',
     justifyContent: 'center',
     alignItems:'center',
+    flexDirection:'row',
+},
+yoo:{
+    left: 147,
+    bottom: 29.5,
+},
+mine:{
+    backgroundColor: 'white',
+    padding:10,
+},
+tom:{
+    fontSize:13
+},
+Text:{
+    color: 'blue',
+    fontSize: 13,
+    fontWeight: 'bold',
+    bottom: 1,
+    paddingBottom: 15,
 },
 });
