@@ -1,14 +1,43 @@
 import { View, Text, StyleSheet, Image, Pressable, TouchableOpacity, Switch, ScrollView, SafeAreaView, StatusBar } from 'react-native';
-import React, { useState, useLayoutEffect } from 'react';
+import React, { useState, useLayoutEffect,useEffect } from 'react';
 import { Ionicons, MaterialIcons, Entypo, FontAwesome, FontAwesome6, MaterialCommunityIcons, AntDesign } from '@expo/vector-icons';
 import AppLogo from '../../../assets/AppLogo.png';
 import { primaryColors, SecondaryColors } from '../../../constants/colors';
+import { getUserData } from '../../../backend/userService';
 
-const ChatInfo = ({ navigation }) => {
+
+const ChatInfo = ({ navigation,route }) => {
+  const { contact, recipientPhoneNumber, profilePicture,messages } = route.params;
   const [isEnabled, setIsEnabled] = useState(false);
+  const[about,setAbout]= useState(' ')
   const toggleSwitch = () => {
     setIsEnabled(previousState => !previousState);
   };
+
+  const formatPhoneNumber = (phoneNumber) => {
+    // Remove any non-digit characters
+    const cleaned = ('' + phoneNumber).replace(/\D/g, '');
+    // Check if the number starts with a country code
+    const match = cleaned.match(/^(\d{3})(\d{2})(\d{3})(\d{4})$/);
+    if (match) {
+        return `+${match[1]} ${match[2]} ${match[3]} ${match[4]}`;
+    }
+    return phoneNumber; 
+};
+
+  useEffect(()=>{
+    const fetchUserData= async()=>{
+      try{
+        const userData = await getUserData(recipientPhoneNumber)
+        console.log(userData.about)
+        setAbout(userData.about)
+
+      }catch(error){
+        console.log("failed to get user data"<error)
+      }
+    }
+    fetchUserData()
+  },[recipientPhoneNumber])
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -37,10 +66,13 @@ const ChatInfo = ({ navigation }) => {
       <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 20 }}>
       <StatusBar barStyle="dark-content" />
         <View style={styles.profileContainer}>
-          <Image source={AppLogo} style={styles.logo} />
+          <Image
+                  source={profilePicture ? { uri: profilePicture } : require('../../../assets/Avator.jpg')} 
+                  style={styles.profilePicture}
+                  cachePolicy='disk'
+              />
           <View style={styles.profileTextContainer}>
-            <Text style={styles.profileName}>Synk-User</Text>
-            <Text style={styles.phoneNumber}>+2331232434</Text>
+            <Text style={styles.profileName}>{contact.name}</Text>
           </View>
         </View>
 
@@ -51,17 +83,36 @@ const ChatInfo = ({ navigation }) => {
           </TouchableOpacity>
           <TouchableOpacity style={styles.actionButton}>
             <Entypo name="video-camera" size={24} color="black" />
-            <Text style={styles.actionText}>Video</Text>
+            <Text style={styles.actionText}>Video </Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.actionButton}>
             <Ionicons name="search-outline" size={24} color="black" />
-            <Text style={styles.actionText}>Search</Text>
+            <Text style={styles.actionText}>Search </Text>
           </TouchableOpacity>
         </View>
 
         <View style={styles.infoSection}>
           <Text style={styles.sectionTitle}>About</Text>
-          <Text style={styles.sectionContent}>Date</Text>
+          <Text style={styles.sectionContent}>{about?about:'No about added'}</Text>
+        </View>
+        <View style={styles.infoSection}>
+          <View style={styles.phoneContainer}>
+            <View>
+              <Text style={{fontSize:17}}>{formatPhoneNumber(recipientPhoneNumber)}</Text>
+              <Text style={styles.phoneLabel}>Mobile</Text>
+            </View>
+            <View style={styles.phoneActions}>
+              <Pressable style={styles.icon}>
+                <MaterialIcons name="chat" size={24} color="black" />
+              </Pressable>
+              <Pressable style={styles.icon}>
+                <Ionicons name="call-outline" size={24} color="black" />
+              </Pressable>
+              <Pressable style={styles.icon}>
+                <Entypo name="video-camera" size={24} color="black" />
+              </Pressable>
+            </View>
+          </View>
         </View>
 
         <View style={styles.infoSection}>
@@ -75,7 +126,7 @@ const ChatInfo = ({ navigation }) => {
           </TouchableOpacity>
           <TouchableOpacity style={styles.option}>
             <FontAwesome name="picture-o" size={24} color="black" />
-            <Text style={styles.optionText}>Media visibility</Text>
+            <Text style={styles.optionText}>Media visibility </Text>
           </TouchableOpacity>
         </View>
 
@@ -110,7 +161,7 @@ const ChatInfo = ({ navigation }) => {
           </TouchableOpacity>
         </View>
 
-        <View style={styles.infoSection}>
+        {/* <View style={styles.infoSection}>
           <Text style={styles.sectionTitle}>Other phones</Text>
           <View style={styles.phoneContainer}>
             <View>
@@ -129,20 +180,20 @@ const ChatInfo = ({ navigation }) => {
               </Pressable>
             </View>
           </View>
-        </View>
+        </View> */}
 
         <View style={styles.infoSection}>
           <TouchableOpacity style={styles.option}>
             <FontAwesome6 name="heart" size={24} color="black" />
-            <Text style={styles.optionText}>Block Synk_User</Text>
+            <Text style={styles.optionText}>Add to Favourites</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.option}>
             <MaterialCommunityIcons name="cancel" size={24} color="red" />
-            <Text style={styles.optionTextRed}>Block Synk_User</Text>
+            <Text style={styles.optionTextRed}>Block {contact.name}</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.option}>
             <AntDesign name="dislike2" size={24} color="red" />
-            <Text style={styles.optionTextRed}>Report Synk_User</Text>
+            <Text style={styles.optionTextRed}>Report {contact.name}</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -153,7 +204,7 @@ const ChatInfo = ({ navigation }) => {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: 'red',
+    // backgroundColor: 'red',
     paddingTop:30
   },
   container: {
@@ -192,11 +243,11 @@ const styles = StyleSheet.create({
   profileContainer: {
     alignItems: 'center',
     paddingTop: 20,
-    backgroundColor: 'blue',
+    // backgroundColor: 'blue',
     borderBottomWidth: 1,
     borderBottomColor: '#e0e0e0',
   },
-  logo: {
+  profilePicture: {
     width: 80,
     height: 80,
     borderRadius: 40,
@@ -209,6 +260,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     color: '#000',
+    paddingBottom:10
   },
   phoneNumber: {
     fontSize: 16,

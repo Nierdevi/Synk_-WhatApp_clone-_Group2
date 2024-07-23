@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Modal, Pressable, Image } fro
 import { Ionicons, MaterialIcons, Feather, FontAwesome6 } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import AppLogo from '../../../assets/AppLogo.png'
+import { SecondaryColors } from '../../../constants/colors';
 
 const AccountScreen = () => {
   const navigation = useNavigation();
@@ -126,7 +127,7 @@ const AccountScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'yellow',
+    backgroundColor: SecondaryColors.secPurple,
     marginTop: 30,
   },
   item: {

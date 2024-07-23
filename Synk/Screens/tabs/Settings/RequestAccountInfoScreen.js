@@ -2,6 +2,7 @@ import { StyleSheet, Text, View,Pressable,TouchableOpacity, Alert, Switch } from
 import React from 'react';
 import { useState } from "react";
 import { Ionicons, MaterialIcons, FontAwesome6, Entypo } from '@expo/vector-icons';
+import { SecondaryColors } from '../../../constants/colors';
 
 
 const RequestAccountInfoScreen = ({navigation}) => {
@@ -90,7 +91,7 @@ export default RequestAccountInfoScreen
 const styles = StyleSheet.create({
     container:{
         flex: 1,
-        backgroundColor: 'yellow',
+        backgroundColor: SecondaryColors.secPurple,
         marginTop: 30,
     },
     header: {

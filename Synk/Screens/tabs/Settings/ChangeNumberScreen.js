@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View, Pressable,TouchableOpacity } from 'react-native';
 import React from 'react';
 import { Ionicons, MaterialIcons, Entypo, FontAwesome6 } from '@expo/vector-icons';
+import { SecondaryColors } from '../../../constants/colors';
 
 
 const ChangeNumberScreen = ({navigation}) => {
@@ -47,7 +48,7 @@ const styles = StyleSheet.create({
     container:{
         flex: 1,
         marginTop: 30,
-        backgroundColor: 'yellow',
+        backgroundColor: SecondaryColors.secPurple,
     },
     header: {
         flexDirection: "row",

@@ -7,6 +7,8 @@ import { useContacts } from '../backend/contacts ';
 import { getUser } from '../constants/userContext';
 import { useNavigation } from '@react-navigation/native';
 import { getUserData } from '../backend/userService';
+import SegmentedBorder from './SegmentedBorder';
+
 
 const StatusList = () => {
   const [statuses, setStatuses] = useState([]);
@@ -38,38 +40,59 @@ const StatusList = () => {
         // Fetch user data for each status
         const userDataPromises = filteredStatuses.map(async status => {
           const userData = await getUserData(status.phoneNumber);
-          console.log('User data fetched:', userData);
-          const contact = contacts.find(contact =>
-            Array.isArray(contact.normalizedPhoneNumbers) && contact.normalizedPhoneNumbers.includes(status.phoneNumber)
-          );
-          return { ...status, userData, contactName: contact ? contact.name : null };
+          return { ...status, userData };
         });
 
-        // Wait for all user data promises to resolve
         const statusesWithUserData = await Promise.all(userDataPromises);
-        console.log('Statuses with user data:', statusesWithUserData);
-        setStatuses(statusesWithUserData);
+
+        const groupedStatuses = statusesWithUserData.reduce((acc, status) => {
+          const phoneNumber = status.phoneNumber;
+          if (!acc[phoneNumber]) {
+            acc[phoneNumber] = {
+              userData: status.userData,
+              statuses: []
+            };
+          }
+          acc[phoneNumber].statuses.push(status);
+          return acc;
+        }, {});
+
+        setStatuses(Object.values(groupedStatuses));
       } catch (error) {
         console.error('Error fetching statuses:', error);
       }
     };
+
+    console.log("statuses: ",statuses)
 
     if (contacts.length > 0) {
       fetchStatuses();
     }
   }, [contacts]);
 
+  const contactNameMap = contacts.reduce((acc, contact) => {
+    if (Array.isArray(contact.normalizedPhoneNumbers)) {
+      contact.normalizedPhoneNumbers.forEach(phoneNumber => {
+        acc[phoneNumber] = contact.name;
+      });
+    }
+    return acc;
+  }, {});
+
   const renderItem = ({ item }) => {
-    const { userData, contactName } = item;
+    const { userData, statuses } = item;
+    const contactName = contactNameMap[userData.phoneNumber] || userData.phoneNumber;
     return (
       <TouchableOpacity
         style={styles.itemContainer}
         onPress={() => navigation.navigate('ViewStatus', { status: item })}
       >
+      <SegmentedBorder segments={statuses.length} >
         <Image
           source={userData && userData.profilePicture ? { uri: userData.profilePicture } : require('../assets/Avator.jpg')}
           style={styles.thumbnail}
         />
+        </SegmentedBorder>
         <Text style={styles.phoneNumber}>{contactName } </Text>
       </TouchableOpacity>
     );
