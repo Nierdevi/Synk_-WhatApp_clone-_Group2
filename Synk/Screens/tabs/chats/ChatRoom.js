@@ -184,7 +184,7 @@ useFocusEffect(
       keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0}
     >
       <PopupMenu visible={menuVisible} onClose={() => setMenuVisible(false)} menuItems={menuItems} style={styles.popupMenu} />
-    <StatusBar
+      <StatusBar
         backgroundColor="transparent"
         translucent={true}
           />{loadingMessages ? (

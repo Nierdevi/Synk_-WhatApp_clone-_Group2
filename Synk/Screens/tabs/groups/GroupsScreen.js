@@ -48,7 +48,6 @@ export default function GroupsScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'yellow',
   },
   contentContainer: {
     alignItems: 'center',

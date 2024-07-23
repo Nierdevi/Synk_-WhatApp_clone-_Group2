@@ -33,6 +33,7 @@ import AppLockScreen from '../Settings/Privacy/AppLockScreen';
 import DefaultMessageTimerScreen from '../Settings/Privacy/DefaultMessageTimerScreen';
 import ChatLockScreen from '../Settings/Privacy/ChatLockScreen';
 import AdvancedScreen from '../Settings/Privacy/AdvancedScreen';
+import LinkedDevicesScreen from '../../LinkedDevicesScreen';
 
 const ChatsStack = createStackNavigator();
 
@@ -82,6 +83,7 @@ const ChatsStackNavigator = ({ navigation, route }) => {
       <ChatsStack.Screen name="AppLock" component={AppLockScreen} options={{headerShown:false}}/>
       <ChatsStack.Screen name="ChatLock" component={ChatLockScreen} options={{headerShown:false}}/>
       <ChatsStack.Screen name="Advanced" component={AdvancedScreen} options={{headerShown:false}}/>
+      <ChatsStack.Screen name="Linked" component={LinkedDevicesScreen} options={{headerShown:false}}/>
     </ChatsStack.Navigator>
   );
 };

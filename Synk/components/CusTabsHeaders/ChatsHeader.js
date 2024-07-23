@@ -31,7 +31,7 @@ export default function ChatsHeader() {
 
   const menuItems = [
     { label: 'New broadcast', onPress: () => {} },
-    { label: 'Linked Devices', onPress: () => {} },
+    { label: 'Linked Devices', onPress: () => handleNavigateToLinked() },
     //{ label: 'Starred messages', onPress: () => {} },
     { label: 'Settings', onPress: () => handleNavigateToSettings() }, // Navigate to SettingsScreen
     { label: 'Switch accounts', onPress: () => {toggleDrawer(); }},
@@ -40,6 +40,10 @@ export default function ChatsHeader() {
   const handleNavigateToSettings = () => {
     navigation.navigate('SettingsScreen'); // Navigate to SettingsScreen
     setMenuVisible(false); // Close the popup menu after navigation
+  };
+
+  const handleNavigateToLinked = () => {
+    navigation.navigate('Linked'); // Navigate to LinkedDevicesScreen
   };
 
   const [isDrawerVisible, setIsDrawerVisible] = useState(false); // State for drawer visibility
