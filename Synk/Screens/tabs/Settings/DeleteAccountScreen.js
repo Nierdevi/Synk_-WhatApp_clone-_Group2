@@ -23,8 +23,8 @@ const DeleteAccountScreen = ({navigation}) => {
                 <View style={styles.pad}>
                     <Text style={styles.text}>{'\u2022'} The account will be deleted from Synk and all your devices</Text>
                     <Text style={styles.text}>{'\u2022'} Your message history will be erased</Text>
-                    <Text Style={styles.text}>{'\u2022'} You will be removed from all your Synk groups</Text>
                     <Text style={styles.text}>{'\u2022'} Your Google storage backup will be deleted</Text>
+                    <Text style={styles.text}>{'\u2022'}  You will be removed from all your Synk groups</Text>
                     <Text style={styles.text1}>{'\u2022'} Any channels you  created will be deleted</Text>
                 </View>
                 <View style={styles.dog}>

@@ -27,7 +27,7 @@ const ChatLockScreen = ({navigation}) => {
                 <Text style={styles.grey}>Chats lock keeps your chats locked and hidden</Text>
             </View>
             <Text>If you have locked chats, pull down on your chat list or type your secret code in the search bar to find them.</Text>
-            <TouchableOpacity onPress={handlePress}>
+            <TouchableOpacity style={{maxWidth: 60,}} onPress={handlePress}>
             <Text style={styles.Text}>Learn more</Text>
             </TouchableOpacity>
         </View>

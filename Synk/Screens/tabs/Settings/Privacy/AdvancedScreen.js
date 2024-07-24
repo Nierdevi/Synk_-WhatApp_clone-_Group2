@@ -43,7 +43,7 @@ const AdvancedScreen = ({ navigation }) => {
         <Text style={styles.pod}>
           To make it harder for people to infer your location, calls on this device will be securely relayed through Synk servers. This will reduce call quality.
         </Text>
-        <TouchableOpacity onPress={handlePress}>
+        <TouchableOpacity style={{maxWidth: 60,}} onPress={handlePress}>
           <Text style={styles.Text2}>Learn more</Text>
         </TouchableOpacity>
       </TouchableOpacity>
@@ -63,7 +63,7 @@ const AdvancedScreen = ({ navigation }) => {
         <Text style={styles.pod}>
           To make it harder for people to infer your location, calls on this device will be securely relayed through Synk servers. This will reduce call quality.
         </Text>
-        <TouchableOpacity onPress={handlePress}>
+        <TouchableOpacity style={{maxWidth: 60,}} onPress={handlePress}>
           <Text style={styles.Text2}>Learn more</Text>
         </TouchableOpacity>
       </TouchableOpacity>

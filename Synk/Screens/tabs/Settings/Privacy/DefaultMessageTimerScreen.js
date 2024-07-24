@@ -47,19 +47,19 @@ const DefaultMessageTimerScreen = ({ navigation }) => {
           />
           <RadioButton
             label="90 days"
-            value="onlineOption2"
-            selected={selectedOnlineValue === 'onlineOption2'}
+            value="onlineOption3"
+            selected={selectedOnlineValue === 'onlineOption3'}
             onPress={handleOnlineRadioPress}
           />
           <RadioButton
             label="Off"
-            value="onlineOption2"
-            selected={selectedOnlineValue === 'onlineOption2'}
+            value="onlineOption4"
+            selected={selectedOnlineValue === 'onlineOption4'}
             onPress={handleOnlineRadioPress}
           />
         </View>
         <Text style={styles.bold}>When turned on, all new individual chats will start with disappearing messages set to the duration you select. This setting will not affect your existing chats. </Text>
-        <TouchableOpacity onPress={handlePress}>
+        <TouchableOpacity style={{maxWidth: 60,}} onPress={handlePress}>
             <Text style={styles.Text}>Learn more</Text>
         </TouchableOpacity>
       </View>

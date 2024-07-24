@@ -65,7 +65,7 @@ const SecurityNotificationsScreen = ({navigation}) => {
 
                 </View>
 
-                <TouchableOpacity onPress={handlePress}>
+                <TouchableOpacity style={{maxWidth:60,}} onPress={handlePress}>
                     <Text style={styles.Text1}>Learn more</Text>
                 </TouchableOpacity>
             </View>
@@ -88,7 +88,7 @@ const SecurityNotificationsScreen = ({navigation}) => {
             <Text style={styles.grey1}>must be enabled on each device where you want</Text>
             <Text style={styles.grey1}>to get notifications.</Text>
 
-            <TouchableOpacity onPress={handlePress}>
+            <TouchableOpacity style={{maxWidth:60,}} onPress={handlePress}>
                 <Text style={styles.Text2}>Learn more</Text>
             </TouchableOpacity>
         </TouchableOpacity>

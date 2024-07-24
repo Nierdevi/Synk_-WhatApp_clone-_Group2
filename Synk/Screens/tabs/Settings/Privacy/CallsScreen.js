@@ -36,7 +36,7 @@ const CallsScreen = ({navigation}) => {
                 </View>
             </View>
             <Text style={styles.pod}>Calls from unknown numbers will be silenced. They will still be shown in the Calls tab and in your notifications.</Text>
-            <TouchableOpacity onPress={handlePress}>
+            <TouchableOpacity style={{maxWidth: 60,}} onPress={handlePress}>
                 <Text style={styles.Text2}>Learn more</Text>
             </TouchableOpacity>
         </TouchableOpacity>

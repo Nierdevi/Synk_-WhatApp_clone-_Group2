@@ -36,7 +36,7 @@ const ChatRoom = ({ route, navigation }) => {
     navigation.setOptions({
       headerShown: true,
       headerTitle: '',
-      headerStyle: { height: hp('10%'), elevation: 10 },
+      headerStyle: { height: hp('12%'), elevation: 10 },
       headerLeft: () => (
         <View style={styles.headerLeft}>
           <TouchableOpacity style={styles.iconButton} onPress={() => { navigation.goBack() }}>

@@ -45,7 +45,7 @@ const RequestAccountInfoScreen = ({navigation}) => {
           <Text style={styles.pod}>Create a report of your Synk account information and settings,</Text>
           <Text style={styles.pod}>which you can access or port to another app. This report does not</Text>
           <Text style={styles.pod}>include your messages.</Text>
-          <TouchableOpacity onPress={handlePress}>
+          <TouchableOpacity style={{maxWidth:60,}} onPress={handlePress}>
             <Text style={styles.Text}>Learn more</Text>
           </TouchableOpacity>
         </View>
@@ -63,7 +63,7 @@ const RequestAccountInfoScreen = ({navigation}) => {
         </TouchableOpacity>
         <View style={styles.pad}>
           <Text style={styles.pod}>A new report will be created every month.</Text>
-          <TouchableOpacity onPress={handlePress}>
+          <TouchableOpacity style={{maxWidth:60,}} onPress={handlePress}>
             <Text style={styles.Text1}>Learn more</Text>
           </TouchableOpacity>
           <Text style={{paddingTop: 25,}}>Channels activity</Text>
@@ -75,7 +75,7 @@ const RequestAccountInfoScreen = ({navigation}) => {
         <View style={styles.pad}>
           <Text style={styles.pod}>Create a report of your channel updates and information, which you</Text>
           <Text style={styles.pod}>can access or port to another app.</Text>
-          <TouchableOpacity onPress={handlePress}>
+          <TouchableOpacity style={{maxWidth:60,}} onPress={handlePress}>
             <Text style={styles.Text2}>Learn more</Text>
           </TouchableOpacity>
         </View>
@@ -91,9 +91,9 @@ const RequestAccountInfoScreen = ({navigation}) => {
               style={styles.switch}
             />
         </TouchableOpacity>
-        <View>
+        <View style={{marginTop: 10,}}>
           <Text style={styles.pod}>A new report will be created every month.</Text>
-          <TouchableOpacity onPress={handlePress}>
+          <TouchableOpacity style={{maxWidth:60,}} onPress={handlePress}>
             <Text style={styles.Text1}>Learn more</Text>
           </TouchableOpacity>
         </View>

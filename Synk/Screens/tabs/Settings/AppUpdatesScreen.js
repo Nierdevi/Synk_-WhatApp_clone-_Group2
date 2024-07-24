@@ -189,7 +189,7 @@ headerTitle: {
     paddingTop: 20,
     paddingRight: 20,
     width: '80%',
-    borderRadius: 5,
+    borderRadius: 20,
   },
   drawerText: {
     fontSize: 18,
@@ -218,10 +218,6 @@ headerTitle: {
     paddingLeft: 15,
     color: 'grey',
     lineHeight: 14,
-  },
-  closeButton: {
-    alignItems: 'flex-end',
-    marginTop: 10,
   },
   plus:{
     backgroundColor: 'blue',
