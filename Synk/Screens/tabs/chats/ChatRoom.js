@@ -66,7 +66,15 @@ useFocusEffect(
                 style={styles.profilePicture}
                 cachePolicy='disk'
             />
-          <TouchableOpacity style={styles.usenameContainer} onPress={()=>{navigation.navigate('ChatInfo',{})}}>
+          <TouchableOpacity 
+            style={styles.usenameContainer} 
+            onPress={()=>{navigation.navigate(
+              'ChatInfo',
+              {messages,
+              recipientPhoneNumber,
+              profilePicture,
+              contact
+              })}}>
             <Text style={styles.name}>{contact.name}  </Text>
           </TouchableOpacity>
         </View>

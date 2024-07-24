@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View, Pressable, Alert, TouchableOpacity } from 'react-native';
 import React from 'react';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { SecondaryColors } from '../../../constants/colors';
 const PassKeysScreen = ({navigation}) => {
 
   const handlePress = () => {
@@ -58,7 +59,7 @@ const styles = StyleSheet.create({
   container:{
     flex:1,
     marginTop: 30,
-    backgroundColor: 'yellow',
+    backgroundColor: SecondaryColors.secPurple,
   },
   header: {
     flexDirection: "row",

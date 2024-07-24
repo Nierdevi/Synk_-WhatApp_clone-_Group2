@@ -3,6 +3,7 @@ import React from 'react';
 import { useState } from "react";
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import updateIcon from '../../../assets/tabIcons/updateIcon.png'
+import { SecondaryColors } from '../../../constants/colors';
 
 const SecurityNotificationsScreen = ({navigation}) => {
 
@@ -101,7 +102,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         marginTop: 30,
-        backgroundColor: 'yellow',
+        backgroundColor: SecondaryColors.secPurple,
     },
     header: {
         flexDirection: "row",

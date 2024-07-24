@@ -127,7 +127,7 @@ export default function GroupsScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'yellow',
+    backgroundColor: SecondaryColors.secPurple,
   },
   contentContainer: {    alignItems: 'center',
   },

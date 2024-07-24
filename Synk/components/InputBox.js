@@ -21,6 +21,7 @@ const InputBox = ({ onSendMessage, contactName  }) => {
       setMessageText(''); // Clear input after sending message
       setMediaUri(null); // Clear media URI after sending message
       setModalVisible(false);
+      setInputHeight(40)
     }
   };
 
@@ -28,7 +29,7 @@ const InputBox = ({ onSendMessage, contactName  }) => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All, // Accept images and videos
       allowsEditing: false, // Disable editing to avoid cropping
-      aspect: [4, 3],
+      // aspect: [4, 3],
       quality: 1, // Use full quality
     });
 

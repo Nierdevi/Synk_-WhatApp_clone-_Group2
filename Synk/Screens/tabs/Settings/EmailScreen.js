@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View, Pressable } from 'react-native';
 import React from 'react';
 import { Ionicons, MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { SecondaryColors } from '../../../constants/colors';
 
 const EmailScreen = ({navigation}) => {
   return (
@@ -39,7 +40,7 @@ const styles = StyleSheet.create({
     container:{
         flex: 1,
         marginTop: 30,
-        backgroundColor: 'yellow',
+        backgroundColor: SecondaryColors.secPurple,
     },
     header: {
         flexDirection: "row",
