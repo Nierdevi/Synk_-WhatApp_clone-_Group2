@@ -45,7 +45,7 @@ const UpdatesScreen = ({ navigation }) => {
   const suggestedChannels = [
       { id: 3, name: 'Synk', img: Applogo, followers: '6.7k followers' },
       { id: 4, name: 'CNN', img: 'https://upload.wikimedia.org/wikipedia/commons/f/fb/Cnn_logo_red_background.png', followers: '3.2k followers' },
-      { id: 5, name: 'BBC News', img: 'https://www.newscaststudio.com/wp-content/uploads/2024/03/bbc-news-logo-new-1536x867.jpg', followers: '900 followers' },
+      { id: 5, name: 'BBC News', img: 'https://asset.brandfetch.io/idtEghWGp4/idN4Y37uWH.png', followers: '900 followers' },
       { id: 6, name: 'TechCrunch', img: 'https://cdn.prod.website-files.com/60d07e2eecb304cb4350b53f/6630b429cd796ca047a8079d_techcrunch_logo.png', followers: '1.5k followers' },
       { id: 7, name: 'National Geographic', img: 'https://upload.wikimedia.org/wikipedia/commons/2/22/Nat_Geo_HD.png', followers: '800 followers' },
       { id: 8, name: 'ESPN', img: 'https://upload.wikimedia.org/wikipedia/commons/6/60/ESPN_logos.png', followers: '2k followers' }
@@ -78,7 +78,7 @@ const UpdatesScreen = ({ navigation }) => {
                   id: 2,
                   name: 'BBC News',
                   description: latestArticleBBC.title.split('.')[0] || 'Top stories',
-                  img: 'https://www.newscaststudio.com/wp-content/uploads/2024/03/bbc-news-logo-new-1536x867.jpg',
+                  img: 'https://asset.brandfetch.io/idtEghWGp4/idN4Y37uWH.png',
                   time: getTimeAgo(latestArticleBBC.publishedAt),
                   unread: dataBBC.articles.length
               };
@@ -162,7 +162,8 @@ const UpdatesScreen = ({ navigation }) => {
                                       <Image source={{ uri: item.img }} style={styles.channelImg} />
                                       <View style={styles.channelInfo}>
                                           <Text style={styles.channelName}>{item.name}</Text>
-                                          <Text style={styles.channelDescription}>{item.description}</Text>
+                                          <Text style={styles.channelDescription} numberOfLines={2}>{item.description}</Text>
+
                                       </View>
                                       <View style={styles.channelMeta}>
                                           <Text style={styles.channelTime}>{item.time}</Text>

@@ -1,11 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Button, StyleSheet, Text, View, Modal, TouchableOpacity, Alert,StatusBar } from 'react-native';
-import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
+import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { Camera, CameraView } from 'expo-camera';
 import * as FileSystem from 'expo-file-system';
 import * as ImagePicker from 'expo-image-picker';
-import { MaterialIcons, MaterialCommunityIcons  } from '@expo/vector-icons';
-import { primaryColors } from '../constants/colors';
+import React, { useEffect, useRef, useState } from 'react';
+import { Alert, Modal, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { addStatus } from '../backend/statusService';
 import { getUser } from '../constants/userContext';
 // import ImageEditingComponent from './ImageEditingComponent';
