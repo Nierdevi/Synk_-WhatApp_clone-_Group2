@@ -2,6 +2,7 @@ import { StyleSheet, Text, View, Pressable,Image, TouchableOpacity, Alert } from
 import React from 'react';
 import { Ionicons, MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 import verification from '../../../assets/images/verification.png'
+import { SecondaryColors } from '../../../constants/colors';
 
 
 const TwoStepVerificationScreen = ({navigation}) => {
@@ -47,7 +48,7 @@ const styles = StyleSheet.create({
     container:{
         flex: 1,
         marginTop: 30,
-        backgroundColor: 'yellow',
+        backgroundColor: SecondaryColors.secPurple,
     },
     header: {
         flexDirection: "row",

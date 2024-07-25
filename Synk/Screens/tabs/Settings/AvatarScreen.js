@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import avatar from '../../../assets/images/avatar.png';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { SecondaryColors } from '../../../constants/colors';
 
 
 
@@ -47,7 +48,7 @@ export default AvatarScreen
 const styles = StyleSheet.create({
     container:{
         flex: 1,
-        backgroundColor: 'yellow',
+        backgroundColor: SecondaryColors.secPurple,
     },
     header: {
         flexDirection: "row",

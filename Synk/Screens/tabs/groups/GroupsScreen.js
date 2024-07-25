@@ -1,8 +1,7 @@
 import React, { useState,useEffect } from 'react';
-import { View, StyleSheet, Text, TouchableOpacity, ScrollView, FlatList } from 'react-native';
-import { MaterialIcons, Ionicons } from '@expo/vector-icons';
+import { View, StyleSheet, } from 'react-native';
 import Fab from '../../../components/fab';
-import { primaryColors } from '../../../constants/colors';
+import { primaryColors, SecondaryColors } from '../../../constants/colors';
 import GroupChatModal from '../../../components/GroupChatModal ';
 import { fetchUserGroups, } from '../../../backend/groupServices';
 import { getUser } from '../../../constants/userContext';
@@ -16,16 +15,11 @@ export default function GroupsScreen({ navigation }) {
   useEffect(() => {
     const loadUserGroups = async () => {
       const userGroups = await fetchUserGroups(session.phoneNumber);
-      // console.log(userGroups);
     };
     loadUserGroups();
   }, [session.phoneNumber]);
 
 
-
-  const handleNavigateToGroupRoom = () => {
-    navigation.navigate('GroupRoom');
-  };
 
 
 
@@ -48,7 +42,7 @@ export default function GroupsScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'yellow',
+    backgroundColor: SecondaryColors.secPurple,
   },
   contentContainer: {
     alignItems: 'center',
