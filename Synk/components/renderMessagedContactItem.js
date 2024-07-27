@@ -59,10 +59,11 @@ const RenderMessagedContactItem = ({ item, contacts, navigation, session }) => {
           <Ionicons name="image-outline" size={20} color="gray" />
         </View>
       );
-    } else if (item.lastMessage.type === "video") {
+    } 
+    else if (item.lastMessage.type === "video") {
       return (
         <View style={styles.mediaContainer}>
-          <Text> style={{fontSize: wp("4%"),color:'gray'}}{prefix}Video </Text>
+          <Text style={{fontSize: wp("4%"),color:'gray'}}>{prefix}Video </Text>
           <Ionicons name="videocam-outline" size={20} color="gray" />
         </View>
       );

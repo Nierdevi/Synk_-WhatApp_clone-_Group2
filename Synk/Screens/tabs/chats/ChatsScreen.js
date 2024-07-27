@@ -61,7 +61,7 @@ const useMessagedContacts = (session) => {
           setMessagedContacts(messagedContactsData);
         }
       } catch (error) {
-        console.error('Failed to fetch messaged contacts:', error);
+        console.error('Failed to fetch messaged contacts for item:', error);
         if (error.message.includes('Network request failed')) {
           // Alert.alert('Network Error', 'Please check your network connection and try again.');
         }
