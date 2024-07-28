@@ -106,7 +106,7 @@ const StatusList = () => {
     return (
       <TouchableOpacity
         style={styles.itemContainer}
-        onPress={() => navigation.navigate('ViewStatus', { statuses })}
+        onPress={() => navigation.navigate('ViewStatus', { userData })}
       >
         <View style={styles.thumbnailContainer}>
           <Image source={profilePicture} style={styles.thumbnail} />
