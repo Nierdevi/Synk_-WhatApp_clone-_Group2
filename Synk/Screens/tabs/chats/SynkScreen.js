@@ -3,6 +3,7 @@ import React from 'react';
 import { Ionicons, Entypo } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
+import { ScrollView } from 'react-native-gesture-handler';
 
 Applogo=require('../../../assets/AppLogo.png')
 
@@ -33,6 +34,9 @@ const SynkScreen = ({navigation}) => {
                 </TouchableOpacity>
             </View>
         </View>
+        <ScrollView>
+            
+        </ScrollView>
         <View style={styles.end}>
             <Text>Only Synk can send messages</Text>
         </View>
