@@ -94,7 +94,7 @@ const RenderMessagedContactItem = ({ item, contacts, navigation, session }) => {
       />
       <View style={styles.contactDetails}>
         <View style={styles.upperContactdetails}>
-          <Text style={styles.contactName}>{contact.name} </Text>
+          <Text style={styles.contactName} ellipsizeMode='tail' numberOfLines={1}>{contact.name} </Text>
           {item.lastMessage && (
             <Text style={styles.lastMessageTime}>
               {DateTime(item.lastMessage.$createdAt)}

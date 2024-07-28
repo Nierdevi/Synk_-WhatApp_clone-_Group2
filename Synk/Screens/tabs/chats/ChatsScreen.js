@@ -165,7 +165,7 @@ const ChatsScreen = ({ navigation }) => {
     contact.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const hnadleOfficialSite=()=>{
+  const handleOfficialSite=()=>{
     Alert.alert("Oops!🤤","Under development");
     return
   }
@@ -177,7 +177,7 @@ const ChatsScreen = ({ navigation }) => {
 
     <TouchableOpacity
         style={styles.newsContainer}
-        onPress={hnadleOfficialSite}
+        onPress={handleOfficialSite}
         >
         <Image
             source={Applogo} 

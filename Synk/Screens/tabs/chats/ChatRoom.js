@@ -46,7 +46,7 @@ const ChatRoom = ({ route, navigation }) => {
           <TouchableOpacity
             style={styles.usernameContainer}
             onPress={() => { navigation.navigate('ChatInfo', { messages, recipientPhoneNumber, profilePicture, contact }) }}>
-            <Text style={styles.name}>{contact.name}  </Text>
+            <Text style={styles.name} ellipsizeMode='tail' numberOfLines={1}>{contact.name}  </Text>
           </TouchableOpacity>
         </View>
       ),
