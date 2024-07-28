@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Image } from 'expo-image';
-import { getStatuses } from '../backend/statusService';
 import { useContacts } from '../backend/contacts ';
 import { getUser } from '../constants/userContext';
 import { useNavigation } from '@react-navigation/native';
 import { getUserData } from '../backend/userService';
-// import SegmentedBorder from './SegmentedBorder';
+import { primaryColors } from '../constants/colors';
+import { getStatuses } from '../backend/statusService';
+import { client } from '../backend/appwrite';
 
 const StatusList = () => {
   const [statuses, setStatuses] = useState([]);
@@ -15,47 +15,79 @@ const StatusList = () => {
   const contacts = useContacts(session);
   const navigation = useNavigation();
 
-  useEffect(() => {
-    const fetchStatuses = async () => {
-      try {
-        const allStatuses = await getStatuses();
-        const normalizedPhoneNumbers = contacts.flatMap(contact =>
-          Array.isArray(contact.normalizedPhoneNumbers) ? contact.normalizedPhoneNumbers : []
-        );
+  const fetchStatuses = useCallback(async () => {
+    try {
+      const allStatuses = await getStatuses();
+      const normalizedPhoneNumbers = contacts.flatMap(contact =>
+        Array.isArray(contact.normalizedPhoneNumbers) ? contact.normalizedPhoneNumbers : []
+      );
 
-        const filteredStatuses = allStatuses.filter(status =>
-          status.phoneNumber && normalizedPhoneNumbers.includes(status.phoneNumber)
-        );
+      const filteredStatuses = allStatuses.filter(status =>
+        status.phoneNumber && normalizedPhoneNumbers.includes(status.phoneNumber)
+      );
 
-        const userDataPromises = filteredStatuses.map(async status => {
-          const userData = await getUserData(status.phoneNumber);
-          return { ...status, userData };
-        });
+      const userDataPromises = filteredStatuses.map(async status => {
+        const userData = await getUserData(status.phoneNumber);
+        return { ...status, userData };
+      });
 
-        const statusesWithUserData = await Promise.all(userDataPromises);
+      const statusesWithUserData = await Promise.all(userDataPromises);
 
-        const groupedStatuses = statusesWithUserData.reduce((acc, status) => {
-          const phoneNumber = status.phoneNumber;
-          if (!acc[phoneNumber]) {
-            acc[phoneNumber] = {
-              userData: status.userData,
-              statuses: []
-            };
-          }
-          acc[phoneNumber].statuses.push(status);
-          return acc;
-        }, {});
+      const groupedStatuses = statusesWithUserData.reduce((acc, status) => {
+        const phoneNumber = status.phoneNumber;
+        if (!acc[phoneNumber]) {
+          acc[phoneNumber] = {
+            userData: status.userData,
+            statuses: []
+          };
+        }
+        acc[phoneNumber].statuses.push(status);
+        return acc;
+      }, {});
 
-        setStatuses(Object.values(groupedStatuses));
-      } catch (error) {
-        console.error('Error fetching statuses:', error);
-      }
-    };
-
-    if (contacts.length > 0) {
-      fetchStatuses();
+      setStatuses(Object.values(groupedStatuses));
+    } catch (error) {
+      console.error('Error fetching statuses:', error);
     }
   }, [contacts]);
+
+  useEffect(() => {
+    fetchStatuses();
+  }, [contacts, fetchStatuses]);
+
+  useEffect(() => {
+    const subscribeToStatuses = (callback) => {
+      client.subscribe('databases.database_id.collections.status.documents.*', response => {
+        callback(response.payload);
+      });
+    };
+
+    const handleUpdate = (updatedStatus) => {
+      setStatuses(prevStatuses => {
+        const phoneNumber = updatedStatus.phoneNumber;
+        const updatedStatuses = prevStatuses.reduce((acc, statusGroup) => {
+          if (statusGroup.userData.phoneNumber === phoneNumber) {
+            statusGroup.statuses = statusGroup.statuses.filter(status => status.$id !== updatedStatus.$id);
+            statusGroup.statuses.push(updatedStatus);
+            acc.push(statusGroup);
+          } else {
+            acc.push(statusGroup);
+          }
+          return acc;
+        }, []);
+
+        updatedStatuses.sort((a, b) => b.statuses[0].createdAt.localeCompare(a.statuses[0].createdAt));
+
+        return updatedStatuses;
+      });
+    };
+
+    subscribeToStatuses(handleUpdate);
+
+    return () => {
+      // Unsubscribe if needed
+    };
+  }, []);
 
   const contactNameMap = contacts.reduce((acc, contact) => {
     if (Array.isArray(contact.normalizedPhoneNumbers)) {
@@ -69,18 +101,22 @@ const StatusList = () => {
   const renderItem = ({ item }) => {
     const { userData, statuses } = item;
     const contactName = contactNameMap[userData.phoneNumber] || userData.phoneNumber;
+    const profilePicture = userData.profilePicture ? { uri: userData.profilePicture } : require('../assets/Avator.jpg');
+
     return (
       <TouchableOpacity
         style={styles.itemContainer}
-        onPress={() => navigation.navigate('ViewStatus', { status: item })}
+        onPress={() => navigation.navigate('ViewStatus', { userData })}
       >
-        {/* <SegmentedBorder segments={statuses.length}>
-        </SegmentedBorder> */}
-          <Image
-            source={userData && userData.profilePicture ? { uri: userData.profilePicture } : require('../assets/Avator.jpg')}
-            style={styles.thumbnail}
-          />
-        <Text style={styles.phoneNumber}>{contactName}</Text>
+        <View style={styles.thumbnailContainer}>
+          <Image source={profilePicture} style={styles.thumbnail} />
+          {statuses.length > 1 && (
+            <View style={styles.statusCountContainer}>
+              <Text style={styles.statusCountText}>{statuses.length}</Text>
+            </View>
+          )}
+        </View>
+        <Text style={styles.contactName}>{contactName}</Text>
       </TouchableOpacity>
     );
   };
@@ -103,13 +139,33 @@ const styles = StyleSheet.create({
   itemContainer: {
     marginHorizontal: 5,
     alignItems: 'center',
+    marginRight:10
+  },
+  thumbnailContainer: {
+    position: 'relative',
   },
   thumbnail: {
     width: 60,
     height: 60,
     borderRadius: 30,
   },
-  phoneNumber: {
+  statusCountContainer: {
+    position: 'absolute',
+    bottom: -5,
+    right: -5,
+    backgroundColor: primaryColors.purple,
+    borderRadius: 10,
+    width: 20,
+    height: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginHorizontal:4
+  },
+  statusCountText: {
+    color: 'white',
+    fontSize: 12,
+  },
+  contactName: {
     textAlign: 'center',
     marginTop: 5,
   },

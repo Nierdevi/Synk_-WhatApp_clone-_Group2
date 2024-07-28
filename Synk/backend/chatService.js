@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { databases, ID } from './appwrite';
 import { Query } from 'appwrite';
 import { Alert } from 'react-native';
@@ -161,17 +162,49 @@ const fetchMessages = async (chatId) => {
     const response = await databases.listDocuments(
       'database_id',
       'chats',
-      [Query.equal('chatId', chatId),
-        Query.orderDesc('createdAt'),
-      ]
+      [Query.equal('chatId', chatId), Query.orderDesc('createdAt')]
     );
 
-    return response.documents;
+    const messages = response.documents;
+    await AsyncStorage.setItem(`chat_${chatId}`, JSON.stringify(messages));
+
+    const lastMessageId = messages.length > 0 ? messages[0].$id : null;
+    return { messages, lastMessageId };
   } catch (error) {
-    // handleNetworkError(error);
-    return [];
+    console.error('Failed to fetch messages:', error);
+    return { messages: [], lastMessageId: null };
   }
 };
+
+
+const checkForNewMessages = async (chatId, lastMessageId) => {
+  try {
+    const response = await databases.listDocuments(
+      'database_id',
+      'chats',
+      [Query.equal('chatId', chatId), Query.orderDesc('createdAt'), Query.limit(1)]
+    );
+
+    const newMessages = response.documents;
+
+    if (newMessages.length > 0 && newMessages[0].$id !== lastMessageId) {
+      const allMessagesResponse = await databases.listDocuments(
+        'database_id',
+        'chats',
+        [Query.equal('chatId', chatId), Query.orderDesc('createdAt')]
+      );
+
+      const allMessages = allMessagesResponse.documents;
+      await AsyncStorage.setItem(`chat_${chatId}`, JSON.stringify(allMessages));
+      return allMessages;
+    }
+  } catch (error) {
+    console.error('Failed to check for new messages:', error);
+  }
+  return null;
+};
+
+
 
 const addMessagedContact = async (userPhoneNumber, contactPhoneNumber) => {
   try {
@@ -304,4 +337,4 @@ const fetchLastMessage = async (chatId) => {
 };
 
 
-export { createChat, sendMessage, fetchMessages, getExistingChat, addMessagedContact, fetchMessagedContacts,fetchLastMessage };
+export { createChat, sendMessage, fetchMessages, getExistingChat, addMessagedContact, fetchMessagedContacts,fetchLastMessage,checkForNewMessages };

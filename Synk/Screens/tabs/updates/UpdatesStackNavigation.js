@@ -10,6 +10,8 @@ import EditStatusScreen from './EditStatusScreen';
 import ExploreMore from './ExploreMore';
 import StatusView from './StatusView';
 import UpdatesScreen from './UpdatesScreen';
+import StatusList from '../../../components/StatusList ';
+import ViewStatus from '../../../components/ViewStatus';
 
 const ChatsStack = createStackNavigator();
 
@@ -32,11 +34,11 @@ const UpdatesStackNavigator = ({ navigation, route }) => {
         component={UpdatesScreen} 
         options={{ headerShown: false }} 
       />
-      <ChatsStack.Screen 
+      {/* <ChatsStack.Screen 
         name="Status" 
         component={StatusView} 
         options={{ headerShown: true }} 
-      />
+      /> */}
       <ChatsStack.Screen 
         name="ChannelDetails" 
         component={ChannelsScreen} 
@@ -66,15 +68,24 @@ const UpdatesStackNavigator = ({ navigation, route }) => {
           headerShown: false,
         }} 
       />
-      {/* <ChatsStack.Screen 
-        name="CameraStatus" 
-        component={CameraComponent} 
+      <ChatsStack.Screen 
+        name="Status" 
+        component={StatusList} 
         options={{ 
           headerShown: false,
           headerTitle: '', // Remove the title by setting it to an empty string
           headerLeft: () => null, // Remove the back arrow icon
         }} 
-      /> */}
+      />
+      <ChatsStack.Screen 
+        name="ViewStatus" 
+        component={ViewStatus} 
+        options={{ 
+          headerShown: false,
+          headerTitle: '', // Remove the title by setting it to an empty string
+          headerLeft: () => null, // Remove the back arrow icon
+        }} 
+      />
     </ChatsStack.Navigator>
   );
 };

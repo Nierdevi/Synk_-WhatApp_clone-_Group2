@@ -139,13 +139,16 @@ const getStatuses = async () => {
     }
 };
 
-const uploadStatusMedia = async (file) => {
+const getStatusesByPhoneNumber = async (phoneNumber) => {
     try {
-        const response = await storage.createFile('your_storage_bucket_id', ID.unique(), file);
-        return response.$id;
+      const response = await databases.listDocuments('database_id', 'status', [
+        Query.equal('phoneNumber', phoneNumber)
+      ]);
+      return response.documents;
     } catch (error) {
-        console.error("Failed to upload media:", error);
+      console.error('Error fetching statuses by phone number:', error);
+      throw error;
     }
-};
+  };
 
-export { addStatus, getStatuses,viewStatus };
+export { addStatus, getStatuses,viewStatus,getStatusesByPhoneNumber };

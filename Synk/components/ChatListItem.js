@@ -74,17 +74,12 @@ const ChatList = ({ messages, currentUserPhoneNumber}) => {
                     <Image source={{ uri: item.mediaUrl }} style={styles.media} />
                   </TouchableWithoutFeedback>
                 ) : item.type === 'video' ? (
-                  <TouchableWithoutFeedback onPress={() => handleMediaPress(item.mediaUrl, 'video',item.messageText)}>
-                    <View style={styles.mediaContainer}>
-                      <Video
-                        source={{ uri: item.mediaUrl }}
-                        style={styles.media}
-                        resizeMode="contain"
-                        isMuted
-                      />
-                      <Text style={styles.playIcon}>▶</Text>
-                    </View>
-                  </TouchableWithoutFeedback>
+                  <TouchableWithoutFeedback onPress={() => handleMediaPress(item.mediaUrl, 'video', item.messageText)}>
+                      <View style={styles.mediaContainer}>
+                        <Video source={{ uri: item.mediaUrl }} style={styles.mediaVid} resizeMode="cover"  />
+                        <Text style={styles.playIcon}>▶</Text>
+                      </View>
+                    </TouchableWithoutFeedback>
                 ) : null}
               </>
             ) : null}
@@ -159,16 +154,27 @@ const styles = StyleSheet.create({
     height:hp('30%'), 
     borderRadius: 10,
     marginBottom: 5,
-    overflow:'hidden'
+    overflow:'hidden',
+
   },
   mediaContainer: {
     position: 'relative',
-    width: wp('56%'),
-    height: wp('30%'),
+    // width: wp('80%'),
+    height: wp('80%'),
     borderRadius: 10,
     overflow: 'hidden',
     justifyContent: 'center',
     alignItems: 'center',
+    // marginRight:-40
+
+  },
+  mediaVid:{
+    width: wp("56%"),
+    height: hp('40%'),
+    borderRadius: 10,
+    marginBottom: 5,
+    overflow: 'hidden',
+    // marginLeft:-50
   },
   playIcon: {
     position: 'absolute',

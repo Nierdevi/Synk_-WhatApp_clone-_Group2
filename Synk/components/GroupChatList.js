@@ -97,7 +97,7 @@ const ChatList = ({ messages, currentUserPhoneNumber }) => {
                   ) : item.type === 'video' ? (
                     <TouchableWithoutFeedback onPress={() => handleMediaPress(item.mediaUrl, 'video', item.messageText)}>
                       <View style={styles.mediaContainer}>
-                        <Video source={{ uri: item.mediaUrl }} style={styles.media} resizeMode="contain" isMuted />
+                        <Video source={{ uri: item.mediaUrl }} style={styles.mediaVid} resizeMode="cover"  />
                         <Text style={styles.playIcon}>▶</Text>
                       </View>
                     </TouchableWithoutFeedback>
@@ -185,7 +185,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: 'white',
     // marginTop: 5,
-    marginRight:40
+    // marginRight:40
   },
   timeText: {
     color: 'white',
@@ -198,16 +198,28 @@ const styles = StyleSheet.create({
     height: hp('30%'),
     borderRadius: 10,
     marginBottom: 5,
-    overflow: 'hidden'
+    overflow: 'hidden',
+    // marginRight:-20
+
   },
   mediaContainer: {
     position: 'relative',
-    width: wp('80%'),
+    // width: wp('80%'),
     height: wp('80%'),
     borderRadius: 10,
     overflow: 'hidden',
     justifyContent: 'center',
     alignItems: 'center',
+    // marginRight:-40
+
+  },
+  mediaVid:{
+    width: wp("56%"),
+    height: hp('40%'),
+    borderRadius: 10,
+    marginBottom: 5,
+    overflow: 'hidden',
+    // marginLeft:-50
   },
   playIcon: {
     position: 'absolute',
