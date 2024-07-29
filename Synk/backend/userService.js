@@ -215,30 +215,61 @@ const getcurrentUserData = async (userId) => {
 };
 
 
+// const getUserData = async (phoneNumber) => {
+//     try {
+//     const response = await databases.listDocuments('database_id', 'users', [
+//         Query.equal('phoneNumber', phoneNumber)
+//     ]);
+
+//     if (response.documents.length === 0) {
+//         throw new Error('User document not found');
+//     }
+
+//     otherUserData = response.documents[0];
+//     // console.log("userdata: ",otherUserData)
+//         await AsyncStorage.setItem(`userData_${phoneNumber}`, JSON.stringify(otherUserData));
+//         return otherUserData;
+//     } catch (error) {
+//     console.error("Failed to fetch other user data:", error);
+//         throw error;
+//     }
+// };
+
 const getUserData = async (phoneNumber) => {
-    // let otherUserData = await AsyncStorage.getItem(`userData_${phoneNumber}`);
-    // if (otherUserData) {
-    //     console.log('Loading other user data from local storage...');
-    //     console.log('Other user data from local storage:', otherUserData);
-    //     return JSON.parse(otherUserData);
-    // }
-
     try {
-    const response = await databases.listDocuments('database_id', 'users', [
-        Query.equal('phoneNumber', phoneNumber)
-    ]);
+        const response = await databases.listDocuments('database_id', 'users', [
+            Query.equal('phoneNumber', phoneNumber)
+        ]);
 
-    if (response.documents.length === 0) {
-        throw new Error('User document not found');
-    }
+        if (response.documents.length === 0) {
+            console.log(`User document not found for phoneNumber: ${phoneNumber}`);
+            return {
+                phoneNumber,
+                about: "No about info",
+                profilePicture: require("../assets/Avator.jpg"),
+                displayName: otherUserData.username
+            };
+        }
 
-    otherUserData = response.documents[0];
+        const otherUserData = response.documents[0];
+        // console.log("user data: ",otherUserData.about)
+
+        // console.log(`Fetched user data for ${phoneNumber}:`, otherUserData);
+
         await AsyncStorage.setItem(`userData_${phoneNumber}`, JSON.stringify(otherUserData));
-        return otherUserData;
+
+        // Use default values if fields are missing
+        return {
+            phoneNumber,
+            about: otherUserData.about || null,
+            profilePicture: otherUserData.profilePicture ,
+            displayName: otherUserData.username
+        };
     } catch (error) {
-    console.error("Failed to fetch other user data:", error);
+        console.error("Failed to fetch other user data:", error);
         throw error;
     }
 };
+
 
 export { addUserToDatabase,uploadProfilePicture,addUsernameToDatabase,addAboutToDatabase,getcurrentUserData,getUserProfilePicture,getUserData };

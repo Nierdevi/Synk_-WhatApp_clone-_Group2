@@ -1,8 +1,11 @@
-import { View, Text, StyleSheet, Image, Pressable, TouchableOpacity, Switch, ScrollView, SafeAreaView, StatusBar, FlatList } from 'react-native';
+import {
+  View, Text, StyleSheet, Image, Pressable, TouchableOpacity, Switch, ScrollView, StatusBar, FlatList
+} from 'react-native';
 import React, { useState, useLayoutEffect, useEffect } from 'react';
-import { Ionicons, MaterialIcons, Entypo, FontAwesome, FontAwesome6, MaterialCommunityIcons, AntDesign } from '@expo/vector-icons';
-import AppLogo from '../../../assets/AppLogo.png';
-import { primaryColors, SecondaryColors } from '../../../constants/colors';
+import {
+  Ionicons, Entypo, FontAwesome, FontAwesome6, MaterialCommunityIcons, MaterialIcons, AntDesign
+} from '@expo/vector-icons';
+import { primaryColors } from '../../../constants/colors';
 import { getUserData } from '../../../backend/userService';
 import { getUser } from '../../../constants/userContext';
 import { useContacts } from '../../../backend/contacts ';
@@ -11,9 +14,9 @@ const GroupInfo = ({ navigation, route }) => {
   const { groupData, groupId, participants, profilePicture } = route.params;
   const [isEnabled, setIsEnabled] = useState(false);
   const [participantsData, setParticipantsData] = useState([]);
-  const {session}=getUser();
-  const contacts=useContacts(session)
-  const [about, setAbout] = useState('');
+  const { session } = getUser();
+  const contacts = useContacts(session);
+
   const toggleSwitch = () => {
     setIsEnabled(previousState => !previousState);
   };
@@ -27,42 +30,44 @@ const GroupInfo = ({ navigation, route }) => {
     return phoneNumber;
   };
 
-  // useEffect(() => {
-  //   const fetchUserData = async () => {
-  //     try {
-  //       const userData = await getUserData(recipientPhoneNumber);
-  //       console.log(userData.about);
-  //       setAbout(userData.about);
-  //     } catch (error) {
-  //       console.log("failed to get user data", error);
-  //     }
-  //   };
-  //   fetchUserData();
-  // }, [recipientPhoneNumber]);
-
-  const fetchParticipantDetails = async (participant) => {
+  const fetchParticipantDetails = async (phoneNumber) => {
     try {
-      const userData = await getUserData(participant.phoneNumber);
+      const userData = await getUserData(phoneNumber);
       const contactName = contacts.find(
-        c => c.normalizedPhoneNumber === participant
+        c => Array.isArray(c.normalizedPhoneNumbers) && c.normalizedPhoneNumbers.includes(phoneNumber)
       )?.name;
 
-      return {
-        ...participant,
+
+      console.log(`Fetching details for ${phoneNumber}:`, {
         about: userData.about,
         profilePicture: userData.profilePicture,
-        displayName: contactName || userData.username || participant,
+        displayName: contactName || userData.displayName || formatPhoneNumber(phoneNumber),
+      });
+
+      return {
+        phoneNumber,
+        about: userData.about,
+        profilePicture: userData.profilePicture,
+        displayName: contactName || userData.displayName || formatPhoneNumber(phoneNumber),
       };
     } catch (error) {
       console.log("Failed to get user data", error);
-      return participant;
+      return { phoneNumber };
     }
   };
 
   useEffect(() => {
     const fetchParticipantsData = async () => {
-      const data = await Promise.all(participants.map(fetchParticipantDetails));
-      setParticipantsData(data);
+      try {
+        const uniqueParticipants = [...new Set(participants)];
+        console.log('Unique Participants:', uniqueParticipants);
+
+        const data = await Promise.all(participants.map(fetchParticipantDetails));
+        console.log('Fetched Participant Data:', data);
+        setParticipantsData(data);
+      } catch (error) {
+        console.log("Error fetching participant data:", error);
+      }
     };
 
     fetchParticipantsData();
@@ -91,9 +96,15 @@ const GroupInfo = ({ navigation, route }) => {
   }, [navigation]);
 
   const renderParticipant = ({ item }) => (
-    <View style={styles.participantContainer}>
-      <Image source={item.profilePicture ? { uri: item.profilePicture } : require('../../../assets/Avator.jpg')} style={styles.participantPicture} />
-      <Text style={styles.participantName}>{item.name}</Text>
+    <View style={styles.participantContainer} key={item.phoneNumber}>
+      <Image
+        source={item.profilePicture ? { uri: item.profilePicture } : require('../../../assets/Avator.jpg')}
+        style={styles.participantPicture}
+      />
+      <View style={styles.participantInfo}>
+        <Text style={styles.participantName}>{item.displayName}</Text>
+        <Text style={styles.participantAbout}>{item.about}</Text>
+      </View>
     </View>
   );
 
@@ -104,7 +115,6 @@ const GroupInfo = ({ navigation, route }) => {
         <Image
           source={profilePicture ? { uri: profilePicture } : require('../../../assets/Avator.jpg')}
           style={styles.profilePicture}
-          cachePolicy='disk'
         />
         <View style={styles.profileTextContainer}>
           <Text style={styles.profileName}>{groupData.groupName}</Text>
@@ -128,12 +138,11 @@ const GroupInfo = ({ navigation, route }) => {
           <Ionicons name="search-outline" size={24} color="black" />
           <Text style={styles.actionText}>Search</Text>
         </TouchableOpacity>
-
       </View>
 
       <View style={styles.infoSection}>
         <Text style={styles.sectionTitle}>Description</Text>
-        <Text style={styles.sectionContent}>description</Text>
+        <Text style={styles.sectionContent}>{groupData.description}</Text>
       </View>
 
       <View style={styles.infoSection}>
@@ -187,18 +196,7 @@ const GroupInfo = ({ navigation, route }) => {
         <FlatList
           data={participantsData}
           keyExtractor={(item) => item.phoneNumber}
-          renderItem={({ item }) => (
-            <View style={styles.participantContainer}>
-              <Image
-                source={item.profilePicture ? { uri: item.profilePicture } : require('../../../assets/Avator.jpg')}
-                style={styles.participantPicture}
-              />
-              <View style={styles.participantInfo}>
-                <Text style={styles.participantName}>{item.displayName}</Text>
-                <Text style={styles.participantAbout}>{item.about}</Text>
-              </View>
-            </View>
-          )}
+          renderItem={renderParticipant}
         />
       </View>
 
@@ -212,8 +210,8 @@ const GroupInfo = ({ navigation, route }) => {
           <Text style={styles.optionTextRed}>Exit group</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.option}>
-          <AntDesign name="dislike2" size={24} color="red" />
-          <Text style={styles.optionTextRed}>Report group</Text>
+          <FontAwesome name="trash-o" size={24} color="red" />
+          <Text style={styles.optionTextRed}>Delete group</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>
@@ -221,70 +219,100 @@ const GroupInfo = ({ navigation, route }) => {
 };
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    paddingTop: 30,
-  },
   container: {
     flex: 1,
-  },
-  headerTitleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  headerLogo: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    marginRight: 10,
-  },
-  headerTitleTextContainer: {
-    justifyContent: 'center',
-  },
-  headerTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#000',
-  },
-  headerSubtitle: {
-    fontSize: 14,
-    color: '#666',
-  },
-  headerBackButton: {
-    marginLeft: 10,
-  },
-  headerDots: {
-    paddingRight: 10,
+    backgroundColor: '#fff',
   },
   profileContainer: {
+    flexDirection: 'row',
     alignItems: 'center',
-    paddingTop: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
+    padding: 20,
   },
   profilePicture: {
     width: 80,
     height: 80,
     borderRadius: 40,
-    marginBottom: 10,
   },
   profileTextContainer: {
-    alignItems: 'center',
+    marginLeft: 15,
   },
   profileName: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: 'bold',
-    color: '#000',
-    paddingBottom: 10,
   },
   actionBar: {
     flexDirection: 'row',
     justifyContent: 'space-around',
     paddingVertical: 10,
-    backgroundColor: '#ffffff',
     borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e'
-  }
-  })
+    borderBottomColor: '#e0e0e0',
+  },
+  actionButton: {
+    alignItems: 'center',
+  },
+  actionText: {
+    marginTop: 5,
+    fontSize: 14,
+  },
+  infoSection: {
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+  },
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  sectionContent: {
+    marginTop: 5,
+    fontSize: 14,
+  },
+  option: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 10,
+  },
+  optionTextContainer: {
+    flex: 1,
+    marginLeft: 10,
+  },
+  optionText: {
+    fontSize: 16,
+  },
+  optionSubText: {
+    fontSize: 12,
+    color: '#888',
+  },
+  optionTextRed: {
+    fontSize: 16,
+    color: 'red',
+  },
+  participantContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 10,
+  },
+  participantPicture: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+  },
+  participantInfo: {
+    marginLeft: 10,
+  },
+  participantName: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  participantAbout: {
+    fontSize: 14,
+    color: '#888',
+  },
+  headerBackButton: {
+    marginLeft: 15,
+  },
+  headerDots: {
+    marginRight: 15,
+  },
+});
 
 export default GroupInfo;
