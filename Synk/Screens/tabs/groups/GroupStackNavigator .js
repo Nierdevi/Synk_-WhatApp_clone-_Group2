@@ -23,7 +23,7 @@ const GroupStackNavigator=({navigation,route})=>{
     <GroupStack.Navigator initialRouteName="GroupsScreen">
         <GroupStack.Screen name="GroupsScreen" component={GroupsScreen} options={{ headerShown: false}} />
         <GroupStack.Screen name="GroupRoom" component={GroupRoom} options={{ headerShown: true}} />
-        <GroupStack.Screen name="GroupInfo" component={GroupInfo} options={{ headerShown: true}} />
+        <GroupStack.Screen name="GroupInfo" component={GroupInfo} options={{ headerShown: false}} />
     </GroupStack.Navigator>
   );
 };

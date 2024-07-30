@@ -25,7 +25,7 @@ const TwoStepVerificationScreen = ({navigation}) => {
                 <Image source={verification} style={styles.image}/>
                 <Text>Two-step-verification is on. You'll need to enter your PIN if</Text>
                 <Text>you register your phone number on Synk again.                    </Text>
-                <TouchableOpacity onPress={handlePress}>
+                <TouchableOpacity style={{maxWidth:60,}} onPress={handlePress}>
                     <Text style={styles.Text1}>Learn more</Text>
                 </TouchableOpacity>   
             </View>

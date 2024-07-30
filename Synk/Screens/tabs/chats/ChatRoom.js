@@ -177,7 +177,6 @@ const styles = StyleSheet.create({
   },
   popupMenu: {
     position: 'absolute',
-    marginTop: 20,
     backgroundColor: 'white',
     width: wp("47%"),
     borderRadius: 10,

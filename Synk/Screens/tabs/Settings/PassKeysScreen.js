@@ -28,7 +28,7 @@ const PassKeysScreen = ({navigation}) => {
           <Text style={styles.grey}>Access Synk the same way you unlock your phone:</Text>
           <Text style={styles.grey}>with your fingerprint, face or screen lock. Your passkey</Text>
           <Text style={styles.grey}>gives you a secure and easy way to log back into your account.</Text>
-          <TouchableOpacity onPress={handlePress}>
+          <TouchableOpacity style={{maxWidth:60,}} onPress={handlePress}>
             <Text style={styles.Text2}>Learn more</Text>
           </TouchableOpacity>
         </View>
