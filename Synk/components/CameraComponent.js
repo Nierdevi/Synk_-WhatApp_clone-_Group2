@@ -67,7 +67,7 @@ const CameraComponent = ({ isVisible, onClose }) => {
       setImageUri(uri)
       console.log("uri: ",uri)
 
-      const uploadedStatus =await addStatus(session.phoneNumber,imageUri,'image')
+      const uploadedStatus =await addStatus(session.phoneNumber,uri,'image')
         if(uploadedStatus){
           console.log("status uploaded:",uploadedStatus)
         }else{

@@ -9,13 +9,53 @@ import { primaryColors } from '../../../constants/colors';
 import { getUserData } from '../../../backend/userService';
 import { getUser } from '../../../constants/userContext';
 import { useContacts } from '../../../backend/contacts ';
+import MediaGrid from '../../../components/MediaGrid';
+import { fetchGroupMessages } from '../../../backend/groupServices';
 
 const GroupInfo = ({ navigation, route }) => {
-  const { groupData, groupId, participants, profilePicture } = route.params;
+  const { groupData, participants, profilePicture,groupId, messages } = route.params;
   const [isEnabled, setIsEnabled] = useState(false);
   const [participantsData, setParticipantsData] = useState([]);
+  const [mediaModalVisible, setMediaModalVisible] = useState(false);
   const { session } = getUser();
   const contacts = useContacts(session);
+  const [media, setMedia] = useState([]);
+
+//   useEffect(()=>{
+//     const mediaMessages = messages.filter(message => message.type === 'image' || message.type === 'video');
+
+// // Map to extract the mediaUrl
+//   const mediaUrls = mediaMessages.map(message => message.mediaUrl);
+//   console.log(mediaUrls);
+//     // console.log("messages in info: ",messages)
+
+//   })
+
+  useEffect(() => {
+    const fetchMedia = async () => {
+      if (groupId) {
+        try {
+          // Fetch messages for the group
+          const fetchedMessages = await fetchGroupMessages(groupId);
+          
+          // Extract media URLs and types
+          const mediaArray = fetchedMessages
+            .filter(message => message.type === 'image' || message.type === 'video')
+            .map(message => ({
+              mediaUrl: message.mediaUrl,
+              type: message.type
+            }));
+              // console.log(mediaArray);
+
+          setMedia(mediaArray);
+        } catch (error) {
+          console.error('Error fetching messages:', error);
+        }
+      }
+    };
+
+    fetchMedia();
+  }, [groupId]);
 
   const toggleSwitch = () => {
     setIsEnabled(previousState => !previousState);
@@ -38,11 +78,11 @@ const GroupInfo = ({ navigation, route }) => {
       )?.name;
 
 
-      console.log(`Fetching details for ${phoneNumber}:`, {
-        about: userData.about,
-        profilePicture: userData.profilePicture,
-        displayName: contactName || userData.displayName || formatPhoneNumber(phoneNumber),
-      });
+      // console.log(`Fetching details for ${phoneNumber}:`, {
+      //   about: userData.about,
+      //   profilePicture: userData.profilePicture,
+      //   displayName: contactName || userData.displayName || formatPhoneNumber(phoneNumber),
+      // });
 
       return {
         phoneNumber,
@@ -59,11 +99,9 @@ const GroupInfo = ({ navigation, route }) => {
   useEffect(() => {
     const fetchParticipantsData = async () => {
       try {
-        const uniqueParticipants = [...new Set(participants)];
-        console.log('Unique Participants:', uniqueParticipants);
 
         const data = await Promise.all(participants.map(fetchParticipantDetails));
-        console.log('Fetched Participant Data:', data);
+        // console.log('Fetched Participant Data:', data);
         setParticipantsData(data);
       } catch (error) {
         console.log("Error fetching participant data:", error);
@@ -145,9 +183,9 @@ const GroupInfo = ({ navigation, route }) => {
         <Text style={styles.sectionContent}>{groupData.description}</Text>
       </View>
 
-      <View style={styles.infoSection}>
+      <TouchableOpacity style={styles.infoSection} onPress={() => setMediaModalVisible(true)} >
         <Text style={styles.sectionTitle}>Media, links, and docs</Text>
-      </View>
+      </TouchableOpacity>
 
       <View style={styles.infoSection}>
         <TouchableOpacity style={styles.option}>
@@ -214,6 +252,8 @@ const GroupInfo = ({ navigation, route }) => {
           <Text style={styles.optionTextRed}>Delete group</Text>
         </TouchableOpacity>
       </View>
+
+        <MediaGrid media={media} onClose={() => setMediaModalVisible(false)} visible={mediaModalVisible}/>
     </ScrollView>
   );
 };
@@ -270,6 +310,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 10,
+    gap:7
   },
   optionTextContainer: {
     flex: 1,

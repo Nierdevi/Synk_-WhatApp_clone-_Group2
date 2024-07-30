@@ -8,12 +8,13 @@ import { MenuProvider } from 'react-native-popup-menu';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { ThemeProvider } from './constants/themeContext';
 import { UserProvider, getUser } from './constants/userContext';
-
+import { RootSiblingParent } from 'react-native-root-siblings';
 import PhoneNumScreen from './Screens/PhoneNumScreen';
 import Verification from './Screens/Verification';
 import WelcomeScreen from './Screens/WelcomeScreen';
 import MainTabs from './Screens/tabs/_tabLayout';
 import LoadingScreen from './components/LoadingScreen';
+
 
 const Stack = createStackNavigator();
 
@@ -64,13 +65,15 @@ const MainLayout = () => {
 export default function App() {
     return (
         <SafeAreaProvider style={styles.container}>
+                <RootSiblingParent>
             <UserProvider>
-                <ThemeProvider>
-                    <MenuProvider>
-                        <MainLayout />
-                    </MenuProvider>
-                </ThemeProvider>
+                    <ThemeProvider>
+                        <MenuProvider>
+                            <MainLayout />
+                        </MenuProvider>
+                    </ThemeProvider>
             </UserProvider>
+                </RootSiblingParent>
         </SafeAreaProvider>
     );
 }

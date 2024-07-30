@@ -216,7 +216,7 @@ const UpdatesScreen = ({ navigation }) => {
                 <TouchableOpacity style={[styles.bottomIcon, styles.pencilIcon, { marginBottom: 10 }]} onPress={() => navigation.navigate('EditStatus')}>
                     <Ionicons name="pencil" size={24} color="#fff" />
                 </TouchableOpacity>
-                <Fab type="chats" handlePress={openCamera}  />
+                <Fab type="updates" handlePress={openCamera}  />
               </View>
               <Menu
                   visible={menuVisible}

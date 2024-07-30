@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { databases, ID } from './appwrite';
 import { Query } from 'appwrite';
 import { Alert } from 'react-native';
+import showToast from '../components/showToast';
 
 const handleNetworkError = (error) => {
   console.error(error);
@@ -123,15 +124,18 @@ const sendMessage = async (senderId, receiverId, messageText = '', mediaUri = ''
           body: formData,
         }
       );
-      console.log("uploaded response: ",uploadResponse)
+      // console.log("uploaded response: ",uploadResponse)
       const uploadData = await uploadResponse.json();
       if (!uploadResponse.ok) {
         throw new Error(uploadData.message || 'Failed to upload media');
       }
 
+      showToast("Message sent")
+
       mediaUrl = `https://cloud.appwrite.io/v1/storage/buckets/synk_bucket/files/${uploadData.$id}/view?project=66992806000309150f65`;
     }
     console.log("mediaUrl uploaded: ",mediaUrl)
+    showToast("Message sent")
     const response = await databases.createDocument(
       'database_id',
       'chats',
@@ -304,6 +308,7 @@ const fetchMessagedContacts = async (currentUserPhoneNumber) => {
 
     return Array.from(uniqueContacts.values());
   } catch (error) {
+    showToast('Failed to fetch messaged contacts')
     console.error('Failed to fetch messaged contacts:', error);
     // if (error.message.includes('Network request failed')) {
       // Alert.alert('Failed to fetch messaged contacts', 'Please check your network connection.');

@@ -2,6 +2,8 @@ import React, { useEffect, useState, useRef } from 'react';
 import { View, Text, Image, StyleSheet, FlatList, ActivityIndicator, Animated, LogBox, Dimensions } from 'react-native';
 import { Video } from 'expo-av';
 import { getStatusesByPhoneNumber } from '../backend/statusService';
+import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
+
 
 // Ignore warnings related to Animated API
 LogBox.ignoreLogs(['Animated: `useNativeDriver` was not specified.']);
@@ -93,34 +95,58 @@ const ViewStatus = ({ route,navigation }) => {
   const renderItem = ({ item }) => {
     console.log("Current item:", item);
     const mediaItem = item.media[0]; // Assumes only one media item per status
+    // const dimensions = mediaDimensions[index] || { width: Dimensions.get('window').width, height: 300 };
     return (
-      // <View style={styles.statusContainer}>
-      <>
-        {mediaItem.mediaType === 'image' ? (
-          <Image
-            source={{ uri: mediaItem.mediaUrl }}
-            style={styles.media}
-            onError={() => console.log('Failed to load image:', mediaItem.mediaUrl)}
-          />
-        ) : (
-          <Video
-            source={{ uri: mediaItem.mediaUrl }}
-            style={styles.media}
-            useNativeControls
-            resizeMode="contain"
-            isLooping={false}
-            onPlaybackStatusUpdate={(status) => {
-              if (status.didJustFinish) {
-                handleNext();
-              }
-            }}
-            onError={(error) => console.log('Failed to load video:', error)}
-          />
-        )}
-        </>)
-        // {mediaItem.text && <Text style={styles.caption}>{mediaItem.text}</Text>}
-      // </View>
-    // );
+      <View style={styles.mediaContainer}>
+             {mediaItem.mediaType === 'image' ? (
+           <Image
+             source={{ uri: mediaItem.mediaUrl }}
+             style={styles.media}
+             onError={() => console.log('Failed to load image:', mediaItem.mediaUrl)}
+             resizeMode='contain'
+           />
+         ) : (
+           <Video
+             source={{ uri: mediaItem.mediaUrl }}
+             style={styles.media}
+             // useNativeContr/ols
+            //  resizeMode="contain"
+             isLooping={false}
+             onPlaybackStatusUpdate={(status) => {
+               if (status.didJustFinish) {
+                 handleNext();
+               }
+             }}
+             onError={(error) => console.log('Failed to load video:', error)}
+           />
+         )}
+         {mediaItem.text && <Text style={styles.caption}>{mediaItem.text}</Text>}
+      </View>
+      // <>
+      //   {mediaItem.mediaType === 'image' ? (
+      //     <Image
+      //       source={{ uri: mediaItem.mediaUrl }}
+      //       style={styles.media}
+      //       onError={() => console.log('Failed to load image:', mediaItem.mediaUrl)}
+      //     />
+      //   ) : (
+      //     <Video
+      //       source={{ uri: mediaItem.mediaUrl }}
+      //       style={styles.media}
+      //       // useNativeContr/ols
+      //       resizeMode="contain"
+      //       isLooping={false}
+      //       onPlaybackStatusUpdate={(status) => {
+      //         if (status.didJustFinish) {
+      //           handleNext();
+      //         }
+      //       }}
+      //       onError={(error) => console.log('Failed to load video:', error)}
+      //     />
+      //   )}
+      //   {mediaItem.text && <Text style={styles.caption}>{mediaItem.text}</Text>}
+      //   </>
+    );
   };
 
   if (loading) {
@@ -132,35 +158,35 @@ const ViewStatus = ({ route,navigation }) => {
   }
 
   return (
-    // <View style={styles.container}>
-    //   <View style={styles.header}>
-    //     <Image source={{ uri: userData.profilePicture }} style={styles.profilePicture} />
-    //     <Text style={styles.userName}>{userData.name}</Text>
-    //     <Text style={styles.timestamp}>
-    //       {statuses.length > 0 && new Date(statuses[currentIndex].createdAt).toLocaleString()}
-    //     </Text>
-    //   </View>
-    //   <View style={styles.progressContainer}>
-    //     {statuses.map((_, index) => (
-    //       <View key={index} style={styles.progressBarBackground}>
-    //         {index === currentIndex ? (
-    //           <Animated.View
-    //             style={[
-    //               styles.progressBarForeground,
-    //               {
-    //                 width: progressAnim.interpolate({
-    //                   inputRange: [0, 1],
-    //                   outputRange: ['0%', '100%'],
-    //                 }),
-    //               },
-    //             ]}
-    //           />
-    //         ) : (
-    //           <View style={styles.progressBarForeground} />
-    //         )}
-    //       </View>
-    //     ))}
-    //   </View>
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <Image source={{ uri: userData.profilePicture }} style={styles.profilePicture} />
+        <Text style={styles.userName}>{userData.name}</Text>
+        <Text style={styles.timestamp}>
+          {statuses.length > 0 && new Date(statuses[currentIndex]?.createdAt).toLocaleString()}
+        </Text>
+      </View>
+      <View style={styles.progressContainer}>
+        {statuses.map((_, index) => (
+          <View key={index} style={styles.progressBarBackground}>
+            {index === currentIndex ? (
+              <Animated.View
+                style={[
+                  styles.progressBarForeground,
+                  {
+                    width: progressAnim.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: ['0%', '100%'],
+                    }),
+                  },
+                ]}
+              />
+            ) : (
+              <View style={styles.progressBarForeground} />
+            )}
+          </View>
+        ))}
+      </View>
       <FlatList
         ref={flatListRef}
         data={statuses}
@@ -175,9 +201,9 @@ const ViewStatus = ({ route,navigation }) => {
         onScrollToIndexFailed={(info) => {
           console.error('Failed to scroll to index:', info);
         }}
-      />)
-    // {/* </View> */}
-  // );
+      />
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
@@ -232,13 +258,15 @@ const styles = StyleSheet.create({
     height: '80%',
   },
   mediaContainer: {
-    width: '100%',
-    height: '100%',
+    width: wp('100%'),
+    height: '90%',
+    backgroundColor:'red',
+    justifyContent:'center'
   },
   media: {
-    width: Dimensions.get("window").width,
-    height: 200,
-    marginTop:170
+    alignSelf:'flex-start',
+    width: wp('100%'),
+    height: '100%',
   },
   caption: {
     color: 'white',
