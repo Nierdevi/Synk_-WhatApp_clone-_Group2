@@ -1,21 +1,45 @@
-import React, { useState, useRef } from 'react';
-import { View, Text, StyleSheet, Modal, TextInput, TouchableOpacity, Image, Alert } from 'react-native';
+import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
+import React, { useRef, useState } from 'react';
+import { Alert, Button, Image, Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import ImagePicker from 'react-native-image-crop-picker';
 import ImageDraw from 'react-native-image-draw';
-import ImageCropPicker from 'react-native-image-crop-picker';
-import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 
-const ImageEditingComponent = ({ isVisible, imageUri, onClose, onSave }) => {
+const ImageEditingComponent = () => {
+  const [imageUri, setImageUri] = useState(null);
+  const [isEditingVisible, setIsEditingVisible] = useState(false);
   const [currentMode, setCurrentMode] = useState('draw');
   const [textInput, setTextInput] = useState('');
   const [texts, setTexts] = useState([]);
-  const [editedImageUri, setEditedImageUri] = useState(imageUri);
   const imageDrawRef = useRef(null);
+
+  const handleCapture = () => {
+    ImagePicker.openCamera({
+      cropping: true,
+    })
+      .then(image => {
+        console.log('Captured image URI:', image.path); // Log the image URI
+        setImageUri(image.path);
+        setIsEditingVisible(true); // Show the editing component
+      })
+      .catch(error => {
+        console.error('Capture error:', error);
+        Alert.alert('Error', 'Could not capture the image.');
+      });
+  };
 
   const handleSave = async () => {
     try {
-      const savedImage = await imageDrawRef.current.save();
-      onSave(savedImage);
+      if (imageDrawRef.current) {
+        const savedImage = await imageDrawRef.current.save();
+        console.log('Saved image:', savedImage); // Log the saved image
+        setImageUri(savedImage);
+        setIsEditingVisible(false); // Close the editing component
+      } else {
+        console.error('ImageDraw ref is null');
+        Alert.alert('Error', 'ImageDraw ref is not set.');
+      }
     } catch (error) {
+      console.error('Save error:', error);
       Alert.alert('Error', 'Could not save the image.');
     }
   };
@@ -27,74 +51,66 @@ const ImageEditingComponent = ({ isVisible, imageUri, onClose, onSave }) => {
     }
   };
 
-  const handleCrop = () => {
-    if(editedImageUri){
-    ImagePicker.openCropper({
-      path: editedImageUri,
-      cropping: true,
-    })
-      .then((image) => {
-        setEditedImageUri(image.path);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-    }else return
-  };
-
   return (
-    <Modal visible={isVisible} animationType="slide" onRequestClose={onClose}>
-      <View style={styles.container}>
-        <View style={styles.topBar}>
-          <TouchableOpacity onPress={onClose}>
-            <MaterialIcons name="close" size={30} color="white" />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={handleSave}>
-            <MaterialIcons name="check" size={30} color="white" />
-          </TouchableOpacity>
-        </View>
-        <View style={styles.imageContainer}>
-          {currentMode === 'draw' ? (
-            <ImageDraw
-              ref={imageDrawRef}
-              image={editedImageUri}
-              style={styles.imageDraw}
-              strokeColor={'black'}
-              strokeWidth={7}
-            />
-          ) : (
-            <Image source={{ uri: editedImageUri }} style={styles.image} />
-          )}
-        </View>
-        <View style={styles.bottomBar}>
-          <TouchableOpacity onPress={() => setCurrentMode('draw')}>
-            <MaterialCommunityIcons name="pencil" size={30} color={currentMode === 'draw' ? 'yellow' : 'white'} />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={handleCrop}>
-            <MaterialCommunityIcons name="crop" size={30} color="white" />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={handleTextAdd}>
-            <MaterialCommunityIcons name="text" size={30} color="white" />
-          </TouchableOpacity>
-          <TextInput
-            style={styles.textInput}
-            value={textInput}
-            onChangeText={setTextInput}
-            placeholder="Enter text"
-            placeholderTextColor="gray"
-          />
-        </View>
-        {texts.map((text, index) => (
-          <Text key={index} style={styles.text}>{text}</Text>
-        ))}
-      </View>
-    </Modal>
+    <View style={styles.container}>
+      <Button title="Take Picture" onPress={handleCapture} />
+      {imageUri && (
+        <Modal visible={isEditingVisible} animationType="slide" onRequestClose={() => setIsEditingVisible(false)}>
+          <View style={styles.container}>
+            <View style={styles.topBar}>
+              <TouchableOpacity onPress={() => setIsEditingVisible(false)}>
+                <MaterialIcons name="close" size={30} color="white" />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={handleSave}>
+                <MaterialIcons name="check" size={30} color="white" />
+              </TouchableOpacity>
+            </View>
+            <View style={styles.imageContainer}>
+              {currentMode === 'draw' ? (
+                <ImageDraw
+                  ref={imageDrawRef}
+                  image={imageUri}
+                  style={styles.imageDraw}
+                  strokeColor={'black'}
+                  strokeWidth={7}
+                />
+              ) : (
+                <Image source={{ uri: imageUri }} style={styles.image} />
+              )}
+            </View>
+            <View style={styles.bottomBar}>
+              <TouchableOpacity onPress={() => setCurrentMode('draw')}>
+                <MaterialCommunityIcons name="pencil" size={30} color={currentMode === 'draw' ? 'yellow' : 'white'} />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => setCurrentMode('view')}>
+                <MaterialCommunityIcons name="image" size={30} color={currentMode === 'view' ? 'yellow' : 'white'} />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={handleTextAdd}>
+                <MaterialCommunityIcons name="text" size={30} color="white" />
+              </TouchableOpacity>
+              <TextInput
+                style={styles.textInput}
+                value={textInput}
+                onChangeText={setTextInput}
+                placeholder="Enter text"
+                placeholderTextColor="gray"
+              />
+            </View>
+            {texts.map((text, index) => (
+              <Text key={index} style={styles.text}>{text}</Text>
+            ))}
+          </View>
+        </Modal>
+      )}
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: '#27272A',
   },
   topBar: {
@@ -102,6 +118,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     padding: 10,
     backgroundColor: '#000',
+    width: '100%',
   },
   imageContainer: {
     flex: 1,
@@ -122,6 +139,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 10,
     backgroundColor: '#000',
+    width: '100%',
   },
   textInput: {
     backgroundColor: 'white',
