@@ -4,15 +4,24 @@ import React from 'react';
 import UpdatesHeader from '../../../components/CusTabsHeaders/ChatsHeader';
 import { useTheme } from '../../../constants/themeContext';
 import NotificationsScreen from '../../../Screens/tabs/Settings/NotificationsScreen';
+import LinkedDevicesScreen from '../../LinkedDevicesScreen';
 import AccountScreen from '../Settings/AccountScreen';
 import AppUpdatesScreen from '../Settings/AppUpdatesScreen';
 import AvatarScreen from '../Settings/AvatarScreen';
 import ChangeNumberScreen from '../Settings/ChangeNumberScreen';
 import DeleteAccountScreen from '../Settings/DeleteAccountScreen';
-import EmailScreen from '../Settings/EmailScreen';
 import HelpScreen from '../Settings/HelpScreen';
-import PassKeysScreen from '../Settings/PassKeysScreen';
-import PrivacyScreen from '../Settings/PrivacyScreen';
+import AboutScreen from '../Settings/Privacy/AboutScreen';
+import AdvancedScreen from '../Settings/Privacy/AdvancedScreen';
+import AppLockScreen from '../Settings/Privacy/AppLockScreen';
+import CallsScreen from '../Settings/Privacy/CallsScreen';
+import ChatLockScreen from '../Settings/Privacy/ChatLockScreen';
+import DefaultMessageTimerScreen from '../Settings/Privacy/DefaultMessageTimerScreen';
+import GroupsScreen from '../Settings/Privacy/GroupsScreen';
+import LastSeenAndOnlineScreen from '../Settings/Privacy/LastSeenAndOnlineScreen';
+import LiveLocationScreen from '../Settings/Privacy/LiveLocationScreen';
+import PrivacyScreen from '../Settings/Privacy/PrivacyScreen';
+import ProfilePhotoScreen from '../Settings/Privacy/ProfilePhotoScreen';
 import ProfileScreen from '../Settings/ProfileScreen';
 import RequestAccountInfoScreen from '../Settings/RequestAccountInfoScreen';
 import SChatScreen from '../Settings/SChatScreen';
@@ -20,9 +29,7 @@ import SecurityNotificationsScreen from '../Settings/SecurityNotificationsScreen
 import SettingsScreen from '../Settings/SettingsScreen';
 import StorageScreen from '../Settings/StorageScreen';
 import TwoStepVerificationScreen from '../Settings/TwoStepVerificationScreen';
-import ChatInfo from './ChatInfo';
-import ChatRoom from './ChatRoom';
-import ChatsScreen from './ChatsScreen';
+import SynkScreen from './SynkScreen';
 
 const ChatsStack = createStackNavigator();
 
@@ -62,6 +69,18 @@ const ChatsStackNavigator = ({ navigation, route }) => {
       <ChatsStack.Screen name="Change" component={ChangeNumberScreen} options={{headerShown:false}}/>
       <ChatsStack.Screen name="Request" component={RequestAccountInfoScreen} options={{headerShown:false}}/>
       <ChatsStack.Screen name="Delete" component={DeleteAccountScreen} options={{headerShown:false}}/>
+      <ChatsStack.Screen name="LastSeen" component={LastSeenAndOnlineScreen} options={{ headerShown:false}}/>
+      <ChatsStack.Screen name="ProfilePhoto" component={ProfilePhotoScreen} options={{headerShown:false}}/>
+      <ChatsStack.Screen name="About" component={AboutScreen} options={{headerShown:false}}/>
+      <ChatsStack.Screen name="Default" component={DefaultMessageTimerScreen} options={{headerShown:false}}/>
+      <ChatsStack.Screen name="Groups" component={GroupsScreen} options={{headerShown:false}}/>
+      <ChatsStack.Screen name="LiveLocation" component={LiveLocationScreen} options={{headerShown:false}}/>
+      <ChatsStack.Screen name="Calls" component={CallsScreen} options={{headerShown:false}}/>
+      <ChatsStack.Screen name="AppLock" component={AppLockScreen} options={{headerShown:false}}/>
+      <ChatsStack.Screen name="ChatLock" component={ChatLockScreen} options={{headerShown:false}}/>
+      <ChatsStack.Screen name="Advanced" component={AdvancedScreen} options={{headerShown:false}}/>
+      <ChatsStack.Screen name="Linked" component={LinkedDevicesScreen} options={{headerShown:false}}/>
+      <ChatsStack.Screen name="Synk" component={SynkScreen} options={{headerShown:false}}/>
     </ChatsStack.Navigator>
   );
 };

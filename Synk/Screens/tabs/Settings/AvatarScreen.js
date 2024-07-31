@@ -35,7 +35,7 @@ const AvatarScreen = () => {
                 </View>
             </View>
 
-            <TouchableOpacity onPress={handlePress}>
+            <TouchableOpacity style={{maxWidth: 90,}} onPress={handlePress}>
                 <Text style={styles.Text1}>Learn more</Text>
             </TouchableOpacity>
         </View>
@@ -68,10 +68,9 @@ const styles = StyleSheet.create({
     },
     image:{
         position: 'absolute',
-        height: 350,
-        width: 358,
-        marginHorizontal: 1,
-        marginVertical: 1,
+        resizeMode: 'cover',
+        width: '100%',
+        height: 360,
     },
     Text:{
         color: 'white',

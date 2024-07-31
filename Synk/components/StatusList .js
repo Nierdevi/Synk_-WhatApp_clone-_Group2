@@ -56,6 +56,15 @@ const StatusList = () => {
   }, [contacts, fetchStatuses]);
 
   useEffect(() => {
+    const intervalId = setInterval(() => {
+      fetchStatuses();
+    }, 3000); // Refresh every 3 seconds
+
+    return () => clearInterval(intervalId);
+  }, [fetchStatuses]);
+
+
+  useEffect(() => {
     const subscribeToStatuses = (callback) => {
       client.subscribe('databases.database_id.collections.status.documents.*', response => {
         callback(response.payload);

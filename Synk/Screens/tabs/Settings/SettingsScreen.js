@@ -16,7 +16,8 @@ const SettingsScreen = () => {
   const [about, setAbout] = useState(' ');
   const [profilePicture, setProfilePicture] = useState(null);
   const { session } = getUser();
-  const currentUserId = session.userId;
+
+  const currentUserId=session.userId;
 
   useFocusEffect(
     React.useCallback(() => {
@@ -118,21 +119,21 @@ const SettingsScreen = () => {
       <ScrollView style={styles.container}>
         <TouchableOpacity style={styles.head} onPress={handleNavigateToProfile}>
           <Image
-            source={profilePicture ? { uri: profilePicture } : { uri: 'https://via.placeholder.com/50' }}
-            style={styles.headerImage}
-            cachePolicy='memory-disk'
-            // resizeMode='contain'
-          />
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
-            <View style={styles.headerContainer}>
-              <Text style={styles.username}>{username}</Text>
-              <Text style={styles.status}>{about}</Text>
-            </View>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-              <Pressable style={{ width: wp('7') }} onPress={handleNavigateToQrCode}>
-                <Ionicons name="qr-code" size={24} color={primaryColors.purple} />
-              </Pressable>
-              <Pressable style={{ width: wp('7') }}>
+                source={profilePicture ? { uri: profilePicture } : { uri: 'https://via.placeholder.com/50' }} 
+                style={styles.headerImage}
+                cachePolicy='memory-disk'
+                // resizeMode='contain'
+            />
+            <View style={{flexDirection: 'row',justifyContent:'space-between',flex:1}}>
+              <View style={styles.headerContainer}>
+                <Text style={styles.username}>{username}</Text>
+                <Text style={styles.status}>{about}</Text>
+              </View>
+              <View style={{flexDirection:'row',alignItems:'center',gap:10}}>
+                <Pressable style={{width:wp('7')}}>
+                  <Ionicons name="qr-code" size={24} color={primaryColors.purple} />
+                </Pressable>
+                <Pressable style={{width:wp('7')}}>
                 <Ionicons name="chevron-down-circle" size={24} color={primaryColors.purple} />
               </Pressable>
             </View>
@@ -275,6 +276,7 @@ const styles = StyleSheet.create({
     height: hp('7%'),
     borderRadius: 50,
     marginRight: 15,
+    marginLeft: 5,
   },
   headerContainer: {
     justifyContent: 'center',
@@ -282,7 +284,7 @@ const styles = StyleSheet.create({
   username: {
     fontSize: wp('6%'),
     color: '#000',
-    fontWeight:'500'
+    fontWeight:'500',
   },
   status: {
     fontSize: wp('4%'),
@@ -348,7 +350,7 @@ const styles = StyleSheet.create({
   modalContainer: {
     flex: 1,
     justifyContent: 'flex-end',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 0.1)',
   },
   drawerContent: {
     backgroundColor: 'white',

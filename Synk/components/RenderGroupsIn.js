@@ -109,7 +109,7 @@ const RenderGroupsIn = ({ navigation, session }) => {
         />
         <View style={styles.contactDetails}>
           <View style={styles.upperContactdetails}>
-            <Text style={styles.contactName}>{displayName} </Text>
+            <Text style={styles.contactName} ellipsizeMode='tail' numberOfLines={1}>{displayName} </Text>
             {lastMessage.createdAt && (
               <Text style={styles.lastMessageTime}>{DateTime(lastMessage.createdAt)} </Text>
             )}

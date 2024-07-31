@@ -24,7 +24,7 @@ export const PopupMenu = ({ visible, onClose, menuItems,style }) => {
 const styles = StyleSheet.create({
   menuOption:{
     borderRadius:60,
-    // paddingTop:200
+    //paddingTop:200
   },
   menuOptionText: {
     padding: 10,
@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
     // borderRadius:50
   },
   options:{
-    // marginTop:20
+
   }
 });
 

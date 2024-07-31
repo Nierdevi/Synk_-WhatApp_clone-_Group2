@@ -4,16 +4,24 @@ import { Ionicons, MaterialIcons, Entypo, FontAwesome, FontAwesome6, MaterialCom
 import AppLogo from '../../../assets/AppLogo.png';
 import { primaryColors, SecondaryColors } from '../../../constants/colors';
 import { getUserData } from '../../../backend/userService';
+import MediaGrid from '../../../components/MediaGrid';
+import { fetchMessages } from '../../../backend/chatService';
 
 
 const ChatInfo = ({ navigation,route }) => {
   const { contact, recipientPhoneNumber, profilePicture,messages } = route.params;
+  const [mediaModalVisible, setMediaModalVisible] = useState(false);
   const [isEnabled, setIsEnabled] = useState(false);
   const[about,setAbout]= useState(' ')
+  const [media, setMedia] = useState([]);
   const toggleSwitch = () => {
     setIsEnabled(previousState => !previousState);
   };
 
+  useEffect(()=>{
+    // console.log(messages)
+
+  })
   const formatPhoneNumber = (phoneNumber) => {
     // Remove any non-digit characters
     const cleaned = ('' + phoneNumber).replace(/\D/g, '');
@@ -196,6 +204,7 @@ const ChatInfo = ({ navigation,route }) => {
             <Text style={styles.optionTextRed}>Report {contact.name}</Text>
           </TouchableOpacity>
         </View>
+        <MediaGrid media={media} onClose={() => setMediaModalVisible(false)} visible={mediaModalVisible}/>
       </ScrollView>
 
   );

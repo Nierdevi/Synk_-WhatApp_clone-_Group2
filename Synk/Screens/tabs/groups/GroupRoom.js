@@ -32,35 +32,6 @@ const ChatRoom = ({ route, navigation }) => {
     { label: 'Clear chat', onPress: () => {} },
   ];
 
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerShown: true,
-      headerTitle: '',
-      headerStyle: { height: hp('10%'), elevation: 10 },
-      headerLeft: () => (
-        <View style={styles.headerLeft}>
-          <TouchableOpacity style={styles.iconButton} onPress={() => { navigation.goBack() }}>
-            <Ionicons name="arrow-back-outline" size={24} color="black" style={{ marginRight: 6 }} />
-          </TouchableOpacity>
-          <Image
-            source={profilePicture ? { uri: profilePicture } : require('../../../assets/Grp.jpg')}
-            style={styles.profilePicture}
-            cachePolicy='disk'
-          />
-          <TouchableOpacity style={styles.usenameContainer} onPress={() => { navigation.navigate('GroupInfo', {groupData,groupId,participants,profilePicture}) }}>
-            <Text style={styles.name}>{groupData.groupName}</Text>
-          </TouchableOpacity>
-        </View>
-      ),
-      headerRight: () => (
-        <View style={styles.headerRight}>
-          <TouchableOpacity style={styles.iconButton} onPress={() => { setMenuVisible(true) }}>
-            <MaterialIcons name="more-vert" size={24} color="black" />
-          </TouchableOpacity>
-        </View>
-      ),
-    });
-  }, [navigation, profilePicture, groupData.groupName]);
 
   useEffect(() => {
     const loadMessages = async () => {
@@ -106,6 +77,38 @@ const ChatRoom = ({ route, navigation }) => {
         setLastMessage(response);
       }
   };
+  // console.log(messages)
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerShown: true,
+      headerTitle: '',
+      headerStyle: { height: hp('10%'), elevation: 10 },
+      headerLeft: () => (
+        <View style={styles.headerLeft}>
+          <TouchableOpacity style={styles.iconButton} onPress={() => { navigation.goBack() }}>
+            <Ionicons name="arrow-back-outline" size={24} color="black" style={{ marginRight: 6 }} />
+          </TouchableOpacity>
+          <Image
+            source={profilePicture ? { uri: profilePicture } : require('../../../assets/Grp.jpg')}
+            style={styles.profilePicture}
+            cachePolicy='disk'
+          />
+          <TouchableOpacity style={styles.usenameContainer} onPress={() => { navigation.navigate('GroupInfo', {groupData,participants,profilePicture,groupId,messages}) }}>
+            <Text style={styles.name} ellipsizeMode='tail' numberOfLines={1}>{groupData.groupName}</Text>
+          </TouchableOpacity>
+        </View>
+      ),
+      headerRight: () => (
+        <View style={styles.headerRight}>
+          <TouchableOpacity style={styles.iconButton} onPress={() => { setMenuVisible(true) }}>
+            <MaterialIcons name="more-vert" size={24} color="black" />
+          </TouchableOpacity>
+        </View>
+      ),
+    });
+  }, [navigation, profilePicture, groupData.groupName]);
+
+
 
   return (
     <KeyboardAvoidingView

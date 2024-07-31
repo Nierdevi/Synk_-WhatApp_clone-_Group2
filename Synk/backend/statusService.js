@@ -131,7 +131,7 @@ const getStatuses = async () => {
       const response = await databases.listDocuments('database_id', 'status', [
         // No filters here; fetch all statuses
       ]);
-      console.log("statuses: ",response.documents)
+    //   console.log("statuses: ",response.documents)
       return response.documents;
     } catch (error) {
       console.error('Failed to get statuses:', error);
@@ -144,11 +144,31 @@ const getStatusesByPhoneNumber = async (phoneNumber) => {
       const response = await databases.listDocuments('database_id', 'status', [
         Query.equal('phoneNumber', phoneNumber)
       ]);
-      return response.documents;
+  
+      // Ensure each status has a media array
+      const formattedStatuses = response.documents.map(status => {
+        if (!Array.isArray(status.media)) {
+          status.media = [
+            {
+              mediaType: status.mediaType,
+              mediaUrl: status.mediaUrl,
+              text: status.text
+            }
+          ];
+          delete status.mediaType;
+          delete status.mediaUrl;
+          delete status.text;
+        }
+        return status;
+      });
+  
+      console.log('rubbish: ', formattedStatuses);
+      return formattedStatuses;
     } catch (error) {
       console.error('Error fetching statuses by phone number:', error);
       throw error;
     }
   };
+
 
 export { addStatus, getStatuses,viewStatus,getStatusesByPhoneNumber };

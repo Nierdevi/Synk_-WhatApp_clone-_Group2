@@ -165,9 +165,8 @@ const ChatsScreen = ({ navigation }) => {
     contact.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const hnadleOfficialSite=()=>{
-    Alert.alert("Oops!🤤","Under development");
-    return
+  const handleNavigateToSynkScreen=()=>{
+    navigation.navigate('Synk')
   }
 
   //main return funtction
@@ -177,7 +176,7 @@ const ChatsScreen = ({ navigation }) => {
 
     <TouchableOpacity
         style={styles.newsContainer}
-        onPress={hnadleOfficialSite}
+        onPress={handleNavigateToSynkScreen}
         >
         <Image
             source={Applogo} 

@@ -6,6 +6,10 @@ import { primaryColors, SecondaryColors } from '../constants/colors';
 import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import * as ImagePicker from 'expo-image-picker';
 import MediaReviewModal from './MediaReviewModal ';
+// import showToast from './showToast';
+import Toast from 'react-native-root-toast';
+
+
 
 const InputBox = ({ onSendMessage, contactName  }) => {
   const [messageText, setMessageText] = useState('');
@@ -14,9 +18,23 @@ const InputBox = ({ onSendMessage, contactName  }) => {
   const [mediaUri, setMediaUri] = useState(null);
   const [mediaType, setMediaType] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
+  const [toastVisible, setToastVisible] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+
+  const showToast = (message) => {
+    console.log("toast msg: ",message)
+    setToastMessage(message);
+    setToastVisible(true);
+    setTimeout(() => {
+      setToastVisible(false);
+    }, 3000); // Toast duration
+  };
 
   const handleSendMessage = () => {
+
+
     if (messageText.trim() || mediaUri) {
+      showToast('Sending message');
       onSendMessage({ text: messageText, mediaUri }); // Call the prop function to send message
       setMessageText(''); // Clear input after sending message
       setMediaUri(null); // Clear media URI after sending message
@@ -48,6 +66,7 @@ const InputBox = ({ onSendMessage, contactName  }) => {
       setMediaUri(uri)
       setModalVisible(true);
       console.log("uri: ",uri)
+      showToast('Media selected');
     }
   };
 
@@ -99,6 +118,16 @@ const InputBox = ({ onSendMessage, contactName  }) => {
         onChangeText={setMessageText}
         contactName={contactName}
       />
+        <Toast
+        visible={toastVisible}
+        position={Toast.positions.CENTER}
+        shadow={true}
+        animation={true}
+        hideOnPress={true}
+      >
+        {toastMessage}
+      </Toast>
+
     </View>
     
   );
