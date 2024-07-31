@@ -10,7 +10,9 @@ import AppUpdatesScreen from '../Settings/AppUpdatesScreen';
 import AvatarScreen from '../Settings/AvatarScreen';
 import ChangeNumberScreen from '../Settings/ChangeNumberScreen';
 import DeleteAccountScreen from '../Settings/DeleteAccountScreen';
+import EmailScreen from '../Settings/EmailScreen';
 import HelpScreen from '../Settings/HelpScreen';
+import PassKeysScreen from '../Settings/PassKeysScreen';
 import AboutScreen from '../Settings/Privacy/AboutScreen';
 import AdvancedScreen from '../Settings/Privacy/AdvancedScreen';
 import AppLockScreen from '../Settings/Privacy/AppLockScreen';
@@ -29,6 +31,9 @@ import SecurityNotificationsScreen from '../Settings/SecurityNotificationsScreen
 import SettingsScreen from '../Settings/SettingsScreen';
 import StorageScreen from '../Settings/StorageScreen';
 import TwoStepVerificationScreen from '../Settings/TwoStepVerificationScreen';
+import ChatInfo from './ChatInfo';
+import ChatRoom from './ChatRoom';
+import ChatsScreen from './ChatsScreen';
 import SynkScreen from './SynkScreen';
 
 const ChatsStack = createStackNavigator();
