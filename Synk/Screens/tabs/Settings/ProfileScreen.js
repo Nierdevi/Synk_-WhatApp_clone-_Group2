@@ -1,15 +1,15 @@
-import { StyleSheet, Text, View, Pressable,TextInput,Image,use} from 'react-native';
-import React,{useState,useEffect,useCallback} from 'react';
+import React, { useCallback, useState } from 'react';
+import { Image, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 // import {Image} from 'expo-image';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
-import { useNavigation, useFocusEffect } from '@react-navigation/native';
-import { Ionicons, MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
-import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { addUsernameToDatabase, getcurrentUserData,addAboutToDatabase,getUserProfilePicture,uploadProfilePicture } from '../../../backend/userService';
-import { primaryColors,SecondaryColors } from '../../../constants/colors';
-import { getUser } from '../../../constants/userContext';
+import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
+import { addAboutToDatabase, addUsernameToDatabase, getcurrentUserData, getUserProfilePicture, uploadProfilePicture } from '../../../backend/userService';
 import FullScreenMediaModal from '../../../components/FullScreenMediaModal ';
+import { primaryColors } from '../../../constants/colors';
+import { getUser } from '../../../constants/userContext';
 
 
 const ProfileScreen = () => {
@@ -181,7 +181,7 @@ const handleStatusSavePress = async () => {
             />
         </Pressable>
         <Pressable style={styles.iconContainer} onPress={handleImageSelect}>
-            <Ionicons name="camera-outline" size={24} color="black" />
+            <Ionicons name="camera-outline" size={24} color="white" />
         </Pressable>
       </View>
 
@@ -274,7 +274,7 @@ export default ProfileScreen;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor:SecondaryColors.secPurple,
+        backgroundColor: 'white',
         width:wp("100%"),
         // paddingHorizontal:20,
     },
@@ -303,7 +303,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     iconContainer: {
-        backgroundColor: '#82f060',
+        backgroundColor: primaryColors.purple,
         height: 50,
         width: 50,
         borderRadius: 100,
