@@ -76,7 +76,7 @@ const SChatScreen = () => {
     };
 
      // Prevent propagation of press events to the parent elements
-     const stopPropagation1 = event => {
+    const stopPropagation1 = event => {
         event.stopPropagation();
     };
 
