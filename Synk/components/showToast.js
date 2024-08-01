@@ -5,7 +5,7 @@ const showToast = (message, duration = Toast.durations.LONG,  ) => {
     Toast.show(message, {
         duration: duration,
         position: Toast.positions.BOTTOM,
-        shadow: true,
+        shadow: false,
         animation: true,
         hideOnPress: true,
         delay: 0,

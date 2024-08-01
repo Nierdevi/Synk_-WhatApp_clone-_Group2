@@ -123,28 +123,6 @@ const UpdatesScreen = ({ navigation }) => {
           <View style={styles.container}>
               <ScrollView>
                   <View style={styles.section}>
-                      {/* <Text style={styles.title}>Status</Text>
-                      <FlatList
-                          horizontal
-                          data={[{ id: 'default', user: 'My Status', img: 'https://via.placeholder.com/50' }, ...statuses]}
-                          renderItem={({ item }) => (
-                              item.id === 'default' ? (
-                                  <DefaultProfileImg />
-                              ) : (
-                                  <View key={item.id} style={styles.statusContainer}>
-                                      <View style={[
-                                          styles.statusWrapper,
-                                          { borderColor: item.viewed < item.total ? primaryColors.purple : '#ccc' }
-                                      ]}>
-                                          <Image source={{ uri: item.img }} style={styles.statusImg} />
-                                      </View>
-                                      <Text style={styles.statusUser}>{item.user}</Text>
-                                  </View>
-                              )
-                          )}
-                          keyExtractor={item => item.id.toString()}
-                          showsHorizontalScrollIndicator={false}
-                      /> */}
                   <StatusList />
                   </View>
                   <View style={styles.section}>
