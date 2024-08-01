@@ -32,34 +32,6 @@ const SynkScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-        <View style={styles.header}>
-            <View style={{flexDirection:'row',alignItems:'center',gap:3}}>
-                <Pressable onPress={() => navigation.goBack()}>
-                    <Ionicons name="arrow-back" size={24} color="#000" />
-                </Pressable>
-                <View style={{flexDirection:"row", paddingLeft: 5,}}>
-                    <Image
-                        source={Applogo} 
-                        style={styles.profilePicture}
-                        cachePolicy="disk"
-                    />
-                    <View>
-                        <View style={{flexDirection:"row"}}> 
-                            <Text style={styles.headerTitle}>Synk</Text>
-                            <Image source={Verified} cachePolicy='memory-disk' style={styles.verify} tintColor="#7410d7" />
-                        </View>
-                        <Text style={styles.headerTitle1}>Official Synk Account</Text>
-                    </View>
-                </View>
-            </View>
-
-            <View style={styles.headerRight}>
-                <TouchableOpacity style={styles.iconButton} onPress={() => { setMenuVisible(true) }}>
-                    <Entypo name="dots-three-vertical" size={20} />
-                </TouchableOpacity>
-            </View>
-        </View>
-            
       <View style={styles.header}>
         <Pressable onPress={() => navigation.goBack()}>
           <Ionicons name="arrow-back" size={24} color="#000" />
@@ -119,7 +91,6 @@ const SynkScreen = ({ navigation }) => {
         </ScrollView>
 
         <View style={styles.end}>
-            <Text style={{textAlign:'center'}}>Only Synk can send messages</Text>
           <Text>Only Synk can send messages</Text>
         </View>
       </ImageBackground>
@@ -160,10 +131,6 @@ const styles = StyleSheet.create({
     borderBottomColor: 'Lightgray',
     backgroundColor: 'white',
     paddingTop: 40,
-    paddingHorizontal: 15,
-    justifyContent:'space-between'
-},
-headerTitle: {
     paddingLeft: 5,
   },
   headerTitle: {
@@ -186,14 +153,6 @@ headerTitle: {
     width: wp('5%'),
     top: 3,
   },
-  headerRight:{
-    // left: 135,
-    // alignSelf:'flex-end',
-    justifyContent:'flex-end'
-  },
-  end:{
-    alignItems:'center',
-    backgroundColor: 'grey',
   headerRight: {
     marginLeft: 'auto',
   },
