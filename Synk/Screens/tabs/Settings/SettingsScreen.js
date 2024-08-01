@@ -1,4 +1,4 @@
-import { Feather, FontAwesome6, Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
 import { Image, Modal, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -13,47 +13,45 @@ import { getUser } from '../../../constants/userContext';
 const SettingsScreen = () => {
   const navigation = useNavigation();
   const [username, setUsername] = useState('');
-  const[about,setAbout]= useState(' ')
+  const [about, setAbout] = useState(' ');
   const [profilePicture, setProfilePicture] = useState(null);
   const { session } = getUser();
 
   const currentUserId=session.userId;
 
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchUserData = async () => {
+        try {
+          const userData = await getcurrentUserData(currentUserId);
+          setUsername(userData.username);
+          setAbout(userData.about);
+          console.log("username: ", userData.username);
+          console.log("about: ", userData.about);
+        } catch (error) {
+          console.error("Failed to fetch user data:", error);
+        }
+      };
 
-    useFocusEffect(
-        React.useCallback(() => {
-            const fetchUserData = async () => {
-                try {
-                    const userData = await getcurrentUserData(currentUserId);
-                    // console.log(userData)
-                    setUsername(userData.username);
-                    setAbout(userData.about)
-                    console.log("username: ",userData.username);
-                    console.log("about: ",userData.about)
-                } catch (error) {
-                    console.error("Failed to fetch user data:", error);
-                }
-            };
+      fetchUserData();
+    }, [currentUserId])
+  );
 
-            fetchUserData();
-        }, [currentUserId])
-    );
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchProfilePicture = async () => {
+        try {
+          const url = await getUserProfilePicture(currentUserId);
+          setProfilePicture(url);
+        } catch (error) {
+          console.error("Failed to fetch profile picture:", error);
+        }
+      };
 
-    useFocusEffect(
-      React.useCallback(() => {
-          const fetchProfilePicture = async () => {
-              try {
-                  const url = await getUserProfilePicture(currentUserId);
-                  // console.log("url: ",url)
-                  setProfilePicture(url);
-              } catch (error) {
-                  console.error("Failed to fetch profile picture:", error);
-              }
-          };
-    
-          fetchProfilePicture();
-      }, [currentUserId])
-    );
+      fetchProfilePicture();
+    }, [currentUserId])
+  );
+
   const [isDrawerVisible, setIsDrawerVisible] = useState(false); // State for drawer visibility
 
   const handleNavigateToNotification = () => {
@@ -92,6 +90,9 @@ const SettingsScreen = () => {
     navigation.navigate('Avatar');
   };
 
+  const handleNavigateToQrCode = () => {
+    navigation.navigate('QrCodeScreen'); // Update with your QR code screen's route name
+  };
 
   const toggleDrawer = () => {
     setIsDrawerVisible(!isDrawerVisible);
@@ -116,8 +117,7 @@ const SettingsScreen = () => {
       </View>
 
       <ScrollView style={styles.container}>
-
-          <TouchableOpacity style={styles.head} onPress={handleNavigateToProfile}>
+        <TouchableOpacity style={styles.head} onPress={handleNavigateToProfile}>
           <Image
                 source={profilePicture ? { uri: profilePicture } : { uri: 'https://via.placeholder.com/50' }} 
                 style={styles.headerImage}
@@ -133,14 +133,14 @@ const SettingsScreen = () => {
                 <Pressable style={{width:wp('7')}}>
                   <Ionicons name="qr-code" size={24} color={primaryColors.purple} />
                 </Pressable>
-                <Pressable onPress={toggleDrawer} style={{width:wp('7')}}>
+                <Pressable style={{width:wp('7')}}>
                 <Ionicons name="chevron-down-circle" size={24} color={primaryColors.purple} />
-                </Pressable>
-              </View>
+              </Pressable>
             </View>
-          </TouchableOpacity>
+          </View>
+        </TouchableOpacity>
 
-        <View style={{paddingLeft: 20, paddingRight: 20}}>
+        <View style={{ paddingLeft: 20, paddingRight: 20 }}>
           <TouchableOpacity style={styles.section} onPress={handleNavigateToAccount}>
             <Ionicons name="person-outline" size={24} color="black" />
             <View style={styles.sect}>
@@ -189,14 +189,6 @@ const SettingsScreen = () => {
             </View>
           </TouchableOpacity>
 
-          {/* <TouchableOpacity style={styles.section}>
-            <Ionicons name="globe-outline" size={24} color="black" />
-            <View style={styles.sect}>
-              <Text style={styles.sectionTitle}>App language</Text>
-              <Text style={styles.sectionDescription}>English (device's language)</Text>
-            </View>
-          </TouchableOpacity> */}
-
           <TouchableOpacity style={styles.section} onPress={handleNavigateToHelp}>
             <Ionicons name="help-circle-outline" size={24} color="black" />
             <View style={styles.sect}>
@@ -215,32 +207,48 @@ const SettingsScreen = () => {
             <Text style={styles.optionText}>App updates</Text>
           </TouchableOpacity>
         </View>
+
         {/* Drawer */}
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={isDrawerVisible}
-        onRequestClose={() => {
-          setIsDrawerVisible(false);
-        }}
-      >
-        <Pressable style={styles.modalContainer} onPress={closeModal}>
-          <Pressable style={styles.drawerContent} onPress={stopPropagation}>
-            <View style={{flexDirection: 'row', alignItems: 'center',}}>
-              <Image source={AppLogo} style={styles.headerImage1} />
-                <View style={styles.me}>
-                  <Text style={styles.drawerText}>Synk_User</Text>
-                  <Text style={styles.drawerText1}>+233 50 343 4750</Text>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={isDrawerVisible}
+          onRequestClose={() => {
+            setIsDrawerVisible(false);
+          }}
+        >
+          <Pressable style={styles.modalContainer} onPress={closeModal}>
+            <Pressable style={styles.drawerContent} onPress={stopPropagation}>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <Image source={AppLogo} style={styles.headerImage1} />
+                <View style={styles.headerContainer}>
+                  <Text style={styles.username}>{username}</Text>
+                  <Text style={styles.status}>{about}</Text>
                 </View>
-                <FontAwesome6 name="circle-check" size={24} style={styles.check}/>
-            </View>
-            <TouchableOpacity style={styles.plus}>
-              <Feather name="plus-circle" size={34} color="black" />
-              <Text style={styles.drawerText}>Add account</Text>
-            </TouchableOpacity>
+              </View>
+              <TouchableOpacity style={styles.drawerOption} onPress={() => navigation.navigate('AddFriend')}>
+                <Ionicons name="person-add-outline" size={24} color={primaryColors.purple} />
+                <Text style={styles.drawerOptionText}>Add Friends</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.drawerOption} onPress={() => navigation.navigate('Settings')}>
+                <Ionicons name="settings-outline" size={24} color={primaryColors.purple} />
+                <Text style={styles.drawerOptionText}>Settings</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.drawerOption} onPress={() => navigation.navigate('Help')}>
+                <Ionicons name="help-circle-outline" size={24} color={primaryColors.purple} />
+                <Text style={styles.drawerOptionText}>Help</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.drawerOption} onPress={() => navigation.navigate('About')}>
+                <Ionicons name="information-circle-outline" size={24} color={primaryColors.purple} />
+                <Text style={styles.drawerOptionText}>About</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.drawerOption} onPress={() => navigation.navigate('Logout')}>
+                <Ionicons name="exit-outline" size={24} color={primaryColors.purple} />
+                <Text style={styles.drawerOptionText}>Logout</Text>
+              </TouchableOpacity>
+            </Pressable>
           </Pressable>
-        </Pressable>
-      </Modal>
+        </Modal>
       </ScrollView>
     </SafeAreaView>
   );
@@ -388,7 +396,17 @@ const styles = StyleSheet.create({
     backgroundColor: '#59c96b', 
     borderRadius: 100,
     color: "black",
-  }
+  },
+  drawerOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 10,
+  },
+  drawerOptionText: {
+    marginLeft: 10,
+    fontSize: 16,
+    color: primaryColors.purple,
+  },
 });
 
 export default SettingsScreen;

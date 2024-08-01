@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { FlatList, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Divider, Menu, Provider } from 'react-native-paper';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { primaryColors } from '../../../constants/colors';
-import Fab from '../../../components/fab'
 import CameraComponent from '../../../components/CameraComponent';
+import Fab from '../../../components/fab';
 import StatusList from '../../../components/StatusList ';
+import { primaryColors } from '../../../constants/colors';
 
 
 const DefaultProfileImg = () => (
@@ -45,7 +45,7 @@ const UpdatesScreen = ({ navigation }) => {
   const suggestedChannels = [
       { id: 3, name: 'Synk', img: Applogo, followers: '6.7k followers' },
       { id: 4, name: 'CNN', img: 'https://upload.wikimedia.org/wikipedia/commons/f/fb/Cnn_logo_red_background.png', followers: '3.2k followers' },
-      { id: 5, name: 'BBC News', img: 'https://asset.brandfetch.io/idtEghWGp4/idN4Y37uWH.png', followers: '900 followers' },
+      { id: 5, name: 'BBC News', img: 'https://asset.brandfetch.io/idtEghWGp4/idN4Y37uWH.png', followers: '9.5k followers' },
       { id: 6, name: 'TechCrunch', img: 'https://cdn.prod.website-files.com/60d07e2eecb304cb4350b53f/6630b429cd796ca047a8079d_techcrunch_logo.png', followers: '1.5k followers' },
       { id: 7, name: 'National Geographic', img: 'https://upload.wikimedia.org/wikipedia/commons/2/22/Nat_Geo_HD.png', followers: '800 followers' },
       { id: 8, name: 'ESPN', img: 'https://upload.wikimedia.org/wikipedia/commons/6/60/ESPN_logos.png', followers: '2k followers' }
@@ -162,7 +162,7 @@ const UpdatesScreen = ({ navigation }) => {
                                       <Image source={{ uri: item.img }} style={styles.channelImg} />
                                       <View style={styles.channelInfo}>
                                           <Text style={styles.channelName}>{item.name}</Text>
-                                          <Text style={styles.channelDescription} numberOfLines={2}>{item.description}</Text>
+                                          <Text style={styles.channelDescription} numberOfLines={1}>{item.description}</Text>
 
                                       </View>
                                       <View style={styles.channelMeta}>
@@ -360,9 +360,10 @@ const styles = StyleSheet.create({
       marginTop: 20
   },
   findChannelsText: {
-      fontSize: 18,
+      fontSize: 15,
       fontWeight: 'bold',
-      marginBottom: 10
+      marginBottom: 10,
+      color: 'grey'
   },
   suggestedChannelItem: {
       flexDirection: 'row',
@@ -417,13 +418,13 @@ const styles = StyleSheet.create({
       marginTop: 10,
       marginBottom: 120,
       backgroundColor: '#fff',
-      paddingVertical: 8, // Reduced padding
-      paddingHorizontal: 12, // Reduced padding
+      paddingVertical: 8,
+      paddingHorizontal: 12, 
       borderRadius: 20,
       borderColor: primaryColors.purple,
       borderWidth: 1,
       alignItems: 'center',
-      alignSelf: 'flex-start' // Align button to the left
+      alignSelf: 'flex-start' 
   },
   exploreMoreButtonText: {
       color: primaryColors.purple,
