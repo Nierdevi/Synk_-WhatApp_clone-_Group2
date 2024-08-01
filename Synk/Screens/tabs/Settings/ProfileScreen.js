@@ -216,7 +216,7 @@ const handleStatusSavePress = async () => {
                 )}
             </View>
             <Text style={styles.profileTitle1}>
-                This is not your username or pin. This name will be visible to your WhatsApp contacts.
+                This is not your username or pin. This name will be visible to your Synk contacts.
             </Text>
         </View>
       </TouchableOpacity>

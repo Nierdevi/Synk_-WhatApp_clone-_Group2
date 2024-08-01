@@ -128,7 +128,8 @@ const styles = StyleSheet.create({
     borderBottomColor: "#f2f2f2",
     width: wp("100%"),
     paddingHorizontal:15,
-    marginBottom:15
+    marginBottom:15,
+    
   },
   contactDetails: {
     justifyContent: "center",
@@ -149,6 +150,7 @@ const styles = StyleSheet.create({
   },
   lastMessageTime: {
     width: wp("10%"),
+    right: 10,
   },
   profilePicture: {
     width: 55,

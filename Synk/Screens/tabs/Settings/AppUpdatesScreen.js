@@ -2,6 +2,7 @@ import { StyleSheet, Text, View, Image, Switch, Pressable, TouchableOpacity, Mod
 import React, { useState } from "react";
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons, Feather, FontAwesome6 } from '@expo/vector-icons';
+import { SecondaryColors } from '../../../constants/colors';
 
 const AppUpdatesScreen = () => {
   const [isDrawerVisible, setIsDrawerVisible] = useState(false); // State for drawer visibility
@@ -120,7 +121,7 @@ export default AppUpdatesScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "yellow",
+    backgroundColor: SecondaryColors.secPurple,
   },
   backButton: {
     position: "absolute",
