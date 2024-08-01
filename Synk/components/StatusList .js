@@ -15,12 +15,19 @@ const StatusList = () => {
   const contacts = useContacts(session);
   const navigation = useNavigation();
 
+
+  // console.log("user phonenumber: ",session.phoneNumber)
   const fetchStatuses = useCallback(async () => {
     try {
       const allStatuses = await getStatuses();
       const normalizedPhoneNumbers = contacts.flatMap(contact =>
         Array.isArray(contact.normalizedPhoneNumbers) ? contact.normalizedPhoneNumbers : []
       );
+
+      const userStatus=allStatuses.filter(status =>
+        status.phoneNumber === session.phoneNumber
+      )
+      // console.log("userStatus: ",userStatus[0])
 
       const filteredStatuses = allStatuses.filter(status =>
         status.phoneNumber && normalizedPhoneNumbers.includes(status.phoneNumber)
@@ -115,7 +122,7 @@ const StatusList = () => {
     return (
       <TouchableOpacity
         style={styles.itemContainer}
-        onPress={() => navigation.navigate('ViewStatus', { userData })}
+        onPress={() => navigation.navigate('ViewStatus', { userData,contactName })}
       >
         <View style={styles.thumbnailContainer}>
           <Image source={profilePicture} style={styles.thumbnail} />
@@ -146,7 +153,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   itemContainer: {
-    marginHorizontal: 5,
+    marginHorizontal: 5,  
     alignItems: 'center',
     marginRight:10
   },

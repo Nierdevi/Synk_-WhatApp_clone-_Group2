@@ -11,23 +11,26 @@ const SynkScreen = ({navigation}) => {
   return (
     <SafeAreaView style={styles.container}>
         <View style={styles.header}>
-            <Pressable onPress={() => navigation.goBack()}>
-                <Ionicons name="arrow-back" size={24} color="#000" />
-            </Pressable>
-            <View style={{flexDirection:"row", paddingLeft: 5,}}>
-                <Image
-                    source={Applogo} 
-                    style={styles.profilePicture}
-                    cachePolicy="disk"
-                />
-                <View>
-                    <View style={{flexDirection:"row"}}> 
-                        <Text style={styles.headerTitle}>Synk</Text>
-                        <Image source={Verified} cachePolicy='memory-disk' style={styles.verify} tintColor="#7410d7" />
+            <View style={{flexDirection:'row',alignItems:'center',gap:3}}>
+                <Pressable onPress={() => navigation.goBack()}>
+                    <Ionicons name="arrow-back" size={24} color="#000" />
+                </Pressable>
+                <View style={{flexDirection:"row", paddingLeft: 5,}}>
+                    <Image
+                        source={Applogo} 
+                        style={styles.profilePicture}
+                        cachePolicy="disk"
+                    />
+                    <View>
+                        <View style={{flexDirection:"row"}}> 
+                            <Text style={styles.headerTitle}>Synk</Text>
+                            <Image source={Verified} cachePolicy='memory-disk' style={styles.verify} tintColor="#7410d7" />
+                        </View>
+                        <Text style={styles.headerTitle1}>Official Synk Account</Text>
                     </View>
-                    <Text style={styles.headerTitle1}>Official Synk Account</Text>
                 </View>
             </View>
+
             <View style={styles.headerRight}>
                 <TouchableOpacity style={styles.iconButton} onPress={() => { setMenuVisible(true) }}>
                     <Entypo name="dots-three-vertical" size={20} />
@@ -38,7 +41,7 @@ const SynkScreen = ({navigation}) => {
             
         </ScrollView>
         <View style={styles.end}>
-            <Text>Only Synk can send messages</Text>
+            <Text style={{textAlign:'center'}}>Only Synk can send messages</Text>
         </View>
     </SafeAreaView>
   )
@@ -58,7 +61,8 @@ header: {
     borderBottomColor: 'Lightgray',
     backgroundColor: 'white',
     paddingTop: 40,
-    paddingLeft: 5,
+    paddingHorizontal: 15,
+    justifyContent:'space-between'
 },
 headerTitle: {
     fontSize: 24,
@@ -81,7 +85,9 @@ profilePicture: {
     top: 3,
   },
   headerRight:{
-    left: 135,
+    // left: 135,
+    // alignSelf:'flex-end',
+    justifyContent:'flex-end'
   },
   end:{
     alignItems:'center',

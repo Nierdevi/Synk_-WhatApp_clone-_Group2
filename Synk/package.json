@@ -1,6 +1,6 @@
 {
   "name": "synk",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "scripts": {
     "start": "expo start --dev-client",
     "android": "expo run:android",
@@ -8,6 +8,7 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@daily-co/daily-js": "^0.69.0",
     "@expo/vector-icons": "^14.0.2",
     "@fortawesome/fontawesome-svg-core": "^6.6.0",
     "@fortawesome/free-regular-svg-icons": "^6.5.2",
@@ -20,9 +21,7 @@
     "@react-navigation/native": "^6.1.17",
     "@react-navigation/stack": "^6.3.29",
     "appwrite": "^15.0.0",
-    "axios": "^1.7.2",
     "body-parser": "^1.20.2",
-    "cors": "^2.8.5",
     "dayjs": "^1.11.11",
     "expo": "~51.0.21",
     "expo-app-loading": "^1.0.3",
@@ -40,7 +39,6 @@
     "express": "^4.19.2",
     "link": "^2.1.1",
     "moment": "^2.30.1",
-    "node-cron": "^3.0.3",
     "openai": "^4.52.4",
     "react": "18.2.0",
     "react-native": "^0.74.3",
@@ -56,7 +54,6 @@
     "react-native-image-draw": "^0.2.2",
     "react-native-image-zoom-viewer": "^3.0.1",
     "react-native-international-phone-number": "^0.7.6",
-    "react-native-jitsi-meet": "^2.3.1",
     "react-native-keyboard-aware-scroll-view": "^0.9.5",
     "react-native-linear-gradient": "^2.8.3",
     "react-native-paper": "^5.12.3",
