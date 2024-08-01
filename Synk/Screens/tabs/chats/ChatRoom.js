@@ -24,7 +24,7 @@ const ChatRoom = ({ route, navigation }) => {
     { label: 'Report or Block', onPress: () => {} },
     { label: 'Search', onPress: () => {} },
     { label: 'Mute notifications', onPress: () => {} },
-    { label: 'Disappearing messages', onPress: () => handleNavigateToSettings() },
+    { label: 'Disappearing messages', onPress: () => {} },
     { label: 'Media, Links and docs', onPress: () => {} },
     { label: 'Clear chat', onPress: () => {} },
   ];
@@ -33,7 +33,7 @@ const ChatRoom = ({ route, navigation }) => {
     navigation.setOptions({
       headerShown: true,
       headerTitle: '',
-      headerStyle: { height: hp('10%'), elevation: 10 },
+      headerStyle: { height: hp('11.5%'), elevation: 10, },
       headerLeft: () => (
         <View style={styles.headerLeft}>
           <TouchableOpacity style={styles.iconButton} onPress={() => { navigation.goBack() }}>
@@ -181,7 +181,11 @@ const styles = StyleSheet.create({
     width: wp("47%"),
     borderRadius: 10,
     elevation: 2,
-    justifyContent: 'flex-end'
+    left:189,
+    marginTop:2,
+  },
+  iconButton:{
+    paddingLeft: 5,
   },
 });
 

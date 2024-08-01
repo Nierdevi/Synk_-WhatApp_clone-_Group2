@@ -82,7 +82,7 @@ const ChatRoom = ({ route, navigation }) => {
     navigation.setOptions({
       headerShown: true,
       headerTitle: '',
-      headerStyle: { height: hp('10%'), elevation: 10 },
+      headerStyle: { height: hp('11.5%'), elevation: 10 },
       headerLeft: () => (
         <View style={styles.headerLeft}>
           <TouchableOpacity style={styles.iconButton} onPress={() => { navigation.goBack() }}>
@@ -161,12 +161,16 @@ const styles = StyleSheet.create({
   },
   popupMenu: {
     position: 'absolute',
-    marginTop: 20,
+    marginTop: 2,
     backgroundColor: 'white',
     width: wp("47%"),
     borderRadius: 10,
     elevation: 2,
-    justifyContent: 'flex-end'
+    justifyContent: 'flex-end',
+    left:189,
+  },
+  iconButton:{
+    paddingLeft: 5,
   },
 });
 
