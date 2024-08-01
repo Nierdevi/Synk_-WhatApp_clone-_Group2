@@ -59,7 +59,6 @@ const SynkScreen = ({ navigation }) => {
                 </TouchableOpacity>
             </View>
         </View>
-        <ScrollView>
             
       <View style={styles.header}>
         <Pressable onPress={() => navigation.goBack()}>

@@ -77,4 +77,4 @@ yarn-error.*
 
 ./dump
 ./GroupDump
-./package-lock
+./package-lock.json
