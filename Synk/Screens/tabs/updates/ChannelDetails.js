@@ -127,7 +127,7 @@ const ChannelDetails = ({ route }) => {
                                 </View>
                                 <TouchableOpacity onPress={() => Linking.openURL(item.url)} style={styles.linkButton}>
                                     <Text style={styles.linkText}>
-                                        Check here👉 <Ionicons name="link" size={16} color="blue" />
+                                        Click here👉👉<Ionicons name="link" size={16} color="blue" />
                                     </Text>
                                 </TouchableOpacity>
                                 <Text style={styles.articleDate}>{moment(item.published_date).format('MMM D, YYYY, h:mm A')}</Text>
