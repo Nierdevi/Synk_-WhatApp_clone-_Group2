@@ -55,7 +55,7 @@ export default function ChatsHeader({navigation}) {
   ];
 
   const handleNavigateToSettings = () => {
-    navigation.replace("SettingsScreen")
+    navigation.replace("SettingsScreen",{})
     setMenuVisible(false);
   };
 
