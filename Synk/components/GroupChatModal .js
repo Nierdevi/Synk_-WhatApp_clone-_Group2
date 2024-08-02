@@ -200,9 +200,6 @@ const GroupChatModal = ({ visible, onClose, navigation ,close}) => {
           renderItem={renderItem}
         />
         <Fab type="send" handlePress={handleCreateGroup}/>
-        {/* <TouchableOpacity style={styles.createGroupButton} onPress={handleCreateGroup}>
-          <Text style={styles.buttonText}>Create Group</Text>
-        </TouchableOpacity> */}
       </View>
     </Modal>
   );

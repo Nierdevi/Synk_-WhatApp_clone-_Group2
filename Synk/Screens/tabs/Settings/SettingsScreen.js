@@ -1,7 +1,7 @@
-import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { Ionicons, MaterialIcons, Feather } from '@expo/vector-icons';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
-import { Image, Modal, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image, Modal, Pressable, StyleSheet, Text, TouchableOpacity, View,} from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -9,7 +9,6 @@ import AppLogo from '../../../assets/AppLogo.png';
 import { getcurrentUserData, getUserProfilePicture } from '../../../backend/userService';
 import { primaryColors } from '../../../constants/colors';
 import { getUser } from '../../../constants/userContext';
-
 const SettingsScreen = () => {
   const navigation = useNavigation();
   const [username, setUsername] = useState('');
@@ -119,14 +118,14 @@ const SettingsScreen = () => {
       <ScrollView style={styles.container}>
         <TouchableOpacity style={styles.head} onPress={handleNavigateToProfile}>
           <Image
-                source={profilePicture ? { uri: profilePicture } : { uri: 'https://via.placeholder.com/50' }} 
+                source={profilePicture ? { uri: profilePicture } : require("../../../assets/Avator.jpg")} 
                 style={styles.headerImage}
                 cachePolicy='memory-disk'
                 // resizeMode='contain'
             />
             <View style={{flexDirection: 'row',justifyContent:'space-between',flex:1}}>
               <View style={styles.headerContainer}>
-                <Text style={styles.username}>{username}</Text>
+                <Text style={styles.username}>{username ? username:'Username'}</Text>
                 <Text style={styles.status}>{about}</Text>
               </View>
               <View style={{flexDirection:'row',alignItems:'center',gap:10}}>
@@ -199,12 +198,12 @@ const SettingsScreen = () => {
 
           <TouchableOpacity style={styles.section}>
             <Ionicons name="person-add-outline" size={24} color="black" />
-            <Text style={styles.optionText}>Invite a friend</Text>
+            <Text style={styles.optionText}>Invite a friend </Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.section} onPress={handleNavigateToAppUpdate}>
             <MaterialIcons name="system-update-tv" size={24} color="black" />
-            <Text style={styles.optionText}>App updates</Text>
+            <Text style={styles.optionText}>App updates </Text>
           </TouchableOpacity>
         </View>
 
@@ -226,21 +225,9 @@ const SettingsScreen = () => {
                   <Text style={styles.status}>{about}</Text>
                 </View>
               </View>
-              <TouchableOpacity style={styles.drawerOption} onPress={() => navigation.navigate('AddFriend')}>
-                <Ionicons name="person-add-outline" size={24} color={primaryColors.purple} />
-                <Text style={styles.drawerOptionText}>Add Friends</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.drawerOption} onPress={() => navigation.navigate('Settings')}>
-                <Ionicons name="settings-outline" size={24} color={primaryColors.purple} />
-                <Text style={styles.drawerOptionText}>Settings</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.drawerOption} onPress={() => navigation.navigate('Help')}>
-                <Ionicons name="help-circle-outline" size={24} color={primaryColors.purple} />
-                <Text style={styles.drawerOptionText}>Help</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.drawerOption} onPress={() => navigation.navigate('About')}>
-                <Ionicons name="information-circle-outline" size={24} color={primaryColors.purple} />
-                <Text style={styles.drawerOptionText}>About</Text>
+              <TouchableOpacity style={styles.plus}>
+                <Feather name="plus-circle" size={34} color="black" />
+                <Text style={styles.drawerText}>Add account</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.drawerOption} onPress={() => navigation.navigate('Logout')}>
                 <Ionicons name="exit-outline" size={24} color={primaryColors.purple} />
@@ -280,6 +267,7 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     justifyContent: 'center',
+    paddingLeft: 10,
   },
   username: {
     fontSize: wp('6%'),
@@ -386,20 +374,21 @@ const styles = StyleSheet.create({
     
   },
   plus:{
-    paddingTop: 40,
+    paddingTop: 20,
     paddingLeft:6,
     flexDirection: 'row',
     alignItems: 'center',
   },
   check:{
     left: 150,
-    backgroundColor: '#59c96b', 
+    backgroundColor:primaryColors.purple, 
     borderRadius: 100,
     color: "black",
   },
   drawerOption: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'flex-end',
     paddingVertical: 10,
   },
   drawerOptionText: {

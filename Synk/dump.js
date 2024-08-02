@@ -273,219 +273,6 @@ useEffect(() => {
 
 
 
-
-260b731b9e807e5b42463dc1d05fee1da556ad5aeac46f559a4dbb164797a130a7d37daa43a6287a92fa3ac59068ec47
-3b36072e37bb10b956a9571e2157e179
-06c7648469946ea2d1c768a6f9277061
-
-
-
-import React, { useEffect, useState } from "react";
-import {
-Alert,
-FlatList,
-Modal,
-Pressable,
-StyleSheet,
-Text,
-TextInput,
-TouchableOpacity,
-View,
-} from "react-native";
-import {
-heightPercentageToDP as hp,
-widthPercentageToDP as wp,
-} from "react-native-responsive-screen";
-import { Entypo, Ionicons } from "@expo/vector-icons";
-import { Image } from "expo-image";
-import { primaryColors } from "../constants/colors";
-import DateTime from "./DateTime";
-import { databases } from "../backend/appwrite";
-import { Query } from "appwrite";
-
-
-
-
-
-import { CameraView } from 'expo-camera';
-import React, { useEffect, useRef, useState } from 'react';
-import { Button, StyleSheet, Text, View } from 'react-native';
-
-const CameraStatusScreen = () => {
-  const [hasPermission, setHasPermission] = useState(null);
-  const [type, setType] = useState('back');
-  const cameraRef = useRef(null);
-
-  const takePicture = async () => {
-    if (cameraRef.current) {
-      let photo = await cameraRef.current.takePictureAsync();
-      console.log(photo.uri); // Use this URI to display or send the photo
-    }
-  };
-
-  useEffect(() => {
-    console.log('Camera Object:', Camera);
-  }, []);
-  
-
-  // const flipCamera = () => {
-  //   setType(
-  //     type === Camera.Constants.Type.back
-  //       ? Camera.Constants.Type.front
-  //       : Camera.Constants.Type.back
-  //   );
-  // };
-
-  function toggleCameraFacing() {
-    setFacing(current => (current === 'back' ? 'front' : 'back'));
-  }
-
-  const getCameraPermission = async () => {
-    const { status } = await Camera.requestCameraPermissionsAsync();
-    setHasPermission(status === 'granted');
-  };
-
-  useEffect(() => {
-    getCameraPermission();
-  }, []);
-
-  if (hasPermission === null) {
-    return <View />;
-  }
-  if (hasPermission === false) {
-    return <Text>No access to camera</Text>;
-  }
-
-  return (
-    <View style={styles.container}>
-      <CameraView style={styles.camera} type={type} ref={cameraRef} />
-      <Button title="Flip Camera" onPress={flipCamera} />
-      <Button title="Take Picture" onPress={takePicture} />
-    </View>
-  );
-};
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-  },
-  camera: {
-    flex: 1,
-    width: '100%',
-  },
-});
-
-export default CameraComponent;
-
-
-const viewStatus = async (statusId, viewerPhoneNumber) => {
-  try {
-      // Fetch the status document
-      const status = await databases.getDocument('database_id', 'status', statusId);
-
-      // Update the viewers list
-      const viewers = status.viewers || [];
-      if (!viewers.includes(viewerPhoneNumber)) {
-          const updatedViewers = [...viewers, viewerPhoneNumber];
-          await databases.updateDocument('database_id', 'status', statusId, { viewers: updatedViewers });
-      }
-  } catch (error) {
-      console.error('Failed to update status viewers:', error);
-  }
-};
-
-const getStatuses = async (phoneNumbers) => { // Modified to take an array of phone numbers
-  try {
-      const response = await databases.listDocuments('database_id', 'status', [
-          Query.contains('phoneNumber', phoneNumbers), // Changed to Query.in for multiple phone numbers
-          // Query.greaterThan('expiryAt', Date.now())
-      ]);
-      console.log("statuses: ",response.documents)
-      return response.documents;
-  } catch (error) {
-      console.error("Failed to get statuses:", error);
-  }
-};
-
-
-
-import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, Image, StyleSheet } from 'react-native';
-import { getStatuses } from '../backend/statusService';
-import { useContacts } from '../backend/contacts ';
-import { getUser } from '../constants/userContext';
-
-const StatusList = () => {
-  const [statuses, setStatuses] = useState([]);
-  const { session } = getUser();
-  const contacts = useContacts(session);
-
-  useEffect(() => {
-    const fetchStatuses = async () => {
-        try {
-          const allStatuses = await getStatuses();
-          console.log("All statuses:", allStatuses);
-      
-          const normalizedPhoneNumbers = contacts.flatMap(contact => 
-            Array.isArray(contact.normalizedPhoneNumbers) ? contact.normalizedPhoneNumbers : []
-          );
-          const filteredStatuses = allStatuses.filter(status =>
-            status && status.phoneNumber &&
-            normalizedPhoneNumbers.includes(status.phoneNumber)
-          );
-      
-          console.log("Filtered statuses:", filteredStatuses);
-          setStatuses(filteredStatuses);
-        } catch (error) {
-          console.error('Error fetching statuses:', error);
-        }
-      };
-
-    fetchStatuses();
-  }, [contacts]);
-
-  const renderItem = ({ item }) => (
-    <TouchableOpacity>
-      <Image source={{ uri: item.mediaUrl }} style={styles.thumbnail} />
-      <Text style={styles.phoneNumber}>{item.currentUserPhoneNumber}</Text>
-    </TouchableOpacity>
-  );
-
-  return (
-    <FlatList
-      data={statuses}
-      renderItem={renderItem}
-      keyExtractor={item => item.$id}
-      horizontal
-      contentContainerStyle={styles.list}
-    />
-  );
-};
-
-const styles = StyleSheet.create({
-  list: {
-    paddingVertical: 10,
-  },
-  itemContainer: {
-    marginHorizontal: 5,
-  },
-  thumbnail: {
-    width: 100,
-    height: 100,
-    borderRadius: 10,
-  },
-  phoneNumber: {
-    textAlign: 'center',
-    marginTop: 5,
-  },
-});
-
-export default StatusList;
-
-
-
 const fetchMessages = async (chatId) => {
   try {
     const response = await databases.listDocuments(
@@ -527,265 +314,288 @@ const fetchMessages = async (chatId) => {
 
 
 
-  import React, { useState, useEffect ,useLayoutEffect} from 'react';
-import { StyleSheet, KeyboardAvoidingView, Platform, View, Text,TouchableOpacity,StatusBar,ActivityIndicator  } from 'react-native';
-import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
-import { sendMessage, fetchMessages, getExistingChat,checkForNewMessages,fetchLastMessage } from '../../../backend/chatService';
-import { Image } from 'expo-image';
-import InputBox from '../../../components/InputBox';
-import ChatList from '../../../components/ChatListItem';
-import {Feather,Ionicons ,MaterialIcons } from '@expo/vector-icons'
-import { PopupMenu } from '../../../components/PopupMenu';
-import { getcurrentUserData,getUserData } from '../../../backend/userService';
-import { useFocusEffect } from '@react-navigation/native';
-import { primaryColors } from '../../../constants/colors';
-
-
-
-
-
-
-const ChatRoom = ({ route,navigation }) => {
-  const { contact, currentUserPhoneNumber, profilePicture } = route.params;
-  const [messages, setMessages] = useState([]);
-  const [lastMessage, setLastMessage] = useState(null);
-  const [userData, setUserData] = useState(null);
-  const [menuVisible, setMenuVisible] = useState(false);
-  const [loadingMessages, setLoadingMessages] = useState(false);
-  const [isFocused, setIsFocused] = useState(false);
-
-  const recipientPhoneNumber = contact.normalizedPhoneNumbers[0];
-
-// console.log(contact.name)
-  const menuItems = [
-    { label: 'Report or Block', onPress: () => {} },
-    { label: 'Search', onPress: () => {} },
-    { label: 'Mute notifications', onPress: () => {} },
-    { label: 'Disappering messages', onPress: () => handleNavigateToSettings() }, // Navigate to SettingsScreen
-    { label: 'Media,Links and docs', onPress: () => {} },
-    { label: 'Clear chat', onPress: () => {} },
-  ];
-// console.log("user data: ",userData)
-// console.log("user data: ",profilePicture)
-
-useFocusEffect(
-  React.useCallback(() => {
-    setIsFocused(true);
-
-    return () => {
-      setIsFocused(false);
-    };
-  }, [])
-);
-
-
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerShown: true,
-      headerTitle: '',
-      headerStyle:{height:hp('10%'),elevation:10,},
-      headerLeft: () => (
-        <View style={styles.headerLeft}>
-          <TouchableOpacity style={styles.iconButton} onPress={()=>{navigation.goBack()}}>
-          <Ionicons name="arrow-back-outline" size={24} color="black" style={{marginRight:6}}/>
-          </TouchableOpacity>
-            <Image
-                source={profilePicture ? { uri: profilePicture } : require('../../../assets/Avator.jpg')} 
-                style={styles.profilePicture}
-                cachePolicy='disk'
-            />
-          <TouchableOpacity 
-            style={styles.usenameContainer} 
-            onPress={()=>{navigation.navigate(
-              'ChatInfo',
-              {messages,
-              recipientPhoneNumber,
-              profilePicture,
-              contact
-              })}}>
-            <Text style={styles.name}>{contact.name}  </Text>
-          </TouchableOpacity>
-        </View>
-      ),
-      headerRight: () => (
-        <View style={styles.headerRight}>
-          <TouchableOpacity style={styles.iconButton}>
-            <MaterialIcons name="call" size={24} color="black" />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.iconButton}>
-            <Feather name="video" size={24} color="black" />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.iconButton} onPress={()=>{setMenuVisible(true)}}>
-            <MaterialIcons name="more-vert" size={24} color="black" />
-          </TouchableOpacity>
-        </View>
-      ),
-    });
-  }, [navigation]);
-
-
-  // console.log(currentUserPhoneNumber)
-  // console.log(recipientPhoneNumber)
-  // console.log(messages)
-  useEffect(() => {
-    const loadMessages = async () => {
-      if (isFocused) {
-        setLoadingMessages(true);
-        const existingChat = await getExistingChat(currentUserPhoneNumber, recipientPhoneNumber);
+  import React, { useEffect, useState, useRef } from 'react';
+  import { View, Text, Image, StyleSheet, FlatList, ActivityIndicator, Animated, LogBox, Dimensions } from 'react-native';
+  import { Video } from 'expo-av';
+  import { getStatusesByPhoneNumber } from '../backend/statusService';
+  import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
   
-        if (existingChat) {
-          const chatId = existingChat.$id;
-          const { messages: cachedMessages, lastMessageId } = await fetchMessages(chatId);
-          setMessages(cachedMessages);
   
-          const newMessages = await checkForNewMessages(chatId, lastMessageId);
-          if (newMessages) {
-            setMessages(newMessages);
-          }
-          
-          try {
-            const lastMessageData = await fetchLastMessage(chatId);
-            setLastMessage(lastMessageData);
-          } catch (error) {
-            console.error('Failed to fetch last message:', error);
-          }
+  // Ignore warnings related to Animated API
+  LogBox.ignoreLogs(['Animated: `useNativeDriver` was not specified.']);
+  
+  const ViewStatus = ({ route,navigation }) => {
+    const { userData } = route.params;
+    const [statuses, setStatuses] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const flatListRef = useRef(null);
+    const progressAnim = useRef(new Animated.Value(0)).current;
+  
+    useEffect(() => {
+      const fetchStatuses = async () => {
+        try {
+          const fetchedStatuses = await getStatusesByPhoneNumber(userData.phoneNumber);
+          console.log("formatted stat: ", fetchedStatuses);
+          setStatuses(fetchedStatuses);
+        } catch (error) {
+          console.error('Error fetching statuses:', error);
+        } finally {
+          setLoading(false);
         }
-        setLoadingMessages(false);
+      };
+  
+      fetchStatuses();
+    }, [userData.phoneNumber]);
+  
+    // useEffect(() => {
+    //   if (statuses.length > 0) {
+    //     const currentStatus = statuses[currentIndex];
+    //     let duration = 10000; // Default 10 seconds for images
+    //     if (currentStatus.media[0].mediaType === 'video') {
+    //       duration = 30000; // Maximum 30 seconds for videos
+    //     }
+  
+    //     Animated.timing(progressAnim, {
+    //       toValue: 1,
+    //       duration: duration,
+    //       useNativeDriver: false,
+    //     }).start(({ finished }) => {
+    //       if (finished) {
+    //         handleNext();
+    //       }
+    //     });
+    //   }
+    // }, [currentIndex, statuses]);
+  
+    useEffect(() => {
+      getStatusesByPhoneNumber(userData.phoneNumber).then((res)=>{
+        const intervalId = setInterval(() => {
+          setCurrentIndex((prevIndex) => {
+            console.log("stat: ",statuses)
+            const nextIndex =prevIndex + 1 ;
+            if(nextIndex!==res.length)
+              flatListRef.current.scrollToIndex({ animated: true, index: nextIndex });
+            else
+            {
+              clearInterval(intervalId)
+              navigation.goBack()
+            }
+            console.log("next index: ",nextIndex)
+            return nextIndex;
+          });
+        }, 10000); // 10 seconds
+    
+        // Clear interval on component unmount
+        return () => clearInterval(intervalId);
+      })
+      
+    }, []);
+  
+    const handleNext = () => {
+      if (currentIndex < statuses.length - 1) {
+        progressAnim.setValue(0);
+        setCurrentIndex(currentIndex + 1);
+        flatListRef.current.scrollToIndex({ index: currentIndex + 1 });
       }
     };
   
-    loadMessages();
-  }, [currentUserPhoneNumber, recipientPhoneNumber, isFocused]);
-  
-
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     const existingChat = await getExistingChat(currentUserPhoneNumber, recipientPhoneNumber);
-  //     if (existingChat) {
-  //       const chatId = existingChat.$id;
-  //       const fetchedMessages = await fetchMessages(chatId);
-  //       const sortedMessages = fetchedMessages.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-  //       setMessages(sortedMessages);
-  //       try {
-  //         const lastMessageData = await fetchLastMessage(chatId);
-  //         setLastMessage(lastMessageData);
-  //       } catch (error) {
-  //         console.error('Failed to fetch last message:', error);
-  //       }
-  //     }
-  //   };
-
-  //   const intervalId = setInterval(fetchData, 1000); // Fetch messages every 3 seconds
-
-  //   return () => clearInterval(intervalId); // Clean up the interval on component unmount
-  // }, [currentUserPhoneNumber, recipientPhoneNumber]);
-
-  // const handleSendMessage = async (messageText) => {
-  //   if (messageText.trim()) {
-  //     const response = await sendMessage(currentUserPhoneNumber, recipientPhoneNumber, messageText);
-  //     if (response) {
-  //       setMessages((prevMessages) => [response, ...prevMessages]);
-  //       setLastMessage(response); // Update last message after sending new message
-  //     }
-  //   }
-  // };
-
-// console.log(messages)
-
-  const handleSendMessage = async ({ text, mediaUri }) => {
-    console.log(mediaUri)
-    let mediaType = 'text';
-  
-    if (mediaUri) {
-      const fileExtension = mediaUri.split('.').pop().toLowerCase();
-      if (['jpg', 'jpeg', 'png'].includes(fileExtension)) {
-        mediaType = 'image';
-      } else if (['mp4', 'mov', 'mkv'].includes(fileExtension)) {
-        mediaType = 'video';
+    const handlePrevious = () => {
+      if (currentIndex > 0) {
+        progressAnim.setValue(0);
+        setCurrentIndex(currentIndex - 1);
+        flatListRef.current.scrollToIndex({ index: currentIndex - 1 });
       }
-    }
-    console.log("media type: ",mediaType)
-    const response = await sendMessage(currentUserPhoneNumber, recipientPhoneNumber, text, mediaUri, mediaType);
-    
-    if (response) {
-      setMessages((prevMessages) => [response, ...prevMessages]);
-      setLastMessage(response);
-    }
-  };
-
-  return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 0}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0}
-    >
-      <PopupMenu visible={menuVisible} onClose={() => setMenuVisible(false)} menuItems={menuItems} style={styles.popupMenu} />
-      <StatusBar
-        backgroundColor="transparent"
-        translucent={true}
-          />
-          <ChatList messages={messages} currentUserPhoneNumber={currentUserPhoneNumber} contactName={contact} />
-          <InputBox onSendMessage={handleSendMessage} />
-          {/* {loadingMessages ? (
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color={primaryColors.purple} />
+    };
+  
+    const renderItem = ({ item }) => {
+      console.log("Current item:", item);
+      const mediaItem = item.media[0]; // Assumes only one media item per status
+      // const dimensions = mediaDimensions[index] || { width: Dimensions.get('window').width, height: 300 };
+      return (
+        <View style={styles.mediaContainer}>
+               {mediaItem.mediaType === 'image' ? (
+             <Image
+               source={{ uri: mediaItem.mediaUrl }}
+               style={styles.media}
+               onError={() => console.log('Failed to load image:', mediaItem.mediaUrl)}
+               resizeMode='contain'
+             />
+           ) : (
+             <Video
+               source={{ uri: mediaItem.mediaUrl }}
+               style={styles.media}
+               // useNativeContr/ols
+              //  resizeMode="contain"
+               isLooping={false}
+               onPlaybackStatusUpdate={(status) => {
+                 if (status.didJustFinish) {
+                   handleNext();
+                 }
+               }}
+               onError={(error) => console.log('Failed to load video:', error)}
+             />
+           )}
+           {mediaItem.text && <Text style={styles.caption}>{mediaItem.text}</Text>}
         </View>
-      ) : (
-        <>
-        </>
-      )} */}
-    </KeyboardAvoidingView>
-  );
-};
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    // backgroundColor:'pink',
-    position:'relative',
-    width:wp('100%')
-  },
-  headerLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flexGrow:1,
-    width:wp('75%')
-    // padding: wp('4%'), 
-  },
-  profilePicture: {
-    width: wp('10.5%'),
-    height: hp('5%'),
-    borderRadius: 50,
-    marginRight: 10,
-  },
-  name: {
-    fontSize: wp('5%'),
-    fontWeight: '500',
-    textAlign:'left',
-    alignSelf:'flex-start',
-  },
-  headerRight: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent:'space-between',
-    flex:1,
-    marginHorizontal: 15,
-    width:wp('25%')
-  },
-  usenameContainer:{
-    flex:1,
-    height:'100%',
-    justifyContent:'center',
-  },
-  popupMenu: {
-    position: 'absolute',
-    marginTop: 20,
-    backgroundColor: 'white',
-    width: wp("47%"),
-    borderRadius: 10,
-    elevation: 2,
-    justifyContent:'flex-end'
-  },
-});
-
-export default ChatRoom;
+        // <>
+        //   {mediaItem.mediaType === 'image' ? (
+        //     <Image
+        //       source={{ uri: mediaItem.mediaUrl }}
+        //       style={styles.media}
+        //       onError={() => console.log('Failed to load image:', mediaItem.mediaUrl)}
+        //     />
+        //   ) : (
+        //     <Video
+        //       source={{ uri: mediaItem.mediaUrl }}
+        //       style={styles.media}
+        //       // useNativeContr/ols
+        //       resizeMode="contain"
+        //       isLooping={false}
+        //       onPlaybackStatusUpdate={(status) => {
+        //         if (status.didJustFinish) {
+        //           handleNext();
+        //         }
+        //       }}
+        //       onError={(error) => console.log('Failed to load video:', error)}
+        //     />
+        //   )}
+        //   {mediaItem.text && <Text style={styles.caption}>{mediaItem.text}</Text>}
+        //   </>
+      );
+    };
+  
+    if (loading) {
+      return (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#fff" />
+        </View>
+      );
+    }
+  
+    return (
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <Image source={{ uri: userData.profilePicture }} style={styles.profilePicture} />
+          <Text style={styles.userName}>{userData.name}</Text>
+          <Text style={styles.timestamp}>
+            {statuses.length > 0 && new Date(statuses[currentIndex]?.createdAt).toLocaleString()}
+          </Text>
+        </View>
+        <View style={styles.progressContainer}>
+          {statuses.map((_, index) => (
+            <View key={index} style={styles.progressBarBackground}>
+              {index === currentIndex ? (
+                <Animated.View
+                  style={[
+                    styles.progressBarForeground,
+                    {
+                      width: progressAnim.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: ['0%', '100%'],
+                      }),
+                    },
+                  ]}
+                />
+              ) : (
+                <View style={styles.progressBarForeground} />
+              )}
+            </View>
+          ))}
+        </View>
+        <FlatList
+          ref={flatListRef}
+          data={statuses}
+          renderItem={renderItem}
+          // renderItem={()=>{
+          //   return <Text style={{fontSize:70, margin:200}}>Nmsr </Text>
+          // }}
+          keyExtractor={(item) => item.$id}
+          horizontal
+          pagingEnabled
+          // scrollEnabled={false} // Disable manual scrolling
+          onScrollToIndexFailed={(info) => {
+            console.error('Failed to scroll to index:', info);
+          }}
+        />
+      </View>
+    );
+  };
+  
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: 'pink',
+      justifyContent: 'center',
+      alignItems: 'center',
+      width:"100%"
+    },
+    header: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: 10,
+    },
+    profilePicture: {
+      width: 40,
+      height: 40,
+      borderRadius: 20,
+      marginRight: 10,
+    },
+    userName: {
+      color: 'white',
+      fontSize: 16,
+      fontWeight: 'bold',
+    },
+    timestamp: {
+      color: 'gray',
+      fontSize: 12,
+      marginLeft: 'auto',
+    },
+    progressContainer: {
+      flexDirection: 'row',
+      width: '100%',
+      height: 2,
+      marginBottom: 10,
+    },
+    progressBarBackground: {
+      flex: 1,
+      height: 2,
+      backgroundColor: 'gray',
+      marginHorizontal: 1,
+    },
+    progressBarForeground: {
+      height: 2,
+      backgroundColor: 'white',
+    },
+    statusContainer: {
+      justifyContent: 'center',
+      alignItems: 'center',
+      width: '100%',
+      height: '80%',
+    },
+    mediaContainer: {
+      width: wp('100%'),
+      height: '90%',
+      backgroundColor:'red',
+      justifyContent:'center'
+    },
+    media: {
+      alignSelf:'flex-start',
+      width: wp('100%'),
+      height: '100%',
+    },
+    caption: {
+      color: 'white',
+      textAlign: 'center',
+      marginTop: 10,
+      fontSize: 16,
+    },
+    loadingContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+  });
+  
+  export default ViewStatus;
+  

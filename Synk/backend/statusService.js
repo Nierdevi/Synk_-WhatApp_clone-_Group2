@@ -162,7 +162,7 @@ const getStatusesByPhoneNumber = async (phoneNumber) => {
         return status;
       });
   
-      console.log('rubbish: ', formattedStatuses);
+      // console.log('rubbish: ', formattedStatuses);
       return formattedStatuses;
     } catch (error) {
       console.error('Error fetching statuses by phone number:', error);
@@ -171,4 +171,35 @@ const getStatusesByPhoneNumber = async (phoneNumber) => {
   };
 
 
-export { addStatus, getStatuses,viewStatus,getStatusesByPhoneNumber };
+   const getCurrentUserStatuses = async (phoneNumber) => {
+    try {
+      const response = await databases.listDocuments('database_id', 'status', [
+        Query.equal('phoneNumber', phoneNumber)
+      ]);
+  
+      // Ensure each status has a media array
+      const formattedStatuses = response.documents.map(status => {
+        if (!Array.isArray(status.media)) {
+          status.media = [
+            {
+              mediaType: status.mediaType,
+              mediaUrl: status.mediaUrl,
+              text: status.text
+            }
+          ];
+          delete status.mediaType;
+          delete status.mediaUrl;
+          delete status.text;
+        }
+        return status;
+      });
+  
+      return formattedStatuses;
+    } catch (error) {
+      console.error('Error fetching statuses by phone number:', error);
+      throw error;
+    }
+  };
+
+
+export { addStatus, getStatuses,viewStatus,getStatusesByPhoneNumber,getCurrentUserStatuses };

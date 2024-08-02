@@ -1,26 +1,26 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { View, Text, Image, StyleSheet, FlatList, ActivityIndicator, Animated, LogBox, Dimensions } from 'react-native';
+import { View, Text, Image, StyleSheet, FlatList, ActivityIndicator, Dimensions,SafeAreaView,Pressable } from 'react-native';
 import { Video } from 'expo-av';
-import { getStatusesByPhoneNumber } from '../backend/statusService';
+import { getStatusesByPhoneNumber,getCurrentUserStatuses } from '../backend/statusService';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
+import DateTime from './DateTime';
+import { primaryColors } from '../constants/colors';
+import { Ionicons, Entypo } from '@expo/vector-icons';
 
 
-// Ignore warnings related to Animated API
-LogBox.ignoreLogs(['Animated: `useNativeDriver` was not specified.']);
-
-const ViewStatus = ({ route,navigation }) => {
-  const { userData } = route.params;
+const ViewStatus = ({ route, navigation }) => {
+  const { userData,contactName } = route.params;
   const [statuses, setStatuses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isBuffering, setIsBuffering] = useState(false);
   const flatListRef = useRef(null);
-  const progressAnim = useRef(new Animated.Value(0)).current;
+  const videoRef = useRef(null);
 
   useEffect(() => {
     const fetchStatuses = async () => {
-      try {
+      try {  
         const fetchedStatuses = await getStatusesByPhoneNumber(userData.phoneNumber);
-        console.log("formatted stat: ", fetchedStatuses);
         setStatuses(fetchedStatuses);
       } catch (error) {
         console.error('Error fetching statuses:', error);
@@ -32,53 +32,8 @@ const ViewStatus = ({ route,navigation }) => {
     fetchStatuses();
   }, [userData.phoneNumber]);
 
-  // useEffect(() => {
-  //   if (statuses.length > 0) {
-  //     const currentStatus = statuses[currentIndex];
-  //     let duration = 10000; // Default 10 seconds for images
-  //     if (currentStatus.media[0].mediaType === 'video') {
-  //       duration = 30000; // Maximum 30 seconds for videos
-  //     }
-
-  //     Animated.timing(progressAnim, {
-  //       toValue: 1,
-  //       duration: duration,
-  //       useNativeDriver: false,
-  //     }).start(({ finished }) => {
-  //       if (finished) {
-  //         handleNext();
-  //       }
-  //     });
-  //   }
-  // }, [currentIndex, statuses]);
-
-  useEffect(() => {
-    getStatusesByPhoneNumber(userData.phoneNumber).then((res)=>{
-      const intervalId = setInterval(() => {
-        setCurrentIndex((prevIndex) => {
-          console.log("stat: ",statuses)
-          const nextIndex =prevIndex + 1 ;
-          if(nextIndex!==res.length)
-            flatListRef.current.scrollToIndex({ animated: true, index: nextIndex });
-          else
-          {
-            clearInterval(intervalId)
-            navigation.goBack()
-          }
-          console.log("next index: ",nextIndex)
-          return nextIndex;
-        });
-      }, 10000); // 10 seconds
-  
-      // Clear interval on component unmount
-      return () => clearInterval(intervalId);
-    })
-    
-  }, []);
-
   const handleNext = () => {
     if (currentIndex < statuses.length - 1) {
-      progressAnim.setValue(0);
       setCurrentIndex(currentIndex + 1);
       flatListRef.current.scrollToIndex({ index: currentIndex + 1 });
     }
@@ -86,102 +41,74 @@ const ViewStatus = ({ route,navigation }) => {
 
   const handlePrevious = () => {
     if (currentIndex > 0) {
-      progressAnim.setValue(0);
       setCurrentIndex(currentIndex - 1);
       flatListRef.current.scrollToIndex({ index: currentIndex - 1 });
     }
   };
 
   const renderItem = ({ item }) => {
-    console.log("Current item:", item);
     const mediaItem = item.media[0]; // Assumes only one media item per status
-    // const dimensions = mediaDimensions[index] || { width: Dimensions.get('window').width, height: 300 };
     return (
       <View style={styles.mediaContainer}>
-             {mediaItem.mediaType === 'image' ? (
-           <Image
-             source={{ uri: mediaItem.mediaUrl }}
-             style={styles.media}
-             onError={() => console.log('Failed to load image:', mediaItem.mediaUrl)}
-             resizeMode='contain'
-           />
-         ) : (
-           <Video
-             source={{ uri: mediaItem.mediaUrl }}
-             style={styles.media}
-             // useNativeContr/ols
-            //  resizeMode="contain"
-             isLooping={false}
-             onPlaybackStatusUpdate={(status) => {
-               if (status.didJustFinish) {
-                 handleNext();
-               }
-             }}
-             onError={(error) => console.log('Failed to load video:', error)}
-           />
-         )}
-         {mediaItem.text && <Text style={styles.caption}>{mediaItem.text}</Text>}
+        {mediaItem.mediaType === 'image' ? (
+          <Image
+            source={{ uri: mediaItem.mediaUrl }}
+            style={styles.media}
+            onError={() => console.log('Failed to load image:', mediaItem.mediaUrl)}
+            resizeMode='contain'
+          />
+        ) : (
+          <>
+            <Video
+              ref={videoRef}
+              source={{ uri: mediaItem.mediaUrl }}
+              style={styles.media}
+              resizeMode="contain"
+              isLooping={true}
+              shouldPlay
+              onPlaybackStatusUpdate={(status) => {
+                setIsBuffering(status.isBuffering);
+                if (status.didJustFinish) {
+                  handleNext();
+                }
+              }}
+              onError={(error) => console.log('Failed to load video:', error)}
+            />
+            {isBuffering && (
+              <View style={styles.bufferingContainer}>
+                <ActivityIndicator size="large" color={primaryColors.purple} />
+              </View>
+            )}
+          </>
+        )}
+        {mediaItem.text && <Text style={styles.caption}>{mediaItem.text}</Text>}
       </View>
-      // <>
-      //   {mediaItem.mediaType === 'image' ? (
-      //     <Image
-      //       source={{ uri: mediaItem.mediaUrl }}
-      //       style={styles.media}
-      //       onError={() => console.log('Failed to load image:', mediaItem.mediaUrl)}
-      //     />
-      //   ) : (
-      //     <Video
-      //       source={{ uri: mediaItem.mediaUrl }}
-      //       style={styles.media}
-      //       // useNativeContr/ols
-      //       resizeMode="contain"
-      //       isLooping={false}
-      //       onPlaybackStatusUpdate={(status) => {
-      //         if (status.didJustFinish) {
-      //           handleNext();
-      //         }
-      //       }}
-      //       onError={(error) => console.log('Failed to load video:', error)}
-      //     />
-      //   )}
-      //   {mediaItem.text && <Text style={styles.caption}>{mediaItem.text}</Text>}
-      //   </>
     );
   };
 
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#fff" />
+        <ActivityIndicator size="large" color={primaryColors.purple} />
       </View>
     );
   }
-
+  const profilePicture = userData.profilePicture ? { uri: userData.profilePicture } : require('../assets/Avator.jpg');
+  const date=statuses.length > 0 && new Date(statuses[currentIndex]?.createdAt)
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <Image source={{ uri: userData.profilePicture }} style={styles.profilePicture} />
-        <Text style={styles.userName}>{userData.name}</Text>
-        <Text style={styles.timestamp}>
-          {statuses.length > 0 && new Date(statuses[currentIndex]?.createdAt).toLocaleString()}
-        </Text>
+        <Pressable onPress={() => navigation.goBack()} style={{marginLeft:15}}>
+          <Ionicons name="arrow-back" size={24} color="white" />
+        </Pressable>
+        <Image source={profilePicture} style={styles.profilePicture} />
+        <Text style={styles.userName}>{contactName}</Text>
+        <Text style={styles.timestamp}>{DateTime(date)}</Text>
       </View>
       <View style={styles.progressContainer}>
         {statuses.map((_, index) => (
           <View key={index} style={styles.progressBarBackground}>
-            {index === currentIndex ? (
-              <Animated.View
-                style={[
-                  styles.progressBarForeground,
-                  {
-                    width: progressAnim.interpolate({
-                      inputRange: [0, 1],
-                      outputRange: ['0%', '100%'],
-                    }),
-                  },
-                ]}
-              />
-            ) : (
+            {index === currentIndex && (
               <View style={styles.progressBarForeground} />
             )}
           </View>
@@ -191,49 +118,65 @@ const ViewStatus = ({ route,navigation }) => {
         ref={flatListRef}
         data={statuses}
         renderItem={renderItem}
-        // renderItem={()=>{
-        //   return <Text style={{fontSize:70, margin:200}}>Nmsr </Text>
-        // }}
         keyExtractor={(item) => item.$id}
         horizontal
         pagingEnabled
-        // scrollEnabled={false} // Disable manual scrolling
+        scrollEnabled={true}
         onScrollToIndexFailed={(info) => {
           console.error('Failed to scroll to index:', info);
         }}
+        onMomentumScrollEnd={(event) => {
+          const newIndex = Math.round(event.nativeEvent.contentOffset.x / Dimensions.get('window').width);
+          if (newIndex !== currentIndex) {
+            setCurrentIndex(newIndex);
+            if (statuses[newIndex].media[0].mediaType === 'video') {
+              videoRef.current?.playAsync();
+            }
+          }
+        }}
       />
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'pink',
+    backgroundColor: '#18181B',
     justifyContent: 'center',
     alignItems: 'center',
-    width:"100%"
+    width: "100%"
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 10,
+    // backgroundColor:'yellow',
+    width:wp('100%'),
+    marginTop:30,
+    height:50,
+
   },
   profilePicture: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    marginRight: 10,
+    width: 45,
+    height: 45,
+    borderRadius: 25,
+    marginLeft: 10,
+    // backgroundColor:'red'
   },
   userName: {
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
+    marginLeft:10
   },
   timestamp: {
-    color: 'gray',
-    fontSize: 12,
+    color: 'white',
+    fontSize: 15,
     marginLeft: 'auto',
+    fontWeight:'400',
+    marginRight:15,
+    alignSelf:'center'
   },
   progressContainer: {
     flexDirection: 'row',
@@ -250,6 +193,7 @@ const styles = StyleSheet.create({
   progressBarForeground: {
     height: 2,
     backgroundColor: 'white',
+    width: '100%',
   },
   statusContainer: {
     justifyContent: 'center',
@@ -260,11 +204,11 @@ const styles = StyleSheet.create({
   mediaContainer: {
     width: wp('100%'),
     height: '90%',
-    backgroundColor:'red',
-    justifyContent:'center'
+    // backgroundColor: 'red',
+    justifyContent: 'center'
   },
   media: {
-    alignSelf:'flex-start',
+    alignSelf: 'flex-start',
     width: wp('100%'),
     height: '100%',
   },
@@ -273,6 +217,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 10,
     fontSize: 16,
+  },
+  bufferingContainer: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: [{ translateX: -25 }, { translateY: -25 }],
   },
   loadingContainer: {
     flex: 1,

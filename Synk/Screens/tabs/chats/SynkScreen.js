@@ -11,6 +11,8 @@ const WhatsAppBackground = require('../../../assets/synk-background.png');
 
 const messages = [
   { id: '1', text: 'Understanding end-to-end encryption on Synk Your privacy is our priority. That’s why your personal messages are automatically end-to-end encrypted. This means only you and the person you’re talking to can read your conversations. No one else can see your messages — not even Synk.', date: '2024-07-01' },
+  { id: '2', text: 'New Feature: Group Video Calls. You can now make group video calls with up to 8 participants!', date: '2024-07-15' },
+  { id: '3', text: 'App Update: Performance Improvements. We’ve made some under-the-hood changes to make your Synk experience smoother and faster.', date: '2024-07-10' },
   // Add more messages as needed
 ];
 
@@ -73,8 +75,8 @@ const SynkScreen = ({ navigation }) => {
         <ScrollView contentContainerStyle={styles.messageContainer}>
           {/* Information Banner */}
           <TouchableOpacity style={styles.infoBanner} onPress={() => alert('Learn more about Synk')}>
-            <Text style={styles.infoText}>This is an official account of Synk</Text>
-            <Text style={styles.infoSubText}>Tap to learn more.</Text>
+            <Text style={styles.infoText}>This is an official account of Synk </Text>
+            <Text style={styles.infoSubText}>Tap to learn more. </Text>
           </TouchableOpacity>
 
           {/* Messages */}
@@ -100,7 +102,7 @@ const SynkScreen = ({ navigation }) => {
         </ScrollView>
 
         <View style={styles.end}>
-          <Text>Only Synk can send messages</Text>
+          <Text style={{textAlign:'center'}}>Only Synk can send messages</Text>
         </View>
       </ImageBackground>
 
@@ -209,6 +211,7 @@ const styles = StyleSheet.create({
   messageContent: {
     flexDirection: 'column',
     justifyContent: 'space-between',
+    position:'relative'
   },
   postHeader: {
     flexDirection: 'row',
@@ -227,16 +230,20 @@ const styles = StyleSheet.create({
   forwardButton: {
     padding: 5,
     position: 'absolute',
-    backgroundColor: '#f5f5f5',
-    borderRadius: 25,
-    left: 260,
-    top: 100,
+    backgroundColor: 'transparent',
+    // borderRadius: 25,
+    right:0,
+    top:0,
+    // marginBottom:20
   },
   end: {
-    alignItems: 'center',
+    // textAlign: 'center',
     backgroundColor: 'white',
     padding: 10,
     marginTop: 'auto',
+    textAlign:'center',
+    width:wp('100%'),
+    // alignItems:'center'
   },
   modalOverlay: {
     flex: 1,
