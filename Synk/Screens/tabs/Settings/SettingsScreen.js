@@ -381,7 +381,7 @@ const styles = StyleSheet.create({
   },
   check:{
     left: 150,
-    backgroundColor: '#59c96b', 
+    backgroundColor:primaryColors.purple, 
     borderRadius: 100,
     color: "black",
   },
