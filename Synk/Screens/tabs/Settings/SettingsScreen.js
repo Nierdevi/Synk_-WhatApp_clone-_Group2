@@ -1,7 +1,7 @@
-import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { Ionicons, MaterialIcons, Feather } from '@expo/vector-icons';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
-import { Image, Modal, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image, Modal, Pressable, StyleSheet, Text, TouchableOpacity, View,} from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -225,21 +225,9 @@ const SettingsScreen = () => {
                   <Text style={styles.status}>{about}</Text>
                 </View>
               </View>
-              <TouchableOpacity style={styles.drawerOption} onPress={() => navigation.navigate('AddFriend')}>
-                <Ionicons name="person-add-outline" size={24} color={primaryColors.purple} />
-                <Text style={styles.drawerOptionText}>Add Friends</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.drawerOption} onPress={() => navigation.navigate('Settings')}>
-                <Ionicons name="settings-outline" size={24} color={primaryColors.purple} />
-                <Text style={styles.drawerOptionText}>Settings</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.drawerOption} onPress={() => navigation.navigate('Help')}>
-                <Ionicons name="help-circle-outline" size={24} color={primaryColors.purple} />
-                <Text style={styles.drawerOptionText}>Help</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.drawerOption} onPress={() => navigation.navigate('About')}>
-                <Ionicons name="information-circle-outline" size={24} color={primaryColors.purple} />
-                <Text style={styles.drawerOptionText}>About</Text>
+              <TouchableOpacity style={styles.plus}>
+                <Feather name="plus-circle" size={34} color="black" />
+                <Text style={styles.drawerText}>Add account</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.drawerOption} onPress={() => navigation.navigate('Logout')}>
                 <Ionicons name="exit-outline" size={24} color={primaryColors.purple} />
@@ -279,6 +267,7 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     justifyContent: 'center',
+    paddingLeft: 10,
   },
   username: {
     fontSize: wp('6%'),
@@ -385,7 +374,7 @@ const styles = StyleSheet.create({
     
   },
   plus:{
-    paddingTop: 40,
+    paddingTop: 20,
     paddingLeft:6,
     flexDirection: 'row',
     alignItems: 'center',
@@ -399,6 +388,7 @@ const styles = StyleSheet.create({
   drawerOption: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'flex-end',
     paddingVertical: 10,
   },
   drawerOptionText: {
