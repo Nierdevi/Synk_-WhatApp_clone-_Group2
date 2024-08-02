@@ -117,13 +117,6 @@ const uploadProfilePicture = async (userId, uri) => {
 
         const currentProfilePictureUrl = userDocument.profilePicture;
         console.log("currentProfilePictureUrl: ",currentProfilePictureUrl)
-        
-        // Step 2: Delete the existing profile picture if it exists
-        // if (currentProfilePictureUrl) {
-        //     const fileId= await extractIdsFromUrl(currentProfilePictureUrl)
-        //     console.log("fileId: ",fileId)
-        //     await storage.deleteFile('synk_bucket',); // Delete the file from storage
-        // }
 
         const formData = new FormData();
         formData.append('fileId', ID.unique());

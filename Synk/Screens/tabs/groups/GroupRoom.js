@@ -54,10 +54,6 @@ const ChatRoom = ({ route, navigation }) => {
     };
 
     loadMessages();
-    const intervalId = setInterval(loadMessages, 3000); // 1000ms = 3 seconds
-
-    // Clean up interval on component unmount
-    return () => clearInterval(intervalId);
   }, [groupId, messages]);
 
   const handleSendMessage = async ({ text, mediaUri }) => {
