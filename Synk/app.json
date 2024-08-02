@@ -16,10 +16,11 @@
       "icon": "./assets/icon.png"
     },
     "android": {
-      "package": "com.synkapp_inc.synk",
+      "package": "com.star.synk",
+      "enableHermes": true,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#110f10"
       },
       "permissions": [
         "INTERNET",

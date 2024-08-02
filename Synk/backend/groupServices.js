@@ -1,5 +1,6 @@
 import { Query } from 'appwrite';
 import { databases, ID } from './appwrite';
+import showToast from '../components/showToast';
 
 
 const createGroupChat = async (currentUserPhoneNumber, participants, groupName, description='', groupPicUrl = '') => {
@@ -177,7 +178,7 @@ const sendGroupMessage = async (groupId, senderId, participants, messageText = '
 
       mediaUrl = `https://cloud.appwrite.io/v1/storage/buckets/synk_bucket/files/${uploadData.$id}/view?project=66992806000309150f65`;
     }
-
+    showToast("Message Sent")
     const response = await databases.createDocument(
       'database_id',
       'g_chats',

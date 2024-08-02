@@ -6,29 +6,15 @@ import { primaryColors, SecondaryColors } from '../constants/colors';
 import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import * as ImagePicker from 'expo-image-picker';
 import MediaReviewModal from './MediaReviewModal ';
-// import showToast from './showToast';
-import Toast from 'react-native-root-toast';
+import showToast from './showToast';
 
 
 
 const InputBox = ({ onSendMessage, contactName  }) => {
   const [messageText, setMessageText] = useState('');
-  const [menuVisible, setMenuVisible] = useState(false);
   const [inputHeight, setInputHeight] = useState(40); 
   const [mediaUri, setMediaUri] = useState(null);
-  const [mediaType, setMediaType] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
-  const [toastVisible, setToastVisible] = useState(false);
-  const [toastMessage, setToastMessage] = useState('');
-
-  const showToast = (message) => {
-    console.log("toast msg: ",message)
-    setToastMessage(message);
-    setToastVisible(true);
-    setTimeout(() => {
-      setToastVisible(false);
-    }, 3000); // Toast duration
-  };
 
   const handleSendMessage = () => {
 
@@ -46,20 +32,10 @@ const InputBox = ({ onSendMessage, contactName  }) => {
   const handlePickMedia = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All, // Accept images and videos
-      allowsEditing: false, // Disable editing to avoid cropping
-      // aspect: [4, 3],
+      allowsEditing: true, 
       quality: 1, // Use full quality
     });
 
-    const onRequestCloseModal =()=>{
-      setMessageText(''); // Clear input after sending message
-      setMediaUri(null);
-      setMenuVisible(false);
-    }
-    // if (!result.canceled) {
-    //   console.log("media url being sent: ",result.url)
-    //   setMediaUri(result.uri);
-    // }
 
     if (result && !result.canceled && result.assets && result.assets.length > 0) {
       const uri = result.assets[0].uri;
@@ -69,14 +45,6 @@ const InputBox = ({ onSendMessage, contactName  }) => {
       showToast('Media selected');
     }
   };
-
-  // console.log("messageText: ",messageText)
-  // console.log("mediaUri: ",mediaUri)
-  // const attachmentItem = [
-  //   { label: 'Pick Image', icon: 'image', onPress: handlePickImage },
-  //   // Add more attachment options here
-  // ];
-  // console.log("contact name in input box",contactName)
 
   return (
     <View style={styles.container}>
@@ -118,15 +86,6 @@ const InputBox = ({ onSendMessage, contactName  }) => {
         onChangeText={setMessageText}
         contactName={contactName}
       />
-        <Toast
-        visible={toastVisible}
-        position={Toast.positions.CENTER}
-        shadow={true}
-        animation={true}
-        hideOnPress={true}
-      >
-        {toastMessage}
-      </Toast>
 
     </View>
     
