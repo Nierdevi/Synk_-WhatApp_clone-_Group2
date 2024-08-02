@@ -133,21 +133,6 @@ const SettingsScreen = () => {
                   <Ionicons name="qr-code" size={24} color={primaryColors.purple} />
                 </Pressable>
                 <Pressable style={{width:wp('7')}}>
-            source={profilePicture ? { uri: profilePicture } : { uri: 'https://via.placeholder.com/50' }} 
-            style={styles.headerImage}
-            cachePolicy='memory-disk'
-            // resizeMode='contain'
-          />
-          <View style={{flexDirection: 'row',justifyContent:'space-between',flex:1}}>
-            <View style={styles.headerContainer}>
-              <Text style={styles.username}>{username}</Text>
-              <Text style={styles.status}>{about}</Text>
-            </View>
-            <View style={{flexDirection:'row',alignItems:'center',gap:10}}>
-              <Pressable style={{width:wp('7')}}>
-                <Ionicons name="qr-code" size={24} color={primaryColors.purple} />
-              </Pressable>
-              <Pressable onPress={toggleDrawer} style={{width:wp('7')}}>
                 <Ionicons name="chevron-down-circle" size={24} color={primaryColors.purple} />
               </Pressable>
             </View>
