@@ -9,7 +9,6 @@ import AppLogo from '../../../assets/AppLogo.png';
 import { getcurrentUserData, getUserProfilePicture } from '../../../backend/userService';
 import { primaryColors } from '../../../constants/colors';
 import { getUser } from '../../../constants/userContext';
-
 const SettingsScreen = () => {
   const navigation = useNavigation();
   const [username, setUsername] = useState('');
@@ -119,14 +118,14 @@ const SettingsScreen = () => {
       <ScrollView style={styles.container}>
         <TouchableOpacity style={styles.head} onPress={handleNavigateToProfile}>
           <Image
-                source={profilePicture ? { uri: profilePicture } : { uri: 'https://via.placeholder.com/50' }} 
+                source={profilePicture ? { uri: profilePicture } : require("../../../assets/Avator.jpg")} 
                 style={styles.headerImage}
                 cachePolicy='memory-disk'
                 // resizeMode='contain'
             />
             <View style={{flexDirection: 'row',justifyContent:'space-between',flex:1}}>
               <View style={styles.headerContainer}>
-                <Text style={styles.username}>{username}</Text>
+                <Text style={styles.username}>{username ? username:'Username'}</Text>
                 <Text style={styles.status}>{about}</Text>
               </View>
               <View style={{flexDirection:'row',alignItems:'center',gap:10}}>
@@ -199,12 +198,12 @@ const SettingsScreen = () => {
 
           <TouchableOpacity style={styles.section}>
             <Ionicons name="person-add-outline" size={24} color="black" />
-            <Text style={styles.optionText}>Invite a friend</Text>
+            <Text style={styles.optionText}>Invite a friend </Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.section} onPress={handleNavigateToAppUpdate}>
             <MaterialIcons name="system-update-tv" size={24} color="black" />
-            <Text style={styles.optionText}>App updates</Text>
+            <Text style={styles.optionText}>App updates </Text>
           </TouchableOpacity>
         </View>
 

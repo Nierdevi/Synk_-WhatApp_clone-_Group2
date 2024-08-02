@@ -91,6 +91,10 @@ const ChatRoom = ({ route, navigation }) => {
     };
 
     loadMessages();
+    const intervalId = setInterval(loadMessages, 3000); // 1000ms = 3 seconds
+
+    // Clean up interval on component unmount
+    return () => clearInterval(intervalId);
   }, [currentUserPhoneNumber, recipientPhoneNumber]);
 
   const handleSendMessage = async ({ text, mediaUri }) => {
