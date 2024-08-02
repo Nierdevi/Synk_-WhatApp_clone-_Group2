@@ -3,7 +3,7 @@ import { View, Text, Platform, StyleSheet, Pressable, TouchableOpacity, Modal, I
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { primaryColors } from '../../constants/colors';
-import { Feather, Entypo,FontAwesome6 } from '@expo/vector-icons';
+import { Feather, Entypo,FontAwesome6,FontAwesome  } from '@expo/vector-icons';
 import { PopupMenu } from '../PopupMenu';
 import { useTheme } from '../../constants/themeContext';
 import { useNavigation } from '@react-navigation/native'; // Import useNavigation hook
@@ -65,6 +65,10 @@ export default function ChatsHeader() {
       <Text style={[styles.text, { color: theme === 'dark' ? primaryColors.white : primaryColors.black }]}>Chats</Text>
 
       <View style={styles.option}>
+        <TouchableOpacity onPress={{}}>
+          <FontAwesome name="calendar-plus-o" size={22} color={theme === 'dark' ? primaryColors.white : primaryColors.black} />
+        </TouchableOpacity>
+
         <TouchableOpacity onPress={openCamera}>
           <Feather name="camera" size={22} color={theme === 'dark' ? primaryColors.white : primaryColors.black} />
         </TouchableOpacity>
@@ -122,7 +126,7 @@ const styles = StyleSheet.create({
   option: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    width: wp('15%'),
+    width: wp('20%'),
   },
   popupMenu: {
     position: 'absolute',

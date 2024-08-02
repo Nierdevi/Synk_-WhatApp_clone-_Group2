@@ -254,23 +254,6 @@ const addMessagedContact = async (userPhoneNumber, contactPhoneNumber) => {
   }
 };
 
-const fetchUserMessages = async (userPhoneNumber) => {
-  try {
-    const response = await databases.listDocuments(
-      'database_id',
-      'mess_contacts',
-      [
-        Query.or(
-          [Query.equal('userPhoneNumber', userPhoneNumber), Query.equal('contactPhoneNumber', userPhoneNumber)]
-        )
-      ]
-    );
-    return response.documents;
-  } catch (error) {
-    // handleNetworkError(error);
-    return [];
-  }
-};
 
 const fetchMessagedContacts = async (currentUserPhoneNumber) => {
   try {
@@ -308,10 +291,8 @@ const fetchMessagedContacts = async (currentUserPhoneNumber) => {
 
     return Array.from(uniqueContacts.values());
   } catch (error) {
-    showToast('Failed to fetch messaged contacts')
+    showToast('Network Request Failed')
     console.error('Failed to fetch messaged contacts:', error);
-    // if (error.message.includes('Network request failed')) {
-      // Alert.alert('Failed to fetch messaged contacts', 'Please check your network connection.');
     // }
     return [];
   }
