@@ -12,7 +12,7 @@ import { PopupMenu } from '../PopupMenu';
 
 const isIOS = Platform.OS === 'ios';
 
-export default function ChatsHeader() {
+export default function ChatsHeader({navigation}) {
   const [isCameraVisible, setIsCameraVisible] = useState(false);
   const [isEventModalVisible, setIsEventModalVisible] = useState(false);
   const [isEventsListModalVisible, setIsEventsListModalVisible] = useState(false);
@@ -55,6 +55,7 @@ export default function ChatsHeader() {
   ];
 
   const handleNavigateToSettings = () => {
+    navigation.replace("SettingsScreen")
     setMenuVisible(false);
   };
 
@@ -350,10 +351,14 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginBottom: 5,
   },
-  popupMenu: {
-    position: 'absolute',
-    top: 25,
-    right: 10,
-    zIndex: 1,
+  popupMenu:{
+    position:'absolute',
+    marginTop:20,
+    backgroundColor:'white',
+    width:wp("47%"),
+    top:12,
+    right:-10,
+    borderRadius:10,
+    elevation:2,
   },
 });
