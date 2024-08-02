@@ -9,10 +9,13 @@ import { primaryColors } from '../../constants/colors';
 import { useTheme } from '../../constants/themeContext';
 import CameraComponent from '../CameraComponent';
 import { PopupMenu } from '../PopupMenu';
+import { useNavigation } from '@react-navigation/native'; // Import useNavigation hook
+
+
 
 const isIOS = Platform.OS === 'ios';
 
-export default function ChatsHeader({navigation}) {
+export default function ChatsHeader() {
   const [isCameraVisible, setIsCameraVisible] = useState(false);
   const [isEventModalVisible, setIsEventModalVisible] = useState(false);
   const [isEventsListModalVisible, setIsEventsListModalVisible] = useState(false);
@@ -24,6 +27,7 @@ export default function ChatsHeader({navigation}) {
   const insets = useSafeAreaInsets();
   const [menuVisible, setMenuVisible] = useState(false);
   const [isDrawerVisible, setIsDrawerVisible] = useState(false);
+  const navigation = useNavigation(); 
 
   const openCamera = () => setIsCameraVisible(true);
   const closeCamera = () => setIsCameraVisible(false);
