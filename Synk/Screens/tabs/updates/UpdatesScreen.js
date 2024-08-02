@@ -27,7 +27,7 @@ const UpdatesScreen = ({ navigation }) => {
   const [channels, setChannels] = useState([]);
   const [followedChannels, setFollowedChannels] = useState([]);
   const [suggestedChannels, setSuggestedChannels] = useState([
-      { id: 3, name: 'Synk', img: require('../../../assets/AppLogo.png'), followers: 150 },
+      { id: 3, name: 'Synk', img: require('../../../assets/AppLogo.png'), followers: '7.5M' },
       { id: 4, name: 'CNN', img: 'https://upload.wikimedia.org/wikipedia/commons/f/fb/Cnn_logo_red_background.png', followers: 3200 },
       { id: 5, name: 'BBC News', img: 'https://asset.brandfetch.io/idtEghWGp4/idN4Y37uWH.png', followers: 9500 },
       { id: 6, name: 'TechCrunch', img: 'https://cdn.prod.website-files.com/60d07e2eecb304cb4350b53f/6630b429cd796ca047a8079d_techcrunch_logo.png', followers: 1500 },
@@ -123,11 +123,6 @@ const UpdatesScreen = ({ navigation }) => {
       })
     );
   };
-
-  const [menuVisible, setMenuVisible] = useState(false);
-
-  const openMenu = () => setMenuVisible(true);
-  const closeMenu = () => setMenuVisible(false);
 
   return (
     <Provider>

@@ -4,12 +4,7 @@ import { Query } from 'appwrite';
 import { Alert } from 'react-native';
 import showToast from '../components/showToast';
 
-const handleNetworkError = (error) => {
-  console.error(error);
-  if (error.message.includes('Network request failed')) {
-    // Alert.alert('Network Error', 'Please check your network connection and try again.');
-  }
-};
+
 
 const getExistingChat = async (senderPhoneNumber, recipientPhoneNumber) => {
   try {

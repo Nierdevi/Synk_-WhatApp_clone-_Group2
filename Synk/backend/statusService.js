@@ -3,18 +3,6 @@ import { databases, storage, ID, } from './appwrite'; // Added Query import
 // import cron from 'node-cron';
 
 
-const scheduleStatusDeletion = (statusId, expiryAt) => {
-    const expiryDate = new Date(expiryAt);
-
-    cron.schedule(expiryDate, async () => {
-        try {
-            await databases.deleteDocument('database_id', 'status', statusId);
-            console.log(`Deleted status with ID: ${statusId}`);
-        } catch (error) {
-            console.error('Failed to delete status:', error);
-        }
-    });
-};
 
 const addStatus = async (phoneNumber, mediaUri='', mediaType, text = '') => {
     const statusId = ID.unique();

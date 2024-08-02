@@ -1,9 +1,9 @@
-import { Entypo, Feather, FontAwesome, FontAwesome6 } from '@expo/vector-icons';
 import React, { useState } from 'react';
-import { Image, Modal, Platform, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Image, Modal, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Entypo, Feather, FontAwesome, FontAwesome6,MaterialIcons } from '@expo/vector-icons';
 import AppLogo from '../../assets/AppLogo.png';
 import { primaryColors } from '../../constants/colors';
 import { useTheme } from '../../constants/themeContext';
@@ -15,9 +15,11 @@ const isIOS = Platform.OS === 'ios';
 export default function ChatsHeader() {
   const [isCameraVisible, setIsCameraVisible] = useState(false);
   const [isEventModalVisible, setIsEventModalVisible] = useState(false);
+  const [isEventsListModalVisible, setIsEventsListModalVisible] = useState(false);
   const [selectedDate, setSelectedDate] = useState('');
   const [eventTitle, setEventTitle] = useState('');
   const [eventDescription, setEventDescription] = useState('');
+  const [events, setEvents] = useState([]);
   const { theme } = useTheme();
   const insets = useSafeAreaInsets();
   const [menuVisible, setMenuVisible] = useState(false);
@@ -29,14 +31,16 @@ export default function ChatsHeader() {
   const openEventModal = () => setIsEventModalVisible(true);
   const closeEventModal = () => setIsEventModalVisible(false);
 
+  const openEventsListModal = () => setIsEventsListModalVisible(true);
+  const closeEventsListModal = () => setIsEventsListModalVisible(false);
+
   const handleSelectDate = (day) => {
     setSelectedDate(day.dateString);
   };
 
   const handleSubmitEvent = () => {
-    console.log('Event Date:', selectedDate);
-    console.log('Event Title:', eventTitle);
-    console.log('Event Description:', eventDescription);
+    const newEvent = { date: selectedDate, title: eventTitle, description: eventDescription };
+    setEvents([...events, newEvent]);
     setSelectedDate('');
     setEventTitle('');
     setEventDescription('');
@@ -62,7 +66,7 @@ export default function ChatsHeader() {
 
   const closeModal = () => setIsDrawerVisible(false);
 
-  const stopPropagation = event => {
+  const stopPropagation = (event) => {
     event.stopPropagation();
   };
 
@@ -97,7 +101,12 @@ export default function ChatsHeader() {
       >
         <Pressable style={styles.modalContainer} onPress={closeEventModal}>
           <Pressable style={styles.eventModalContent} onPress={stopPropagation}>
-            <Text style={styles.eventTitle}>Event Scheduling</Text>
+            <View style={styles.eventHeader}>
+              <Text style={styles.eventTitle}>Event Scheduling</Text>
+              <TouchableOpacity onPress={openEventsListModal} style={styles.viewEventsIcon}>
+                <MaterialIcons name="event" size={26} color={calendarIconColor} />
+              </TouchableOpacity>
+            </View>
             <Calendar
               onDayPress={handleSelectDate}
               markedDates={{ [selectedDate]: { selected: true, marked: true, dotColor: primaryColors.primary } }}
@@ -124,6 +133,32 @@ export default function ChatsHeader() {
               <Text style={styles.saveButtonText}>Save Event</Text>
             </TouchableOpacity>
             <TouchableOpacity style={[styles.closeButton, { backgroundColor: primaryColors.purple }]} onPress={closeEventModal}>
+              <Text style={styles.closeButtonText}>Close</Text>
+            </TouchableOpacity>
+          </Pressable>
+        </Pressable>
+      </Modal>
+
+      {/* Events List Modal */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={isEventsListModalVisible}
+        onRequestClose={closeEventsListModal}
+      >
+        <Pressable style={styles.modalContainer} onPress={closeEventsListModal}>
+          <Pressable style={styles.eventsListContent} onPress={stopPropagation}>
+            <Text style={styles.eventTitle}>Events List</Text>
+            <ScrollView>
+              {events.map((event, index) => (
+                <View key={index} style={styles.eventItem}>
+                  <Text style={styles.eventDate}>{event.date}</Text>
+                  <Text style={styles.eventItemTitle}>{event.title}</Text>
+                  <Text style={styles.eventDescription}>{event.description}</Text>
+                </View>
+              ))}
+            </ScrollView>
+            <TouchableOpacity style={[styles.closeButton, { backgroundColor: primaryColors.purple }]} onPress={closeEventsListModal}>
               <Text style={styles.closeButtonText}>Close</Text>
             </TouchableOpacity>
           </Pressable>
@@ -163,8 +198,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: 'white',
-    elevation: 3,
+    paddingBottom: 5,
     height: hp('12%'),
     paddingHorizontal: wp('4%'),
   },
@@ -190,102 +224,136 @@ const styles = StyleSheet.create({
     paddingLeft: 5, 
     paddingRight: 5, 
   },
-  popupMenu: {
-    position: 'absolute',
-    marginTop: 20,
-    backgroundColor: 'white',
-    width: wp("47%"),
-    top: 12,
-    right: -10,
-    borderRadius: 10,
-    elevation: 2,
+  headerImage1: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+  },
+  me: {
+    paddingLeft: 15,
+  },
+  drawerText: {
+    fontWeight: 'bold',
+    fontSize: 16,
+    color: 'black',
+    paddingLeft: 15,
+  },
+  drawerText1: {
+    fontWeight: 'bold',
+    fontSize: 14,
+    color: 'gray',
+    paddingLeft: 15,
+  },
+  check: {
+    color: '#4169E1',
+    marginLeft: 'auto',
+  },
+  plus: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 30,
   },
   modalContainer: {
     flex: 1,
-    justifyContent: 'flex-end',
-    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   eventModalContent: {
+    width: '90%',
     backgroundColor: 'white',
+    borderRadius: 10,
     padding: 20,
-    paddingTop: 100, 
-    width: '100%',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
+  },
+  eventsListContent: {
+    width: '90%',
+    height: '70%',
+    backgroundColor: 'white',
+    borderRadius: 10,
+    padding: 20,
+  },
+  eventHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   eventTitle: {
-    fontSize: 24,
+    fontSize: 25,
     fontWeight: 'bold',
     marginBottom: 10,
   },
+  viewEventsIcon: {
+    padding: 5,
+  },
   calendar: {
-    marginBottom: 20,
+    marginBottom: 10,
   },
   eventDetails: {
     marginBottom: 20,
   },
   eventText: {
     fontSize: 16,
-    marginBottom: 10,
+    fontWeight: 'bold',
+    marginBottom: 5,
   },
   input: {
-    borderColor: '#ccc',
     borderWidth: 1,
+    borderColor: 'gray',
     borderRadius: 5,
     padding: 10,
     marginBottom: 10,
   },
   saveButton: {
-    padding: 15,
-    borderRadius: 25,
+    padding: 10,
+    borderRadius: 5,
     alignItems: 'center',
-    marginBottom: 10,
   },
   saveButtonText: {
-    color: '#fff',
-    fontSize: 16,
+    color: 'white',
     fontWeight: 'bold',
+    fontSize: 16,
   },
   closeButton: {
-    padding: 15,
-    borderRadius: 25,
+    padding: 10,
+    borderRadius: 5,
     alignItems: 'center',
-    marginBottom: 10,
+    marginTop: 10,
   },
   closeButtonText: {
-    color: '#fff',
-    fontSize: 16,
+    color: 'white',
     fontWeight: 'bold',
+    fontSize: 16,
   },
   drawerContent: {
-    backgroundColor: '#fff',
-    padding: 20,
+    width: '90%',
+    height: '40%',
+    backgroundColor: 'white',
     borderRadius: 10,
-    marginTop: 'auto',
+    padding: 20,
   },
-  headerImage1: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    marginRight: 10,
+  eventItem: {
+    borderBottomWidth: 1,
+    borderBottomColor: 'lightgray',
+    paddingVertical: 10,
   },
-  me: {
-    flex: 1,
-  },
-  drawerText: {
+  eventDate: {
     fontSize: 16,
     fontWeight: 'bold',
+    marginBottom: 5,
   },
-  drawerText1: {
+  eventItemTitle: {
     fontSize: 14,
-    color: '#666',
+    fontWeight: 'bold',
+    marginBottom: 5,
   },
-  check: {
-    marginLeft: 'auto',
+  eventDescription: {
+    fontSize: 14,
+    marginBottom: 5,
   },
-  plus: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 20,
+  popupMenu: {
+    position: 'absolute',
+    top: 25,
+    right: 10,
+    zIndex: 1,
   },
 });
