@@ -7,9 +7,7 @@ import InputBox from '../../../components/InputBox';
 import ChatList from '../../../components/ChatListItem';
 import { Feather, Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { PopupMenu } from '../../../components/PopupMenu';
-import { useFocusEffect } from '@react-navigation/native';
-import { primaryColors } from '../../../constants/colors';
-import Toast from 'react-native-root-toast';
+import showToast from '../../../components/showToast';
 
 const ChatRoom = ({ route, navigation }) => {
   const { contact, currentUserPhoneNumber, profilePicture } = route.params;
@@ -96,9 +94,6 @@ const ChatRoom = ({ route, navigation }) => {
   }, [currentUserPhoneNumber, recipientPhoneNumber]);
 
   const handleSendMessage = async ({ text, mediaUri }) => {
-    let toast = Toast.show('Sending message', {
-      duration: Toast.durations.LONG,
-    });
     let mediaType = 'text';
 
     if (mediaUri) {
@@ -116,9 +111,6 @@ const ChatRoom = ({ route, navigation }) => {
       setLastMessage(response);
     }
 
-    setTimeout(function hideToast() {
-      Toast.hide(toast);
-    }, 5000);
   };
 
   return (

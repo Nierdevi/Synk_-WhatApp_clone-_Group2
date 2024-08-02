@@ -44,6 +44,7 @@ const ChatList = ({ messages, currentUserPhoneNumber}) => {
 
   // console.log("selectedText: ",selectedText)
   const renderItem = ({ item }) => {
+    // console.log("item: ",item)
     const isCurrentUser = item.senderId === currentUserPhoneNumber;
     
 
