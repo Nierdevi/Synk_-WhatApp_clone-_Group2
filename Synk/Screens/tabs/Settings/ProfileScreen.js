@@ -174,7 +174,7 @@ const handleStatusSavePress = async () => {
       <View style={styles.head}>
         <Pressable onPress={profilePicReview}>
             <Image
-                source={profilePicture ? { uri: profilePicture } : { uri: 'https://via.placeholder.com/50' }} 
+                source={profilePicture ? { uri: profilePicture } : require("../../../assets/Avator.jpg")} 
                 style={styles.headerImage}
                 cachePolicy='memory-disk'
                 // resizeMode='cover'

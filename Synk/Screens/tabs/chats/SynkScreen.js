@@ -1,13 +1,13 @@
 import { Entypo, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useState } from 'react';
-import { FlatList, Image, ImageBackground, Modal, Pressable, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { FlatList, Image, ImageBackground, Modal, Pressable, SafeAreaView, Share, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import { primaryColors } from '../../../constants/colors';
 
 const Applogo = require('../../../assets/AppLogo.png');
 const Verified = require('../../../assets/verified.png');
-const WhatsAppBackground = require('../../../assets/synk-background.png'); // Replace with your background image path
+const WhatsAppBackground = require('../../../assets/synk-background.png');
 
 const messages = [
   { id: '1', text: 'Understanding end-to-end encryption on Synk Your privacy is our priority. That’s why your personal messages are automatically end-to-end encrypted. This means only you and the person you’re talking to can read your conversations. No one else can see your messages — not even Synk.', date: '2024-07-01' },
@@ -26,10 +26,19 @@ const options = [
 const SynkScreen = ({ navigation }) => {
   const [menuVisible, setMenuVisible] = useState(false);
 
-  // Function to format the date
   const formatDate = (dateString) => {
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
     return new Date(dateString).toLocaleDateString('en-US', options);
+  };
+
+  const handleShare = async (messageText) => {
+    try {
+      await Share.share({
+        message: messageText,
+      });
+    } catch (error) {
+      alert(error.message);
+    }
   };
 
   return (
@@ -84,7 +93,7 @@ const SynkScreen = ({ navigation }) => {
                   <Image source={Verified} style={styles.verify} tintColor="#7410d7" />
                 </View>
                 <Text style={styles.messageText}>{message.text}</Text>
-                <TouchableOpacity style={styles.forwardButton}>
+                <TouchableOpacity style={styles.forwardButton} onPress={() => handleShare(message.text)}>
                   <MaterialCommunityIcons name="share-all" size={20} color="#000" />
                 </TouchableOpacity>
               </View>
@@ -169,7 +178,7 @@ const styles = StyleSheet.create({
     padding: 15,
   },
   infoBanner: {
-    backgroundColor: primaryColors.purple, // Change to your desired background color
+    backgroundColor: primaryColors.purple,
     padding: 10,
     marginBottom: 10,
     borderRadius: 5,
@@ -196,7 +205,7 @@ const styles = StyleSheet.create({
   dateText: {
     fontSize: 12,
     color: '#666',
-    marginBottom: 10, // Increased spacing from the content
+    marginBottom: 10,
     textAlign: 'center',
   },
   messageContent: {

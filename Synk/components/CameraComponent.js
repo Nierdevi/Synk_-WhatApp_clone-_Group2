@@ -7,7 +7,6 @@ import { Alert, Modal, StatusBar, StyleSheet, Text, TouchableOpacity, View } fro
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { addStatus } from '../backend/statusService';
 import { getUser } from '../constants/userContext';
-// import ImageEditingComponent from './ImageEditingComponent';
 
 
 
@@ -55,7 +54,7 @@ const CameraComponent = ({ isVisible, onClose }) => {
   const handlePickMedia = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All, // Accept images and videos
-      allowsEditing: false, // Disable editing to avoid cropping
+      allowsEditing: true, // Disable editing to avoid cropping
       aspect: [1, 1],
       quality: 1, // Use full quality
     });

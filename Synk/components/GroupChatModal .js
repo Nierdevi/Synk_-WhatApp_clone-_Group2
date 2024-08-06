@@ -10,6 +10,7 @@ import { uploadGrpProfile,createGroupChat,createChat } from '../backend/groupSer
 import { MaterialIcons, Ionicons, Feather, FontAwesome6 } from '@expo/vector-icons';
 import { primaryColors } from '../constants/colors';
 import Fab from './fab';
+import showToast from './showToast';
 
 
 const GroupChatModal = ({ visible, onClose, navigation ,close}) => {
@@ -68,6 +69,7 @@ const GroupChatModal = ({ visible, onClose, navigation ,close}) => {
       return
     }
 
+
     // console.log("session: ",session)
     const participants = selectedContacts.map(phoneNumber => {
       const contact = filteredContacts.find(c => c.normalizedPhoneNumbers[0] === phoneNumber);
@@ -92,7 +94,7 @@ const GroupChatModal = ({ visible, onClose, navigation ,close}) => {
     }
     // participants=selectedPhoneNumbers
     // console.log("setected participant: ",participants)
-
+    showToast("Creating group")
     const response=await createGroupChat(currentUserPhoneNumber, participants, groupName, description, profilePicUrl);
     console.log("Group Chat Response:", response);
 
@@ -200,9 +202,6 @@ const GroupChatModal = ({ visible, onClose, navigation ,close}) => {
           renderItem={renderItem}
         />
         <Fab type="send" handlePress={handleCreateGroup}/>
-        {/* <TouchableOpacity style={styles.createGroupButton} onPress={handleCreateGroup}>
-          <Text style={styles.buttonText}>Create Group</Text>
-        </TouchableOpacity> */}
       </View>
     </Modal>
   );

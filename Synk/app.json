@@ -16,15 +16,17 @@
       "icon": "./assets/icon.png"
     },
     "android": {
-      "package": "com.synkapp_inc.synk",
+      "package": "com.star.synk",
+      "enableHermes": true,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#110f10"
       },
       "permissions": [
         "INTERNET",
         "ACCESS_NETWORK_STATE",
-        "CAMERA", "RECORD_AUDIO"
+        "CAMERA",
+        "RECORD_AUDIO"
       ]
     },
     "web": {
@@ -34,6 +36,12 @@
       "eas": {
         "projectId": "b82f44cb-5650-442d-b627-6b260bd5a663"
       }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/b82f44cb-5650-442d-b627-6b260bd5a663"
     }
   }
 }

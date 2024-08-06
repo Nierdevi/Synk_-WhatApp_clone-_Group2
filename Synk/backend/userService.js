@@ -3,7 +3,7 @@ import {databases,storage,ID} from './appwrite';
 import { Query } from 'appwrite';
 import * as FileSystem from 'expo-file-system';
 import FormData from 'form-data';
-
+import showToast from '../components/showToast';
 
 const addUserToDatabase = async (userId, phoneNumber) => {
     try {
@@ -36,6 +36,7 @@ const addUsernameToDatabase = async (userId, username) => {
         await databases.updateDocument('database_id', 'users', userDocument.$id, {
             username,
         });
+        showToast("Username updated")
     } catch (error) {
         console.error("Failed to add username to the database:", error);
     }
@@ -59,6 +60,7 @@ const addAboutToDatabase = async (userId, about) => {
         await databases.updateDocument('database_id', 'users', userDocument.$id, {
             about,
         });
+        showToast("About updated")
     } catch (error) {
         console.error("Failed to add about to the database:", error);
     }
@@ -100,6 +102,7 @@ const getUserProfilePicture = async (userId) => {
         return response.documents[0].profilePicture || null; // Return null if it doesn't exist
     } catch (error) {
         console.error("Failed to fetch user profile picture:", error);
+        showToast("Failed to fetch profile")
         throw error;
     }
 };
@@ -114,13 +117,6 @@ const uploadProfilePicture = async (userId, uri) => {
 
         const currentProfilePictureUrl = userDocument.profilePicture;
         console.log("currentProfilePictureUrl: ",currentProfilePictureUrl)
-        
-        // Step 2: Delete the existing profile picture if it exists
-        // if (currentProfilePictureUrl) {
-        //     const fileId= await extractIdsFromUrl(currentProfilePictureUrl)
-        //     console.log("fileId: ",fileId)
-        //     await storage.deleteFile('synk_bucket',); // Delete the file from storage
-        // }
 
         const formData = new FormData();
         formData.append('fileId', ID.unique());
@@ -158,6 +154,7 @@ const uploadProfilePicture = async (userId, uri) => {
             documentId, 
             { profilePicture: newImageUrl }
         );
+        showToast("User profile updated")
 
         const localPath = await downloadAndCacheProfilePicture(newImageUrl);
 
@@ -165,6 +162,7 @@ const uploadProfilePicture = async (userId, uri) => {
 
         return newImageUrl;
     } catch (error) {
+        showToast("Failed to upload profile picture")
         console.error('Failed to upload profile picture:', error);
         throw error;
     }
@@ -187,12 +185,6 @@ const downloadAndCacheProfilePicture = async (url) => {
 
 const getcurrentUserData = async (userId) => {
     try {
-        // let userData = await AsyncStorage.getItem('userData');
-        // if (userData) {
-        //     console.log('Loading user data from local storage...');
-        //     console.log('user data from local', userData);
-        //     return JSON.parse(userData);
-        // }
 
         console.log('Fetching user data from database...');
         const response = await databases.listDocuments('database_id', 'users', [
@@ -213,27 +205,6 @@ const getcurrentUserData = async (userId) => {
         throw error;
     }
 };
-
-
-// const getUserData = async (phoneNumber) => {
-//     try {
-//     const response = await databases.listDocuments('database_id', 'users', [
-//         Query.equal('phoneNumber', phoneNumber)
-//     ]);
-
-//     if (response.documents.length === 0) {
-//         throw new Error('User document not found');
-//     }
-
-//     otherUserData = response.documents[0];
-//     // console.log("userdata: ",otherUserData)
-//         await AsyncStorage.setItem(`userData_${phoneNumber}`, JSON.stringify(otherUserData));
-//         return otherUserData;
-//     } catch (error) {
-//     console.error("Failed to fetch other user data:", error);
-//         throw error;
-//     }
-// };
 
 const getUserData = async (phoneNumber) => {
     try {
