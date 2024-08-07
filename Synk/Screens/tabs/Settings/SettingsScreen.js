@@ -9,8 +9,7 @@ import AppLogo from '../../../assets/AppLogo.png';
 import { getcurrentUserData, getUserProfilePicture } from '../../../backend/userService';
 import { primaryColors } from '../../../constants/colors';
 import { getUser } from '../../../constants/userContext';
-const SettingsScreen = () => {
-  const navigation = useNavigation();
+const SettingsScreen = ({navigation}) => {
   const [username, setUsername] = useState('');
   const [about, setAbout] = useState(' ');
   const [profilePicture, setProfilePicture] = useState(null);

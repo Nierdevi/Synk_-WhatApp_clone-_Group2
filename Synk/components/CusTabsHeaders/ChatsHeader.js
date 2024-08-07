@@ -15,7 +15,7 @@ import { useNavigation } from '@react-navigation/native'; // Import useNavigatio
 
 const isIOS = Platform.OS === 'ios';
 
-export default function ChatsHeader() {
+export default function ChatsHeader({navigation}) {
   const [isCameraVisible, setIsCameraVisible] = useState(false);
   const [isEventModalVisible, setIsEventModalVisible] = useState(false);
   const [isEventsListModalVisible, setIsEventsListModalVisible] = useState(false);
@@ -27,7 +27,6 @@ export default function ChatsHeader() {
   const insets = useSafeAreaInsets();
   const [menuVisible, setMenuVisible] = useState(false);
   const [isDrawerVisible, setIsDrawerVisible] = useState(false);
-  const navigation = useNavigation(); 
 
   const openCamera = () => setIsCameraVisible(true);
   const closeCamera = () => setIsCameraVisible(false);
